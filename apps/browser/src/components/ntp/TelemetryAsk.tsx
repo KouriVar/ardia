@@ -130,8 +130,8 @@ function CloseButton({ onPress }: { onPress: () => void }) {
   const { hovered, hoverProps } = useHover();
   const fill = theme.dark ? (hovered ? "#FFFFFF4D" : "#FFFFFF14") : hovered ? "#0000004D" : "#00000033";
   return (
-    <View {...hoverProps} tooltip="Dismiss">
-      <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel="Dismiss">
+    <View {...hoverProps} tooltip="关闭">
+      <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel="关闭">
         <View style={{ width: 23, height: 23, borderRadius: 11.5, overflow: "hidden", alignItems: "center", justifyContent: "center" }}>
           <VisualEffect material="hudWindow" blendingMode="withinWindow" cornerRadius={11.5} style={StyleSheet.absoluteFill} />
           <Surface style={StyleSheet.absoluteFill} fill={hex(fill)} cornerRadius={11.5} borderColor={theme.dark ? "#FFFFFF1F" : "#00000014"} borderWidth={1} />

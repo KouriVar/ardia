@@ -111,8 +111,8 @@ let counter = 0;
 const newId = () => `lf-${Date.now().toString(36)}-${(++counter).toString(36)}`;
 
 export const FOLDER_DEFAULTS: Record<LiveFolderKind, { name: string; sources: LiveSourceId[] }> = {
-  pullRequests: { name: "Pull Requests", sources: ["github"] },
-  documents: { name: "Documents", sources: ["notion"] },
+  pullRequests: { name: "拉取请求", sources: ["github"] },
+  documents: { name: "文档", sources: ["notion"] },
 };
 
 export function createFolder(profileId: string, kind: LiveFolderKind, sources?: LiveSourceId[]): string {

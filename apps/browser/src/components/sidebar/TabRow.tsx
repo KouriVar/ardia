@@ -65,7 +65,7 @@ export const TabRow = memo(function TabRow({ tabId, onto = false, shift = null }
   if (!tab) return null;
   const resettable = isPinnedRow(tab) && awayFromPin(tab);
   const resetting = resettable && backToPin.hovered && !renaming;
-  const title = resetting ? "Back to Pinned URL" : tabTitle(tab);
+  const title = resetting ? "返回固定网址" : tabTitle(tab);
   const fill = active ? theme.tabSelected : selected ? tokens.multiSelected : hovered ? theme.tabHover : "rgba(0,0,0,0)";
   const border = active || selected ? 0.5 : 0;
 
@@ -105,7 +105,7 @@ export const TabRow = memo(function TabRow({ tabId, onto = false, shift = null }
               >
                 {resettable ? (
                   <View {...backToPin.hoverProps}>
-                    <Pressable onPress={() => useBrowser.getState().returnToPinnedUrl(tab.id)} tooltip="Back to Pinned URL (⌘↩)">
+                    <Pressable onPress={() => useBrowser.getState().returnToPinnedUrl(tab.id)} tooltip="返回固定网址 (⌘↩)">
                       {resetting ? (
                         <View style={{ width: 16, height: 16, alignItems: "center", justifyContent: "center" }}>
                           <Symbol name="arrow.uturn.backward" size={11} weight="semibold" color={active ? theme.tabSelectedText : theme.textTab} style={{ width: 16, height: 16 }} />
@@ -125,14 +125,14 @@ export const TabRow = memo(function TabRow({ tabId, onto = false, shift = null }
                   </View>
                 )}
                 {(playingAudio || tab.muted) && (
-                  <Pressable onPress={() => toggleMute(tab.id)} style={{ marginLeft: 6 }} tooltip={tab.muted ? "Unmute Site" : "Mute Site"}>
+                  <Pressable onPress={() => toggleMute(tab.id)} style={{ marginLeft: 6 }} tooltip={tab.muted ? "取消网站静音" : "将网站静音"}>
                     <Symbol name={tab.muted ? "speaker.slash" : "speaker.wave.2"} size={12} color={theme.textTab} style={{ width: 18, height: 16 }} />
                   </Pressable>
                 )}
                 {renaming ? (
                   <RenameField
                     initial={tab.customTitle ?? tab.title}
-                    placeholder={tab.title || "Tab name"}
+                    placeholder={tab.title || "标签页名称"}
                     color={active ? theme.tabSelectedText : theme.textPrimary}
                     onDone={(text) => (text === null ? endRename({ kind: "tab", id: tabId }) : commitRename({ kind: "tab", id: tabId }, text))}
                   />
@@ -142,7 +142,7 @@ export const TabRow = memo(function TabRow({ tabId, onto = false, shift = null }
                 <HoverSlot
                   hovered={hovered && !renaming}
                   width={22}
-                  hover={<IconButton icon="xmark" size={10} weight="semibold" box={22} radius={6} onPress={() => void closeTab(tab.id)} tooltip="Close Tab (⌘W)" />}
+                  hover={<IconButton icon="xmark" size={10} weight="semibold" box={22} radius={6} onPress={() => void closeTab(tab.id)} tooltip="关闭标签页 (⌘W)" />}
                 >
                   {loading && <ActivitySpinner style={{ width: 12, height: 12, marginRight: 2 }} />}
                 </HoverSlot>

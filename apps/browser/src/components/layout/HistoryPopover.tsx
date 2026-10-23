@@ -43,7 +43,7 @@ export function HistoryPopover({ tabId, windowId, anchors }: { tabId: string; wi
         <PopoverSeparator />
         <ActionRow
           icon="clock"
-          title="Show Full History"
+          title="显示完整历史记录"
           onPress={() => {
             closeHistoryMenu();
             openInternalPage("history", windowId);

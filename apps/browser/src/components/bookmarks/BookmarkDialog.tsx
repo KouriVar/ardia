@@ -39,7 +39,7 @@ function DialogPanel({ state }: { state: BookmarkDialogState }) {
       if (name.trim() && name !== bookmark?.title) s.updateBookmark(state.bookmarkId, { title: name.trim() });
       if (folderId && folderId !== bookmark?.parentId) s.moveBookmark(state.bookmarkId, folderId);
     } else {
-      const title = name.trim() || "Tabs";
+      const title = name.trim() || "标签页";
       s.addBookmarkTree(state.profileId, [{ title, children: state.tabs.map((t) => ({ title: t.title, url: t.url })) }], folderId ?? undefined);
     }
     close();
@@ -51,13 +51,13 @@ function DialogPanel({ state }: { state: BookmarkDialogState }) {
   };
 
   const newFolder = async () => {
-    const title = await prompt({ title: "New Folder", placeholder: "Folder name", confirmTitle: "Create", windowId: state.windowId });
+    const title = await prompt({ title: "新建文件夹", placeholder: "文件夹名称", confirmTitle: "创建", windowId: state.windowId });
     if (!title || !profileId) return;
     const id = useBrowser.getState().addBookmarkFolder({ profileId, title, parentId: folderId ?? undefined });
     setFolderId(id);
   };
 
-  const heading = state.kind === "allTabs" ? `Bookmark ${state.tabs.length} Tabs` : "Bookmark Added";
+  const heading = state.kind === "allTabs" ? `将 ${state.tabs.length} 个标签页加入书签` : "已添加书签";
 
   return (
     <View style={StyleSheet.absoluteFill}>
@@ -79,9 +79,9 @@ function DialogPanel({ state }: { state: BookmarkDialogState }) {
         }}
       >
         <Text style={{ fontSize: 13, fontWeight: "600", color: theme.textPrimary }}>{heading}</Text>
-        <Text style={{ fontSize: 11.5, marginTop: 12, marginBottom: 5, color: theme.textSecondary }}>{state.kind === "allTabs" ? "Folder name" : "Name"}</Text>
-        <TextField value={name} onChangeText={setName} autoFocus selectOnFocus placeholder={state.kind === "allTabs" ? "Tabs" : "Name"} onSubmit={done} onEscape={done} />
-        <Text style={{ fontSize: 11.5, marginTop: 12, marginBottom: 5, color: theme.textSecondary }}>Folder</Text>
+        <Text style={{ fontSize: 11.5, marginTop: 12, marginBottom: 5, color: theme.textSecondary }}>{state.kind === "allTabs" ? "文件夹名称" : "名称"}</Text>
+        <TextField value={name} onChangeText={setName} autoFocus selectOnFocus placeholder={state.kind === "allTabs" ? "标签页" : "名称"} onSubmit={done} onEscape={done} />
+        <Text style={{ fontSize: 11.5, marginTop: 12, marginBottom: 5, color: theme.textSecondary }}>文件夹</Text>
         <View
           style={{
             height: 176,
@@ -97,10 +97,10 @@ function DialogPanel({ state }: { state: BookmarkDialogState }) {
           </ScrollView>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 14, gap: 8 }}>
-          <Button title="New Folder" onPress={newFolder} />
+          <Button title="新建文件夹" onPress={newFolder} />
           <View style={{ flex: 1 }} />
-          {state.kind === "page" ? <Button title="Remove" onPress={remove} /> : <Button title="Cancel" onPress={close} />}
-          <Button title={state.kind === "page" ? "Done" : "Save"} kind="primary" onPress={done} />
+          {state.kind === "page" ? <Button title="移除" onPress={remove} /> : <Button title="取消" onPress={close} />}
+          <Button title={state.kind === "page" ? "完成" : "保存"} kind="primary" onPress={done} />
         </View>
       </Surface>
     </View>

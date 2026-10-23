@@ -159,12 +159,12 @@ export async function translatePage(tabId: string, target = defaultTarget()) {
   if (!translation || !tab || !webviews.get(tabId)) return;
   await revertPage(tabId, { quiet: true });
   const source = stateOf(tabId).source ?? (await pageLanguage(tabId))?.language ?? null;
-  if (!source) return toast(tabId, "Translation error (can't tell the page's language)");
-  if (baseLanguage(source) === baseLanguage(target)) return toast(tabId, `Translation error (the page is already in ${languageName(target)})`);
+  if (!source) return toast(tabId, "翻译出错（无法识别页面语言）");
+  if (baseLanguage(source) === baseLanguage(target)) return toast(tabId, `翻译出错（页面已是${languageName(target)}）`);
   let shown = false;
   try {
     const status = await translation.status(source, target);
-    if (status === "unsupported") return toast(tabId, `Translation error (${languageName(source)} to ${languageName(target)} isn't available)`);
+    if (status === "unsupported") return toast(tabId, `翻译出错（不支持从${languageName(source)}翻译为${languageName(target)}）`);
     if (status === "supported") await translation.prepare(source, target);
     const token = Math.random().toString(36).slice(2);
     patch(tabId, { status: "translating", source, target, token });
@@ -173,7 +173,7 @@ export async function translatePage(tabId: string, target = defaultTarget()) {
     const done = await drain(tabId, token, (n, total) => {
       if (Date.now() - started < PROGRESS_AFTER_MS || total <= 0) return;
       shown = true;
-      toast(tabId, `Translating to ${languageName(target)}…`, `${Math.min(99, Math.round((n / total) * 100))}%`, true);
+      toast(tabId, `正在翻译为${languageName(target)}…`, `${Math.min(99, Math.round((n / total) * 100))}%`, true);
     });
     if (!done) {
       if (stateOf(tabId).token === token) patch(tabId, { status: "idle", target: null, token: null });
@@ -181,12 +181,12 @@ export async function translatePage(tabId: string, target = defaultTarget()) {
       return;
     }
     patch(tabId, { status: "translated" });
-    toast(tabId, `Translated to ${languageName(target)}`);
+    toast(tabId, `已翻译为${languageName(target)}`);
     void follow(tabId, token);
   } catch (error) {
     await revertPage(tabId, { quiet: true });
     const reason = error instanceof Error ? error.message : String(error);
-    toast(tabId, `Translation error (${reason.replace(/[.\s]+$/, "")})`);
+    toast(tabId, `翻译出错 (${reason.replace(/[.\s]+$/, "")})`);
   }
 }
 
@@ -194,7 +194,7 @@ export async function revertPage(tabId: string, { quiet = false } = {}) {
   const { source, status } = stateOf(tabId);
   patch(tabId, { status: "idle", target: null, token: null });
   await webviews.get(tabId)?.evaluate(translatorCall("revert"));
-  if (!quiet && source && status !== "idle") toast(tabId, `Translated back to ${languageName(source)}`);
+  if (!quiet && source && status !== "idle") toast(tabId, `已恢复为${languageName(source)}原文`);
 }
 
 export function toggleTranslation(tabId: string) {

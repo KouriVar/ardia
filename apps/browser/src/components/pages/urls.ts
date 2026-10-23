@@ -6,9 +6,9 @@ import type { Tab } from "../../store/types";
 type InternalPageId = "history" | "bookmarks" | "downloads";
 
 export const INTERNAL_PAGES: Record<InternalPageId, { title: string }> = {
-  history: { title: "History" },
-  bookmarks: { title: "Bookmarks" },
-  downloads: { title: "Downloads" },
+  history: { title: "历史记录" },
+  bookmarks: { title: "书签" },
+  downloads: { title: "下载内容" },
 };
 
 const SCHEME = "ardia://";

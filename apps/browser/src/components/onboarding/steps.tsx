@@ -94,17 +94,17 @@ export function DefaultBrowserStep() {
   const trying = !defaultOn && trial;
   return (
     <StepLayout
-      actions={<PrimaryButton title={busy ? "Setting Up…" : "Continue"} onPress={() => void apply()} disabled={!system || busy} />}
+      actions={<PrimaryButton title={busy ? "正在设置…" : "继续"} onPress={() => void apply()} disabled={!system || busy} />}
       preview={<SystemPreview isDefault={!!(defaultOn || trying)} dock={!!(system?.inDock || dock)} login={login} />}
     >
       <Reveal delay={60}>
-        <StepTitle title="Fast, secure, and packed with all your browser essentials" subtitle="Ardia works best as your default browser." />
+        <StepTitle title="快速、安全，具备你需要的全部浏览功能" subtitle="将 Ardia 设为默认浏览器，体验更顺畅。" />
       </Reveal>
       <Reveal delay={140} style={{ gap: 6 }}>
         <CheckRow
           icon="globe"
-          title="Set Ardia as default browser"
-          subtitle={system?.isDefault ? "Ardia is already your default browser" : "Open links and web pages in Ardia by default"}
+          title="将 Ardia 设为默认浏览器"
+          subtitle={system?.isDefault ? "Ardia 已是你的默认浏览器" : "默认使用 Ardia 打开链接和网页"}
           value={defaultOn}
           disabled={!system || system.isDefault}
           onChange={setSetDefault}
@@ -112,16 +112,16 @@ export function DefaultBrowserStep() {
         {system && !defaultOn ? (
           <CheckRow
             icon="calendar"
-            title="Try Ardia as your default for seven days"
-            subtitle="We'll check in to make sure you love it."
+            title="试用 Ardia 作为默认浏览器七天"
+            subtitle="之后我们会询问你的使用感受。"
             value={trial}
             onChange={setTrial}
           />
         ) : null}
         {system && !system.inDock ? (
-          <CheckRow icon="dock.rectangle" title="Add Ardia to Dock" subtitle="Quick access to Ardia whenever you need it" value={dock} onChange={setDock} />
+          <CheckRow icon="dock.rectangle" title="将 Ardia 添加到程序坞" subtitle="随时快速打开 Ardia" value={dock} onChange={setDock} />
         ) : null}
-        <CheckRow icon="power" title="Open Ardia at login" subtitle="Automatically open Ardia when you sign in" value={login} onChange={setLogin} />
+        <CheckRow icon="power" title="登录时打开 Ardia" subtitle="登录后自动打开 Ardia" value={login} onChange={setLogin} />
       </Reveal>
     </StepLayout>
   );
@@ -155,9 +155,9 @@ function SystemPreview({ isDefault, dock, login }: { isDefault: boolean; dock: b
     <View style={{ alignItems: "center", gap: 28 }}>
       <Image source={ICON} style={{ width: 132, height: 132 }} />
       <View style={{ gap: 8, alignItems: "center" }}>
-        {chip(isDefault, "globe", "Default browser")}
-        {chip(dock, "dock.rectangle", "In your Dock")}
-        {chip(login, "power", "Opens at login")}
+        {chip(isDefault, "globe", "默认浏览器")}
+        {chip(dock, "dock.rectangle", "已添加到程序坞")}
+        {chip(login, "power", "登录时打开")}
       </View>
     </View>
   );
@@ -168,7 +168,7 @@ export function PersonalizeStep() {
   const windowId = useOnboarding((s) => s.windowId) ?? "";
   const colors = useOnboardingColors();
   return (
-    <StepLayout actions={<PrimaryButton title="Continue" onPress={next} />} preview={<WindowPreview windowId={windowId} />}>
+    <StepLayout actions={<PrimaryButton title="继续" onPress={next} />} preview={<WindowPreview windowId={windowId} />}>
       <Reveal delay={60}>
         <StepTitle title={PERSONALIZE_COPY.title} subtitle={PERSONALIZE_COPY.subtitle} />
       </Reveal>
@@ -272,11 +272,11 @@ export function ImportStep() {
     <StepLayout
       actions={
         opened ? (
-          <PrimaryButton title="Continue" onPress={next} />
+          <PrimaryButton title="继续" onPress={next} />
         ) : (
           <>
-            <PrimaryButton title="Import…" onPress={importNow} />
-            <SecondaryButton title="Skip" onPress={next} />
+            <PrimaryButton title="导入…" onPress={importNow} />
+            <SecondaryButton title="跳过" onPress={next} />
           </>
         )
       }
@@ -297,11 +297,11 @@ export function ImportStep() {
     >
       <Reveal delay={60}>
         <StepTitle
-          title="Bring your browsing with you"
+          title="迁移你的浏览数据"
           subtitle={
             opened
-              ? "Finish up in the import window, then continue here. You can import more any time from the Ardia menu."
-              : "Import bookmarks, history, passwords and tabs from the browser you use now, and stay signed in to your sites. It all stays on this Mac."
+              ? "在导入窗口中完成操作，然后返回这里继续。之后可随时从 Ardia 菜单导入更多数据。"
+              : "从当前浏览器导入书签、历史记录、密码和标签页，同时保留网站登录状态。所有数据都保存在这台 Mac 上。"
           }
         />
       </Reveal>
@@ -327,14 +327,14 @@ export function PinnedTabsStep() {
     <StepLayout
       actions={
         <>
-          <PrimaryButton title={selected.length ? `Pin ${selected.length} ${selected.length === 1 ? "Tab" : "Tabs"}` : "Continue"} onPress={pinSelected} />
-          {selected.length ? <SecondaryButton title="Skip" onPress={next} /> : null}
+          <PrimaryButton title={selected.length ? `固定 ${selected.length} 个标签页` : "继续"} onPress={pinSelected} />
+          {selected.length ? <SecondaryButton title="跳过" onPress={next} /> : null}
         </>
       }
       preview={<PinnedPreview selected={selected} />}
     >
       <Reveal delay={60}>
-        <StepTitle title="Keep your favorite apps handy" subtitle="Pin important apps so they're always available when you open Ardia." />
+        <StepTitle title="随时使用喜爱的应用" subtitle="固定重要的应用，打开 Ardia 即可随时访问。" />
       </Reveal>
       <Reveal delay={140} style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
         {PINNABLE_SITES.map((site) => (
@@ -434,20 +434,20 @@ export function OutroStep() {
     <StepLayout
       actions={
         <>
-          <PrimaryButton title="Get Started" icon="arrow.right" onPress={() => finishOnboarding()} />
-          <SecondaryButton title="Take the Tour" onPress={() => finishOnboarding({ tour: true })} />
+          <PrimaryButton title="开始使用" icon="arrow.right" onPress={() => finishOnboarding()} />
+          <SecondaryButton title="查看功能导览" onPress={() => finishOnboarding({ tour: true })} />
         </>
       }
       preview={<Postcard />}
     >
       <Reveal delay={60}>
-        <StepTitle title={"Welcome to your new\nhome on the internet"} subtitle="Everything you set up is saved. Change any of it later in Settings." />
+        <StepTitle title={"欢迎来到你在\n互联网上的新家"} subtitle="所有设置均已保存。之后可随时在设置中更改。" />
       </Reveal>
       <Reveal delay={140} style={{ gap: 10 }}>
         {[
-          ["⌘T", "Open a new tab"],
-          ["⌘L", "Go anywhere from the command bar"],
-          ["⌘S", "Hide the sidebar for more room"],
+          ["⌘T", "打开新标签页"],
+          ["⌘L", "从命令栏前往任何地方"],
+          ["⌘S", "隐藏侧边栏，获得更大空间"],
         ].map(([keys, label]) => (
           <View key={keys} style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
             <View style={{ minWidth: 38, height: 24, paddingHorizontal: 7, borderRadius: 6, alignItems: "center", justifyContent: "center", backgroundColor: colors.button }}>
@@ -478,9 +478,9 @@ function Postcard() {
       }}
     >
       <View style={{ flex: 1, justifyContent: "space-between", paddingRight: 14 }}>
-        <Text style={{ fontSize: 20, fontWeight: "300", fontStyle: "italic", color: colors.title }}>Hello!</Text>
+        <Text style={{ fontSize: 20, fontWeight: "300", fontStyle: "italic", color: colors.title }}>你好！</Text>
         <Text style={{ fontSize: 12, lineHeight: 17, color: colors.subtitle }}>
-          {"Glad you're here. Make yourself at home. Your tabs, bookmarks and pins are ready."}
+          {"欢迎来到这里。标签页、书签和固定页面都已准备就绪，开始自在浏览吧。"}
         </Text>
       </View>
       <View style={{ width: StyleSheet.hairlineWidth * 2, backgroundColor: colors.separator }} />

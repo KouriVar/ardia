@@ -4,6 +4,7 @@ import { Pressable, Text, View } from "react-native";
 import { useTheme } from "../../../lib/theme";
 import { useBrowser } from "../../../store/browser";
 import { openUrls } from "../../../lib/actions";
+import { localizeShortcut } from "../../../lib/nativeTitles";
 import { IconButton, useHover } from "../../primitives";
 import { matchesQuery } from "../../pages/PageLayout";
 import { Button, Group, PopUp, Row, SearchField, SectionHeader, useFormColors } from "../controls";
@@ -21,7 +22,7 @@ const KEY_NAMES: Record<string, string> = {
   "\u007f": "⌫",
   "": "⌦",
   "\u001b": "⎋",
-  " ": "Space",
+  " ": "空格",
   "": "↑",
   "": "↓",
   "": "←",
@@ -51,7 +52,7 @@ export function ShortcutsPane() {
   const [recording, setRecording] = useState<string | null>(null);
 
   useEffect(() => {
-    void menuShortcuts().then(setItems);
+    void menuShortcuts().then((items) => setItems(items.map(localizeShortcut)));
     return () => void cancelShortcutRecording();
   }, []);
 
@@ -105,24 +106,24 @@ export function ShortcutsPane() {
   return (
     <View>
       <Text style={{ marginTop: 20, fontSize: 12.5, lineHeight: 17, color: theme.textSecondary }}>
-        Perform common actions in Ardia faster and from anywhere. Select an action to customize its keyboard shortcut.
+        无论身处何处，都能更快执行 Ardia 中的常用操作。选择一项操作即可自定义其键盘快捷键。
       </Text>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 14 }}>
-        <SearchField value={query} onChangeText={setQuery} placeholder="Search actions" style={{ flex: 1 }} />
+        <SearchField value={query} onChangeText={setQuery} placeholder="搜索操作" style={{ flex: 1 }} />
         <PopUp
           value={filter}
           options={[
-            { value: "all", title: "All Shortcuts" },
-            { value: "customized", title: "Customized Shortcuts" },
-            { value: "conflicts", title: "Conflicting Shortcuts" },
+            { value: "all", title: "所有快捷键" },
+            { value: "customized", title: "自定义快捷键" },
+            { value: "conflicts", title: "冲突的快捷键" },
           ]}
           onChange={setFilter}
           minWidth={170}
         />
-        <Button title="Reset All Shortcuts" disabled={!customizedCount} onPress={() => useBrowser.getState().updateSettings({ shortcuts: {} })} />
+        <Button title="重置所有快捷键" disabled={!customizedCount} onPress={() => useBrowser.getState().updateSettings({ shortcuts: {} })} />
       </View>
       {items !== null && shown.length === 0 && (
-        <Text style={{ marginTop: 30, textAlign: "center", fontSize: 13, color: theme.textTertiary }}>No matching actions</Text>
+        <Text style={{ marginTop: 30, textAlign: "center", fontSize: 13, color: theme.textTertiary }}>没有匹配的操作</Text>
       )}
       {menus.map((menu) => (
         <View key={menu}>
@@ -139,7 +140,7 @@ export function ShortcutsPane() {
                     description={
                       others.length ? (
                         <Text style={{ fontSize: 11.5, marginTop: 2, color: "#FF9F0A" }}>
-                          {`${others.length === 1 ? "This shortcut conflicts with another shortcut:" : "This shortcut conflicts with other shortcuts:"} ${others.map((o) => o.title).join(", ")}`}
+                          {`${others.length === 1 ? "此快捷键与另一个快捷键冲突：" : "此快捷键与其他快捷键冲突："} ${others.map((o) => o.title).join(", ")}`}
                         </Text>
                       ) : item.path.length > 1 ? (
                         item.path.slice(1).join(" › ")
@@ -147,7 +148,7 @@ export function ShortcutsPane() {
                     }
                   >
                     {overrides[item.id] && (
-                      <IconButton icon="arrow.uturn.backward" size={11} box={24} radius={6} onPress={() => setShortcut(item.id, null)} tooltip="Reset to Default" />
+                      <IconButton icon="arrow.uturn.backward" size={11} box={24} radius={6} onPress={() => setShortcut(item.id, null)} tooltip="恢复默认" />
                     )}
                     <ShortcutField
                       combo={effective(item)}
@@ -164,10 +165,10 @@ export function ShortcutsPane() {
       ))}
       {filter === "all" && !query && (
         <>
-          <SectionHeader title="Extensions" />
+          <SectionHeader title="扩展" />
           <Group>
-            <Row title="Extension shortcuts" description="Shortcuts that extensions add, like opening their popup.">
-              <Button title="Edit…" onPress={() => openUrls(["chrome://extensions/shortcuts"])} />
+            <Row title="扩展快捷键" description="扩展添加的快捷键，例如打开扩展弹窗。">
+              <Button title="编辑…" onPress={() => openUrls(["chrome://extensions/shortcuts"])} />
             </Row>
           </Group>
         </>
@@ -192,10 +193,10 @@ function ShortcutField({
   const theme = useTheme();
   const colors = useFormColors();
   const { hovered, hoverProps } = useHover();
-  const text = recording ? "Type Shortcut" : formatShortcut(combo);
+  const text = recording ? "输入快捷键" : formatShortcut(combo);
   if (!remappable) {
     return (
-      <View style={{ minWidth: 110, alignItems: "flex-end" }} tooltip="(not remappable)">
+      <View style={{ minWidth: 110, alignItems: "flex-end" }} tooltip="（无法更改）">
         <Text style={{ fontSize: 13, color: theme.textTertiary }}>{text || "—"}</Text>
       </View>
     );
@@ -219,10 +220,10 @@ function ShortcutField({
           }}
         >
           <Text style={{ flex: 1, textAlign: "center", fontSize: 13, color: recording ? colors.accent : text ? theme.textPrimary : theme.textTertiary }}>
-            {text || "None"}
+            {text || "无"}
           </Text>
           {hovered && !recording && combo.key ? (
-            <Pressable onPress={onClear} tooltip="Remove Shortcut">
+            <Pressable onPress={onClear} tooltip="移除快捷键">
               <Symbol name="xmark.circle.fill" size={11} color={theme.textTertiary} style={{ width: 14, height: 14 }} />
             </Pressable>
           ) : null}

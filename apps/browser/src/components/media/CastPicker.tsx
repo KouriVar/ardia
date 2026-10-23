@@ -31,14 +31,14 @@ export function CastPicker({ tabId, paneWidth }: { tabId: string; paneWidth: num
       <View style={{ paddingBottom: PANEL.inset }}>
         <PanelHeader
           icon={<Symbol name="tv.and.mediabox" size={14} color={theme.icon} style={{ width: PANEL.iconSlot, height: PANEL.iconSlot }} />}
-          title={screen ? "Cast screen" : dialog.header || "Cast tab"}
+          title={screen ? "投放屏幕" : dialog.header || "投放标签页"}
           accessory={canScreen ? <SourceButton screen={screen} onChange={setScreen} /> : null}
         />
 
         {dialog.permissionRejected ? (
           <Message
-            text="Ardia needs Local Network access to find Cast devices."
-            link="Open Local Network Settings"
+            text="Ardia 需要本地网络访问权限才能发现投放设备。"
+            link="打开本地网络设置"
             onLink={() => void openExternalURL("x-apple.systempreferences:com.apple.preference.security?Privacy_LocalNetwork")}
           />
         ) : available.length ? (
@@ -57,7 +57,7 @@ export function CastPicker({ tabId, paneWidth }: { tabId: string; paneWidth: num
         )}
 
         <View style={{ flexDirection: "row", justifyContent: "flex-end", paddingHorizontal: PANEL.inset, marginTop: 10 }}>
-          <PromptButton title="Done" onPress={close} />
+          <PromptButton title="完成" onPress={close} />
         </View>
       </View>
     </Popover>
@@ -87,7 +87,7 @@ function SinkRow({ sink, onCast, onStop }: { sink: CastSink; onCast(): void; onS
             ) : null}
           </View>
           {busy ? <ActivityIndicator size="small" style={{ transform: [{ scale: 0.6 }], width: 16, height: 16 }} /> : null}
-          {active ? <PromptButton title="Stop" onPress={onStop} /> : null}
+          {active ? <PromptButton title="停止" onPress={onStop} /> : null}
         </View>
       </Pressable>
     </View>
@@ -97,12 +97,12 @@ function SinkRow({ sink, onCast, onStop }: { sink: CastSink; onCast(): void; onS
 function SourceButton({ screen, onChange }: { screen: boolean; onChange: (screen: boolean) => void }) {
   const pick = async () => {
     const choice = await showMenu([
-      { id: "tab", title: "Cast Tab", checked: !screen },
-      { id: "screen", title: "Cast Screen", checked: screen },
+      { id: "tab", title: "投放标签页", checked: !screen },
+      { id: "screen", title: "投放屏幕", checked: screen },
     ]);
     if (choice) onChange(choice === "screen");
   };
-  return <PopoverValue title="Sources" chevron="chevron.down" tooltip="Source" onPress={() => void pick()} />;
+  return <PopoverValue title="来源" chevron="chevron.down" tooltip="来源" onPress={() => void pick()} />;
 }
 
 function Message({ text, link, onLink }: { text: string; link: string; onLink: () => void }) {

@@ -102,7 +102,7 @@ export function StepProgress() {
         ))}
       </View>
       <Text style={{ fontSize: 11, fontWeight: "500", letterSpacing: 0.2, color: colors.steps }}>
-        {`STEP ${index + 1} OF ${steps.length}`}
+        {`第 ${index + 1} 步，共 ${steps.length} 步`}
       </Text>
     </View>
   );

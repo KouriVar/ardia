@@ -80,7 +80,7 @@ export async function copyLinkToSelection(tabId: string) {
   const windowId = store().tabs[tabId]?.windowId;
   if (!link || !windowId) return;
   copyText(link);
-  showToast(windowId, "Copied Quote Link", "Links directly to the selected text.", { icon: "quote.bubble.fill" });
+  showToast(windowId, "已复制引用链接", "直接链接到所选文本。", { icon: "quote.bubble.fill" });
 }
 
 const HAS_SELECTION = `post("result", JSON.stringify(!!String(getSelection() || "").trim()))`;
@@ -90,13 +90,13 @@ export async function copyPageUrl(tabId: string) {
   if (!tab?.url) return;
   const clean = cleanUrl(tab.url);
   copyText(clean);
-  const title = clean !== tab.url ? "Copied a clean link without trackers" : "Copied Current URL";
+  const title = clean !== tab.url ? "已复制不含跟踪参数的链接" : "已复制当前网址";
   const web = webviews.get(tabId);
   const selected = /^https?:/.test(tab.url) && web ? await web.evaluate<boolean>(HAS_SELECTION) : false;
   if (selected !== true) return showToast(tab.windowId, title, undefined, { icon: "link" });
-  showToast(tab.windowId, title, "Share a link directly to this text instead?", {
+  showToast(tab.windowId, title, "改为分享直接指向这段文本的链接？", {
     icon: "link",
-    action: { title: "Copy Quote Link", run: () => void copyLinkToSelection(tabId) },
+    action: { title: "复制引用链接", run: () => void copyLinkToSelection(tabId) },
   });
 }
 

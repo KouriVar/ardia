@@ -9,9 +9,9 @@ import { useHover } from "../../primitives";
 import { SectionHeader, useFormColors } from "../controls";
 
 const MODES: { value: Settings["appearance"]; title: string; description: string }[] = [
-  { value: "auto", title: "Automatic", description: "Follow the system appearance setting" },
-  { value: "light", title: "Light", description: "Use the light application appearance" },
-  { value: "dark", title: "Dark", description: "Use the dark application appearance" },
+  { value: "auto", title: "自动", description: "跟随系统外观设置" },
+  { value: "light", title: "浅色", description: "使用浅色应用外观" },
+  { value: "dark", title: "深色", description: "使用深色应用外观" },
 ];
 
 export function AppearancePane() {
@@ -22,7 +22,7 @@ export function AppearancePane() {
   };
   return (
     <View>
-      <SectionHeader title="Appearance Theme" description="Also in View › Appearance. Incognito windows are always dark." />
+      <SectionHeader title="外观主题" description="也可在“显示 › 外观”中设置。无痕窗口始终使用深色。" />
       <View style={{ flexDirection: "row", gap: 14 }}>
         {MODES.map((m) => (
           <ModeChoice key={m.value} mode={m.value} title={m.title} description={m.description} selected={appearance === m.value} onPress={() => choose(m.value)} />
@@ -41,16 +41,16 @@ function AddressBarPicker() {
   return (
     <>
       <SectionHeader
-        title="Address Bar"
+        title="地址栏"
         description={
           topTabs
-            ? "Tabs are across the top of the window, so the address bar stays in the toolbar. Also in View › Show Address Bar in Sidebar."
-            : "In the sidebar, the page gets the toolbar’s height. While the sidebar is hidden, the address bar is in the toolbar. Also in View › Show Address Bar in Sidebar."
+            ? "标签页排列在窗口顶部，因此地址栏保留在工具栏中。也可在“显示 › 在侧栏显示地址栏”中设置。"
+            : "地址栏放在侧栏时，页面可获得原工具栏占用的高度。侧栏隐藏时，地址栏会回到工具栏。也可在“显示 › 在侧栏显示地址栏”中设置。"
         }
       />
       <View style={{ flexDirection: "row", gap: 14 }}>
-        <AddressBarChoice value="toolbar" title="In the toolbar" selected={addressBar !== "sidebar"} onPress={() => choose("toolbar")} />
-        <AddressBarChoice value="sidebar" title="In the sidebar" selected={addressBar === "sidebar"} onPress={() => choose("sidebar")} />
+        <AddressBarChoice value="toolbar" title="在工具栏中" selected={addressBar !== "sidebar"} onPress={() => choose("toolbar")} />
+        <AddressBarChoice value="sidebar" title="在侧栏中" selected={addressBar === "sidebar"} onPress={() => choose("sidebar")} />
       </View>
     </>
   );
@@ -117,7 +117,7 @@ function AppIconPicker() {
   };
   return (
     <>
-      <SectionHeader title="App Icon" description="Shown in the Dock and the app switcher. The Dock keeps it after you quit." />
+      <SectionHeader title="应用图标" description="显示在程序坞和应用切换器中。退出后程序坞仍会保留此图标。" />
       <View style={{ flexDirection: "row", flexWrap: "wrap", columnGap: 6, rowGap: 10 }}>
         {icons.map((icon) => (
           <IconChoice key={icon.id} icon={icon} selected={icon.id === current} onPress={() => choose(icon.id)} />
@@ -133,8 +133,9 @@ function IconChoice({ icon, selected, onPress }: { icon: AppIcon; selected: bool
   const theme = useTheme();
   const colors = useFormColors();
   const { hovered, hoverProps } = useHover();
+  const name = ({ Default: "默认", Midnight: "午夜", Daylight: "日光", Plum: "梅子", Ocean: "海洋", Mono: "黑白", Noir: "墨黑" } as Record<string, string>)[icon.name] ?? icon.name;
   return (
-    <Pressable onPress={onPress} {...hoverProps} style={{ width: 72, alignItems: "center", gap: 5 }} tooltip={icon.name}>
+    <Pressable onPress={onPress} {...hoverProps} style={{ width: 72, alignItems: "center", gap: 5 }} tooltip={name}>
       <View
         style={{
           width: 70,
@@ -152,7 +153,7 @@ function IconChoice({ icon, selected, onPress }: { icon: AppIcon; selected: bool
       <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
         {selected && <Symbol name="checkmark.circle.fill" size={11} color={colors.accent} style={{ width: 13, height: 13 }} />}
         <Text numberOfLines={1} style={{ fontSize: 12, color: selected ? theme.textPrimary : theme.textSecondary }}>
-          {icon.name}
+          {name}
         </Text>
       </View>
     </Pressable>

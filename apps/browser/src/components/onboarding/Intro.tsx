@@ -115,14 +115,14 @@ export function Intro({ onDone }: { onDone: () => void }) {
           ))}
         </View>
         <Animated.View style={{ opacity: tagline, transform: [{ translateY: tagline.interpolate({ inputRange: [0, 1], outputRange: [6, 0] }) }] }}>
-          <Text style={{ fontSize: 17, fontWeight: "300", color: colors.subtitle }}>Your new home on the internet</Text>
+          <Text style={{ fontSize: 17, fontWeight: "300", color: colors.subtitle }}>你在互联网上的新家</Text>
         </Animated.View>
       </Animated.View>
       <View style={{ position: "absolute", left: 28, bottom: 28 }}>
         <MuteButton muted={muted} onPress={toggleMute} />
       </View>
-      <View style={{ position: "absolute", right: 28, bottom: 28 }} accessibilityHint="Button that skips the onboarding intro animation">
-        <SecondaryButton title="Skip" onPress={skip} />
+      <View style={{ position: "absolute", right: 28, bottom: 28 }} accessibilityHint="跳过引导开场动画">
+        <SecondaryButton title="跳过" onPress={skip} />
       </View>
     </Animated.View>
   );
@@ -131,7 +131,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
 function MuteButton({ muted, onPress }: { muted: boolean; onPress: () => void }) {
   const colors = useOnboardingColors();
   const { hovered, hoverProps } = useHover();
-  const label = muted ? "Unmute intro music" : "Mute intro music";
+  const label = muted ? "取消开场音乐静音" : "将开场音乐静音";
   return (
     <View {...hoverProps} tooltip={label}>
       <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label}>

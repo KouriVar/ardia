@@ -187,11 +187,11 @@ function CoachMark({ stop, index, count, windowId }: { stop: TourStop; index: nu
         <Text style={{ fontSize: 15, fontWeight: "600", letterSpacing: -0.1, color: theme.textPrimary }}>{stop.title}</Text>
         <Text style={{ fontSize: 12.5, lineHeight: 18, color: theme.textSecondary }}>{stop.body}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 7, gap: 6 }}>
-          {last ? null : <TextButton title="Skip Tour" onPress={endToolTour} />}
+          {last ? null : <TextButton title="跳过导览" onPress={endToolTour} />}
           <View style={{ flex: 1 }} />
-          {video ? <PillButton title="Watch Video Tour" onPress={() => (endToolTour(), openVideoTour(windowId))} /> : null}
-          {index > 0 && !last ? <PillButton title="Back" onPress={() => stepToolTour(-1)} /> : null}
-          <PillButton title={last ? "Done" : "Next"} primary onPress={() => stepToolTour(1)} />
+          {video ? <PillButton title="观看视频导览" onPress={() => (endToolTour(), openVideoTour(windowId))} /> : null}
+          {index > 0 && !last ? <PillButton title="返回" onPress={() => stepToolTour(-1)} /> : null}
+          <PillButton title={last ? "完成" : "下一步"} primary onPress={() => stepToolTour(1)} />
         </View>
       </View>
     </Surface>

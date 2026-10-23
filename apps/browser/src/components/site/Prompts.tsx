@@ -63,9 +63,9 @@ export function PermissionPrompt({ tabId, left, top }: { tabId: string; left: nu
   return (
     <Popover key={request.id} width={300} top={top} left={left} modal={false}>
       <View>
-        <PromptBody icons={icons} title={question} message="Click the lock to change this any time">
-          <PromptButton title="Don't Allow" onPress={() => answerPermission(tabId, request.id, "deny")} />
-          <PromptButton title="Allow" primary onPress={() => answerPermission(tabId, request.id, "accept")} />
+        <PromptBody icons={icons} title={question} message="随时点击锁图标即可更改">
+          <PromptButton title="不允许" onPress={() => answerPermission(tabId, request.id, "deny")} />
+          <PromptButton title="允许" primary onPress={() => answerPermission(tabId, request.id, "accept")} />
         </PromptBody>
         <PanelCloseButton onPress={() => answerPermission(tabId, request.id, "dismiss")} />
       </View>
@@ -91,25 +91,25 @@ export function BlockedPopupsPrompt({ tabId, right, left, top }: { tabId: string
       <View style={{ paddingBottom: PANEL.listPadding }}>
         <PromptBody
           icons={["macwindow.badge.plus"]}
-          title={`Always allow pop-ups from ${site}?`}
-          message={`Allow ${site} to always open pop-up windows, choose every time, or always deny pop-ups.`}
+          title={`始终允许 ${site} 的弹出式窗口？`}
+          message={`可始终允许 ${site} 打开弹出式窗口、每次询问，或始终拒绝。`}
         >
           <PromptButton
-            title="Always Deny"
+            title="始终拒绝"
             onPress={() => {
               void setSiteSetting(profile(), origin, "popups", "block");
               done();
             }}
           />
           <PromptButton
-            title="Only Once"
+            title="仅此一次"
             onPress={() => {
               for (const p of popups) void web()?.openBlockedPopup(p.id, false);
               done();
             }}
           />
           <PromptButton
-            title="Always Allow"
+            title="始终允许"
             primary
             onPress={() => {
               for (const p of popups) void web()?.openBlockedPopup(p.id, true);
@@ -170,8 +170,8 @@ export function PasswordPrompt({ tabId, right, top }: { tabId: string; right: nu
       <View>
         <PromptBody
           icons={["key.fill"]}
-          title={update ? "Update saved password?" : `Save password for ${site}?`}
-          message={update ? `It will be auto-filled on ${site}` : "That way, it'll be auto-filled next time"}
+          title={update ? "更新已保存的密码？" : `保存 ${site} 的密码？`}
+          message={update ? `以后会在 ${site} 上自动填充` : "这样下次就能自动填充"}
           detail={
             choices.length ? (
               <View style={{ borderRadius: 8, paddingVertical: 3, backgroundColor: well }}>
@@ -182,7 +182,7 @@ export function PasswordPrompt({ tabId, right, top }: { tabId: string; right: nu
             ) : (
               <View style={{ borderRadius: 8, paddingHorizontal: 10, paddingVertical: 8, gap: 3, backgroundColor: well }}>
                 <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: "500", color: theme.textPrimary }}>
-                  {username || (prompt.federation ? `Signed in with ${hostOf(prompt.federation)}` : "No username")}
+                  {username || (prompt.federation ? `通过 ${hostOf(prompt.federation)} 登录` : "没有用户名")}
                 </Text>
                 {prompt.passwordLength > 0 && (
                   <Text numberOfLines={1} style={{ fontSize: 12, letterSpacing: 1, color: theme.textSecondary }}>
@@ -193,9 +193,9 @@ export function PasswordPrompt({ tabId, right, top }: { tabId: string; right: nu
             )
           }
         >
-          {!update && <PromptButton title="Never on This Site" onPress={() => answer("never")} />}
-          <PromptButton title="Not Now" onPress={() => answer(update ? "nope" : "dismiss")} />
-          <PromptButton title={update ? "Update" : "Save"} primary onPress={() => answer(update ? "update" : "save")} />
+          {!update && <PromptButton title="此网站永不使用" onPress={() => answer("never")} />}
+          <PromptButton title="暂不" onPress={() => answer(update ? "nope" : "dismiss")} />
+          <PromptButton title={update ? "更新" : "保存"} primary onPress={() => answer(update ? "update" : "save")} />
         </PromptBody>
         <PanelCloseButton onPress={() => answer("dismiss")} />
       </View>
@@ -288,11 +288,11 @@ export function ExternalAppPrompt({ tabId, left, top }: { tabId: string; left: n
         >
           {request.app ? (
             <>
-              <PromptButton title="Cancel" onPress={() => answer(false)} />
-              <PromptButton title="Open" primary onPress={() => answer(true)} />
+              <PromptButton title="取消" onPress={() => answer(false)} />
+              <PromptButton title="打开" primary onPress={() => answer(true)} />
             </>
           ) : (
-            <PromptButton title="OK" primary onPress={() => answer(false)} />
+            <PromptButton title="好" primary onPress={() => answer(false)} />
           )}
         </PromptBody>
         <PanelCloseButton onPress={() => answer(false)} />
@@ -321,7 +321,7 @@ function UsernameChoice({ name, selected, onPress }: { name: string; selected: b
             <View style={{ width: 14, height: 14 }} />
           )}
           <Text numberOfLines={1} style={{ flex: 1, fontSize: 12, color: theme.textPrimary }}>
-            {name || "No username"}
+            {name || "没有用户名"}
           </Text>
         </View>
       </Pressable>

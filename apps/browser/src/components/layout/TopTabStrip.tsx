@@ -112,7 +112,7 @@ export function TopTabStrip({ width, floating = false, hidden = false, swipe = t
             size={16}
             box={DOWNLOADS_BOX}
             radius={10}
-            tooltip="Downloads (⇧⌘J)"
+            tooltip="下载内容 (⇧⌘J)"
             onPress={() => {
               const s = useBrowser.getState();
               s.setDownloadsOpen(windowId, !s.windowUi[windowId]?.downloadsOpen);
@@ -795,7 +795,7 @@ function TabChip({ tabId, width, tuck, dragged }: { tabId: string; width: number
   const { palette, band } = useWebsiteBand(tabId);
   const { hovered, hoverProps } = useHover();
   if (!tab) return null;
-  const title = tab.customTitle || tab.title || tab.url || "New Tab";
+  const title = tab.customTitle || tab.title || tab.url || "新建标签页";
   const onBand = active && !floating && !!palette.background;
   return (
     <View {...hoverProps} tooltip={tab.url ? `${title}\n${tab.url}` : title} style={{ width, height: TOP_STRIP_HEIGHT }}>
@@ -834,7 +834,7 @@ function TabChip({ tabId, width, tuck, dragged }: { tabId: string; width: number
                     radius={5}
                     color={onBand ? palette.icon : undefined}
                     onPress={tuck ?? (() => void closeTab(tab.id))}
-                    tooltip={tuck ? "Hide in Group" : "Close Tab"}
+                    tooltip={tuck ? "在分组中隐藏" : "关闭标签页"}
                   />
                 }
               />
@@ -1171,13 +1171,13 @@ function StripGroup({
       ))}
       <Animated.View pointerEvents={expanded ? "box-none" : "none"} mouseDownCanMoveWindow={false} style={{ position: "absolute", top: ITEM_TOP, height: ITEM_HEIGHT, left: tail, flexDirection: "row", alignItems: "center", opacity: fade }}>
         <View style={{ width: 0.5, height: 15, backgroundColor: divider }} />
-        <IconButton icon="xmark" size={9} weight="semibold" box={24} radius={6} style={{ marginLeft: 1 }} onPress={() => useBrowser.getState().closeGroup(entry.id)} tooltip="Close Group" />
+        <IconButton icon="xmark" size={9} weight="semibold" box={24} radius={6} style={{ marginLeft: 1 }} onPress={() => useBrowser.getState().closeGroup(entry.id)} tooltip="关闭分组" />
       </Animated.View>
       <View
         {...hoverProps}
         {...drag.panHandlers}
         mouseDownCanMoveWindow={false}
-        tooltip={expanded ? "Collapse Group" : "Expand Group"}
+        tooltip={expanded ? "折叠分组" : "展开分组"}
         onLayout={(e) => onChipWidth(Math.ceil(e.nativeEvent.layout.width * 2) / 2)}
         style={{ position: "absolute", left: 0, top: ITEM_TOP, height: ITEM_HEIGHT }}
       >
@@ -1300,7 +1300,7 @@ function SplitPart({ tabId, first, ink }: { tabId: string; first: boolean; ink: 
           <View pointerEvents="none">
             <TabIcon url={tab.url} favicon={tab.favicon} icon={tab.customIcon} size={14} profileId={tab.profileId} />
           </View>
-          <FadeLabel text={tab.customTitle || tab.title || tab.url || "New Tab"} fontSize={12} color={ink ? (focused ? ink.text : ink.secondary) : focused ? theme.tabSelectedText : theme.textTab} style={{ flex: 1, height: 16, marginLeft: 5 }} />
+          <FadeLabel text={tab.customTitle || tab.title || tab.url || "新建标签页"} fontSize={12} color={ink ? (focused ? ink.text : ink.secondary) : focused ? theme.tabSelectedText : theme.textTab} style={{ flex: 1, height: 16, marginLeft: 5 }} />
         </Pressable>
       </ContextMenuArea>
     </Animated.View>
@@ -1315,7 +1315,7 @@ function NewTabButton({ windowId, geometry }: { windowId: string; geometry: Drag
   latest.current = geometry;
   useEffect(() => registerSlot(() => latest.current, () => latest.current.slots.length, shift), []);
   return (
-    <Animated.View {...hoverProps} mouseDownCanMoveWindow={false} tooltip="New Tab (⌘T) — ⌥-click to open in Split View" style={{ marginTop: ITEM_TOP, marginLeft: 0.5, transform: [{ translateX: shift }] }}>
+    <Animated.View {...hoverProps} mouseDownCanMoveWindow={false} tooltip="新建标签页 (⌘T) — 按住 ⌥ 点击以分屏打开" style={{ marginTop: ITEM_TOP, marginLeft: 0.5, transform: [{ translateX: shift }] }}>
       <Pressable
         onPress={(e) => {
           if (modifiersOf(e).altKey) openNewTabInSplit(windowId);

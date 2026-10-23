@@ -30,7 +30,7 @@ export const NextMeetingBadge = memo(function NextMeetingBadge({ tabId }: { tabI
     });
   }, [text]);
   if (!label) return null;
-  const live = label === "Now";
+  const live = label === "现在";
   return (
     <Animated.View
       pointerEvents="none"

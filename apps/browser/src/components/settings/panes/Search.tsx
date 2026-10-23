@@ -24,16 +24,16 @@ export function SearchPane() {
 
   return (
     <View>
-      <SectionHeader title="Default search engine" description="Used by the command bar and the New Tab page." />
+      <SectionHeader title="默认搜索引擎" description="用于命令栏和新标签页。" />
       <Group>
         {controlling && (
           <Row
             icon={<Symbol name="puzzlepiece.extension" size={13} color={colors.accent} style={{ width: 18, height: 18 }} />}
-            title={`${controlling.extensionName || "An extension"} is controlling this setting`}
-            description="To change your default search engine, disable the extension or manage its settings."
+            title={`${controlling.extensionName || "某个扩展"}正在控制此设置`}
+            description="要更改默认搜索引擎，请停用此扩展或调整其设置。"
           >
-            <Button title="Manage" onPress={() => openSettings("extensions")} />
-            <Button title="Disable" onPress={() => void setEnabled(controlling.profile, controlling.extensionId, false)} />
+            <Button title="管理" onPress={() => openSettings("extensions")} />
+            <Button title="停用" onPress={() => void setEnabled(controlling.profile, controlling.extensionId, false)} />
           </Row>
         )}
         {builtIn.map((e) => (
@@ -42,13 +42,13 @@ export function SearchPane() {
       </Group>
 
       <SectionHeader
-        title="Other search engines"
-        description="Type a shortcut and press Tab in the command bar to search a site directly."
-        action={<Button title="Add…" icon="plus" onPress={() => showSettingsSheet(<EngineSheet />)} />}
+        title="其他搜索引擎"
+        description="在命令栏输入快捷字词后按 Tab，可直接搜索指定网站。"
+        action={<Button title="添加…" icon="plus" onPress={() => showSettingsSheet(<EngineSheet />)} />}
       />
       <Group>
         {custom.length === 0 ? (
-          <Row title="No custom search engines" description="Add one with a URL where %s stands for the search terms." />
+          <Row title="没有自定义搜索引擎" description="添加一个网址，并使用 %s 代替搜索关键词。" />
         ) : (
           custom.map((e) => <EngineRow key={e.id} engine={e} selected={selectedId === e.id} locked={locked} editable={e.id !== "custom"} />)
         )}
@@ -56,7 +56,7 @@ export function SearchPane() {
 
       {fromExtensions.length > 0 && (
         <>
-          <SectionHeader title="Extensions" description="Some extensions can add search engines to Ardia." />
+          <SectionHeader title="扩展" description="某些扩展可以为 Ardia 添加搜索引擎。" />
           <Group>
             {fromExtensions.map((e) => (
               <EngineRow key={e.id} engine={e} selected={selectedId === e.id} locked={locked} />
@@ -65,9 +65,9 @@ export function SearchPane() {
         </>
       )}
 
-      <SectionHeader title="Suggestions" />
+      <SectionHeader title="建议" />
       <Group>
-        <Row title="Show search suggestions" description="Sends what you type to your search engine to suggest searches.">
+        <Row title="显示搜索建议" description="将您输入的内容发送给搜索引擎，以提供搜索建议。">
           <Toggle value={settings.searchSuggestions} onChange={(v) => useBrowser.getState().updateSettings({ searchSuggestions: v })} />
         </Row>
       </Group>
@@ -79,22 +79,22 @@ function EngineRow({ engine, selected, locked, editable }: { engine: SearchEngin
   const theme = useTheme();
   const colors = useFormColors();
   const description = engine.extension
-    ? `${engine.keyword ? `${engine.keyword} · ` : ""}Added by ${engine.extension.name || "an extension"}`
+    ? `${engine.keyword ? `${engine.keyword} · ` : ""}由 ${engine.extension.name || "某个扩展"} 添加`
     : engine.custom
       ? `${engine.keyword} · ${engine.url}`
       : engine.keyword;
   return (
     <Row icon={<Favicon url={`https://${engineHost(engine)}`} />} title={engine.name} description={description}>
       {editable && (
-        <IconButton icon="pencil" size={11} box={24} radius={6} onPress={() => showSettingsSheet(<EngineSheet engine={engine} />)} tooltip="Edit" />
+        <IconButton icon="pencil" size={11} box={24} radius={6} onPress={() => showSettingsSheet(<EngineSheet engine={engine} />)} tooltip="编辑" />
       )}
       {selected ? (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 5, minWidth: 92, justifyContent: "flex-end" }}>
           <Symbol name="checkmark" size={11} weight="semibold" color={colors.accent} style={{ width: 14, height: 14 }} />
-          <Text style={{ fontSize: 12, color: theme.textSecondary }}>Default</Text>
+          <Text style={{ fontSize: 12, color: theme.textSecondary }}>默认</Text>
         </View>
       ) : (
-        <Button title="Make Default" disabled={locked} onPress={() => useBrowser.getState().setSearchEngine(engine.id)} style={{ minWidth: 92 }} />
+        <Button title="设为默认" disabled={locked} onPress={() => useBrowser.getState().setSearchEngine(engine.id)} style={{ minWidth: 92 }} />
       )}
     </Row>
   );
@@ -126,15 +126,15 @@ function EngineSheet({ engine }: { engine?: SearchEngine }) {
   );
   return (
     <Sheet width={440} onClose={closeSettingsSheet}>
-      <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>{engine ? "Edit Search Engine" : "Add Search Engine"}</Text>
-      {field("Name", name, setName, "Wikipedia")}
-      {field("Shortcut", keyword, setKeyword, "w")}
-      {field("URL with %s in place of the query", url, setUrl, "https://en.wikipedia.org/w/index.php?search=%s")}
+      <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>{engine ? "编辑搜索引擎" : "添加搜索引擎"}</Text>
+      {field("名称", name, setName, "Wikipedia")}
+      {field("快捷字词", keyword, setKeyword, "w")}
+      {field("搜索网址（使用 %s 代替关键词）", url, setUrl, "https://en.wikipedia.org/w/index.php?search=%s")}
       {error && <Text style={{ fontSize: 12, marginTop: 10, color: "#FF453A" }}>{error}</Text>}
       <View style={{ flexDirection: "row", gap: 8, marginTop: 18 }}>
         {engine && (
           <Button
-            title="Delete"
+            title="删除"
             kind="destructive"
             onPress={() => {
               useBrowser.getState().removeCustomEngine(engine.id);
@@ -143,8 +143,8 @@ function EngineSheet({ engine }: { engine?: SearchEngine }) {
           />
         )}
         <View style={{ flex: 1 }} />
-        <Button title="Cancel" onPress={closeSettingsSheet} />
-        <Button title={engine ? "Save" : "Add"} kind="primary" onPress={save} />
+        <Button title="取消" onPress={closeSettingsSheet} />
+        <Button title={engine ? "保存" : "添加"} kind="primary" onPress={save} />
       </View>
     </Sheet>
   );

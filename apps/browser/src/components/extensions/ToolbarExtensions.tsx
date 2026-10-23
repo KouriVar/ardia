@@ -169,12 +169,12 @@ function contrastText(hex: string) {
 function CastButton({ windowId, routes, palette }: { windowId: string; routes: CastRoute[]; palette: ToolbarPalette }) {
   const theme = useTheme();
   const { hovered, hoverProps } = useHover();
-  const tooltip = routes.map((r) => (r.description ? `${r.description} on ${r.sink}` : `Casting to ${r.sink}`)).join("\n");
+  const tooltip = routes.map((r) => (r.description ? `${r.description} on ${r.sink}` : `正在投放到 ${r.sink}`)).join("\n");
   const menu = async () => {
     const choice = await showMenu([
-      ...routes.map((r) => ({ id: `stop:${r.id}`, title: `Stop Casting to ${r.sink}`, symbol: "stop.circle" })),
+      ...routes.map((r) => ({ id: `stop:${r.id}`, title: `停止投放到 ${r.sink}`, symbol: "stop.circle" })),
       { separator: true as const },
-      { id: "open", title: "Cast…", symbol: "tv.and.mediabox" },
+      { id: "open", title: "投屏…", symbol: "tv.and.mediabox" },
     ]);
     if (choice === "open") void toggleCastPicker(windowId);
     else if (choice?.startsWith("stop:")) void terminateCastRoute(choice.slice(5));
@@ -212,9 +212,9 @@ function OverflowButton({ windowId, palette }: { windowId: string; palette: Tool
     const choice = await showMenu([
       ...enabled.map((x) => ({ id: `open:${x.id}`, title: x.name, symbol: x.pinned ? "pin.fill" : undefined })),
       ...(enabled.length ? [{ separator: true as const }] : []),
-      { id: "pin", title: "Pin Extensions…", symbol: "pin" },
-      { id: "manage", title: "Manage Extensions…", symbol: "puzzlepiece.extension" },
-      { id: "add", title: "Add Extension…", symbol: "plus" },
+      { id: "pin", title: "固定扩展程序…", symbol: "pin" },
+      { id: "manage", title: "管理扩展程序…", symbol: "puzzlepiece.extension" },
+      { id: "add", title: "添加扩展程序…", symbol: "plus" },
     ]);
     if (choice === "pin") return openPinDialog(windowId);
     if (choice === "manage") return openManageExtensions();
@@ -223,7 +223,7 @@ function OverflowButton({ windowId, palette }: { windowId: string; palette: Tool
     if (ext) void activateExtension(windowId, ext, anchor);
   };
   return (
-    <View ref={ref} tooltip="Extensions" {...hoverProps} onLayout={() => void measure()}>
+    <View ref={ref} tooltip="扩展程序" {...hoverProps} onLayout={() => void measure()}>
       <Pressable onPress={onPress}>
         {({ pressed }) => (
           <View

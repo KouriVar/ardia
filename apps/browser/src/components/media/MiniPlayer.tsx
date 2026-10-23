@@ -59,7 +59,7 @@ export function MiniPlayer({ tabId, onBackToTab }: { tabId: string; onBackToTab:
         width={16}
         icon={tracks ? "backward.end.fill" : `gobackward.${SKIP_SECONDS}`}
         size={tracks ? 14 : 15}
-        tooltip={tracks ? "Play Previous Track" : `Skip back ${SKIP_SECONDS} seconds`}
+        tooltip={tracks ? "上一曲" : `后退 ${SKIP_SECONDS} 秒`}
         tokens={tokens}
         onPress={() => (tracks ? mediaCommand(tabId, "previous") : skip(tabId, session, -SKIP_SECONDS))}
       />
@@ -68,7 +68,7 @@ export function MiniPlayer({ tabId, onBackToTab }: { tabId: string; onBackToTab:
         width={24}
         icon={playing ? "pause.fill" : "play.fill"}
         size={24}
-        tooltip={playing ? "Pause" : "Play"}
+        tooltip={playing ? "暂停" : "播放"}
         tokens={tokens}
         onPress={() => mediaCommand(tabId, "toggle")}
       />
@@ -77,7 +77,7 @@ export function MiniPlayer({ tabId, onBackToTab }: { tabId: string; onBackToTab:
         width={16}
         icon={tracks ? "forward.end.fill" : `goforward.${SKIP_SECONDS}`}
         size={tracks ? 14 : 15}
-        tooltip={tracks ? "Play Next Track" : `Skip ahead ${SKIP_SECONDS} seconds`}
+        tooltip={tracks ? "下一曲" : `快进 ${SKIP_SECONDS} 秒`}
         tokens={tokens}
         onPress={() => (tracks ? mediaCommand(tabId, "next") : skip(tabId, session, SKIP_SECONDS))}
       />
@@ -162,7 +162,7 @@ function AlbumArt({
   useEffect(() => fade.setValue(0), [art]);
   return (
     <View {...hoverProps} style={{ position: "absolute", left: INSET, top: INSET, width: ART, height: ART }}>
-      <Pressable onPress={onPress} tooltip="Back to Tab">
+      <Pressable onPress={onPress} tooltip="返回标签页">
         <View style={{ width: ART, height: ART, borderRadius: 6, overflow: "hidden", backgroundColor: tokens.artPlaceholder, alignItems: "center", justifyContent: "center" }}>
           {art ? (
             <Animated.View style={{ position: "absolute", left: 0, top: 0, width: ART, height: ART, opacity: fade }}>
@@ -188,7 +188,7 @@ function AlbumArt({
         </View>
       </Pressable>
       {muted ? (
-        <Pressable onPress={onUnmute} tooltip="Unmute Site" style={{ position: "absolute", right: -5, bottom: -5 }}>
+        <Pressable onPress={onUnmute} tooltip="取消网站静音" style={{ position: "absolute", right: -5, bottom: -5 }}>
           <View style={{ width: 20, height: 20, borderRadius: 10, backgroundColor: tokens.background, alignItems: "center", justifyContent: "center" }}>
             <Symbol name="speaker.slash.fill" size={10} color={hex(tokens.label)} style={{ width: 16, height: 16 }} />
           </View>

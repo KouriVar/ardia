@@ -7,10 +7,10 @@ import type { Settings } from "../../../store/settings";
 import { Checkbox, Group, PopUp, Row, SectionHeader, Toggle, useFormColors } from "../controls";
 
 const CLEAN_UP = [
-  { value: "12", title: "12 hours" },
-  { value: "24", title: "24 hours" },
-  { value: "168", title: "7 days" },
-  { value: "720", title: "30 days" },
+  { value: "12", title: "12 小时" },
+  { value: "24", title: "24 小时" },
+  { value: "168", title: "7 天" },
+  { value: "720", title: "30 天" },
 ];
 
 export function TabsPane() {
@@ -25,68 +25,68 @@ export function TabsPane() {
 
   return (
     <View>
-      <SectionHeader title="Tab layout" />
+      <SectionHeader title="标签页布局" />
       <View style={{ flexDirection: "row", gap: 14 }}>
-        <LayoutChoice layout="sidebar" title="Tab layout in the sidebar" selected={!top} />
-        <LayoutChoice layout="top" title="Tab layout across the top of the window" selected={top} />
+        <LayoutChoice layout="sidebar" title="标签页排列在侧栏中" selected={!top} />
+        <LayoutChoice layout="top" title="标签页排列在窗口顶部" selected={top} />
       </View>
       <Group style={{ marginTop: 14 }}>
         {toggle(
           "hideToolbarWhileScrolling",
-          "Hide toolbar while scrolling",
-          "Scrolling down tucks the toolbar into a thin strip with the site's name. Scroll up, or click the strip, to bring it back.",
+          "滚动时隐藏工具栏",
+          "向下滚动时，工具栏会收起为显示网站名称的细条。向上滚动或点击细条即可展开。",
         )}
-        {!top && toggle("showSidebarButton", "Show sidebar button", "⌘S and View › Auto-Hide Tabs still hide and show the sidebar.")}
+        {!top && toggle("showSidebarButton", "显示侧栏按钮", "仍可使用 ⌘S 或“显示 › 自动隐藏标签页”来隐藏或显示侧栏。")}
       </Group>
 
-      <SectionHeader title="General" />
+      <SectionHeader title="通用" />
       <Group>
         <Row
-          title="New tab opens"
-          description="With Command Bar, ⌘T and New Tab open the command bar over the page, as in Arc. The tab appears when you pick a result; Esc leaves everything as it was."
+          title="新建标签页时打开"
+          description="选择命令栏后，⌘T 和“新建标签页”会像 Arc 一样在页面上方打开命令栏。选中结果后才会创建标签页；按 Esc 可取消。"
         >
           <PopUp
             value={settings.newTabOpens}
             options={[
-              { value: "page", title: "New Tab Page" },
-              { value: "commandBar", title: "Command Bar" },
+              { value: "page", title: "新标签页" },
+              { value: "commandBar", title: "命令栏" },
             ]}
             onChange={(v) => update({ newTabOpens: v })}
             minWidth={160}
           />
         </Row>
-        <Row title={top ? "Add new tabs to the left" : "Add new tabs to the top"}>
+        <Row title={top ? "在左侧添加新标签页" : "在顶部添加新标签页"}>
           <Toggle value={settings.newTabPosition === "top"} onChange={(v) => update({ newTabPosition: v ? "top" : "bottom" })} />
         </Row>
-        {toggle("warnBeforeClosingLastTab", "Warn before closing last tab in a Profile")}
-        {toggle("tabReorderHaptics", "Haptic feedback when reordering tabs")}
-        {toggle("extendWebsiteColor", "Extend website color into tab bar")}
+        {toggle("warnBeforeClosingLastTab", "关闭个人资料中的最后一个标签页前提醒")}
+        {toggle("tabReorderHaptics", "调整标签页顺序时提供触觉反馈")}
+        {toggle("extendWebsiteColor", "将网站颜色延伸至标签栏")}
         {toggle(
           "sidebarMediaControls",
-          "Show media controls in the sidebar",
-          "When a tab you're not looking at plays sound, a player appears at the bottom of the sidebar. Pinned tabs that are playing show one when you hover them.",
+          "在侧栏显示媒体控制",
+          "后台标签页播放声音时，播放器会出现在侧栏底部。将指针移到正在播放的固定标签页上，也会显示播放器。",
         )}
-        {toggle("autoPictureInPicture", "Automatic Picture in Picture", "A video or call you're watching pops out when you switch tabs or leave the window, and returns when you come back.")}
+        {toggle("autoPictureInPicture", "自动画中画", "切换标签页或离开窗口时，正在观看的视频或通话会弹出；返回时会自动还原。")}
         {toggle(
           "videoUpscaling",
-          "Video upscaling",
-          "Sharpens low-resolution videos shown larger than they are, on Apple silicon. Only in the tab you're watching, never in the background, in Low Power Mode or when the Mac runs hot.",
+          "视频超分辨率",
+          "在 Apple 芯片上，增强放大播放的低分辨率视频清晰度。仅用于当前标签页；后台、低电量模式或 Mac 过热时停用。",
         )}
       </Group>
 
-      <SectionHeader title="Tab groups" />
+      <SectionHeader title="标签页分组" />
       <Group>
-        {toggle("cmdClickCreatesTabGroup", "⌘-clicking links creates tab groups")}
-        {toggle("optShiftClickOpensInGroup", "⌥⇧-click opens tab in group", "⌥⇧-click a tab to open it in a group with the current tab. (⌥⇧-clicking a link opens it in a split.)")}
-        {toggle("autoGroupMeetingTabs", "Automatically group tabs for meetings")}
+        {toggle("cmdClickCreatesTabGroup", "按住 ⌘ 点击链接时创建标签页分组")}
+        {toggle("optShiftClickOpensInGroup", "按住 ⌥⇧ 点击时在分组中打开标签页", "按住 ⌥⇧ 点击标签页可将其与当前标签页组成一组。（按住 ⌥⇧ 点击链接可在分屏中打开。）")}
+        {toggle("autoGroupMeetingTabs", "自动将会议标签页分组")}
       </Group>
 
       <SectionHeader
-        title="Clean up"
-        description="Closes tabs you haven't used (and duplicates) automatically, like the tab menu's Clean Up Daily. Pinned, playing and selected tabs stay; cleaned tabs are listed under Recently Cleaned."
+        title="清理"
+        description="自动关闭闲置和重复标签页，与标签页菜单中的“每日清理”相同。固定、正在播放和选中的标签页会保留；已清理标签页列在“最近清理”中。"
       />
       <Group>
-        <Row title={<Checkbox value={settings.cleanUpInactiveTabsAfterHours !== null} onChange={(v) => update({ cleanUpInactiveTabsAfterHours: v ? 24 : null })} label="Clean up tabs I haven't used in:" />}>
+        <Row title={<Checkbox value={settings.cleanUpInactiveTabsAfterHours !== null} onChange={(v) => update({ cleanUpInactiveTabsAfterHours: v ? 24 : null })} label="清理超过以下时间未使用的标签页：" />}>
           <PopUp
             value={String(settings.cleanUpInactiveTabsAfterHours ?? 24)}
             options={CLEAN_UP}

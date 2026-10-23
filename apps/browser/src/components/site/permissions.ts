@@ -72,36 +72,36 @@ export function dismissPermissions(tabId: string) {
 type Describe = { icon: string; noun?: string; question?: (site: string) => string };
 
 const KINDS: Record<PermissionKind, Describe> = {
-  camera: { icon: "video", noun: "camera" },
-  microphone: { icon: "mic", noun: "microphone" },
-  cameraPanTiltZoom: { icon: "video", noun: "camera's pan, tilt and zoom" },
-  screen: { icon: "rectangle.on.rectangle", question: (s) => `Allow ${s} to share your screen?` },
-  location: { icon: "location", noun: "location" },
-  notifications: { icon: "bell", question: (s) => `Allow ${s} to send you notifications?` },
-  clipboard: { icon: "doc.on.clipboard", noun: "clipboard" },
-  midi: { icon: "pianokeys", noun: "MIDI devices" },
-  multipleDownloads: { icon: "arrow.down.circle", question: (s) => `Allow ${s} to download multiple files?` },
-  localFonts: { icon: "textformat", noun: "fonts" },
-  idleDetection: { icon: "person.crop.circle.badge.clock", question: (s) => `Allow ${s} to know when you're actively using this device?` },
-  storageAccess: { icon: "externaldrive", question: (s) => `Allow ${s} to use cookies and site data while embedded?` },
-  diskQuota: { icon: "internaldrive", question: (s) => `Allow ${s} to store files on your device?` },
-  windowManagement: { icon: "macwindow.on.rectangle", noun: "displays to open and place windows" },
-  fileSystem: { icon: "folder", noun: "files" },
-  keyboardLock: { icon: "keyboard", noun: "keyboard" },
-  pointerLock: { icon: "cursorarrow", noun: "mouse pointer" },
-  protectedMedia: { icon: "lock.shield", question: (s) => `Allow ${s} to play protected content?` },
-  protocolHandler: { icon: "envelope", question: (s) => `Make ${s} your default mail app?` },
-  sensors: { icon: "gyroscope", noun: "motion sensors" },
-  localNetwork: { icon: "network", noun: "devices on your local network" },
-  vr: { icon: "visionpro", noun: "virtual reality devices" },
-  ar: { icon: "visionpro", noun: "augmented reality data" },
-  handTracking: { icon: "hand.raised", noun: "hand tracking" },
-  identityProvider: { icon: "person.badge.key", question: (s) => `Allow ${s} to sign you in with an identity provider?` },
-  webAppInstallation: { icon: "app.badge", question: (s) => `Allow ${s} to install web apps?` },
-  capturedSurfaceControl: { icon: "rectangle.on.rectangle", question: (s) => `Allow ${s} to scroll and zoom the tab you share?` },
+  camera: { icon: "video", noun: "摄像头" },
+  microphone: { icon: "mic", noun: "麦克风" },
+  cameraPanTiltZoom: { icon: "video", noun: "摄像头平移、俯仰和缩放" },
+  screen: { icon: "rectangle.on.rectangle", question: (s) => `允许 ${s} 共享你的屏幕？` },
+  location: { icon: "location", noun: "位置" },
+  notifications: { icon: "bell", question: (s) => `允许 ${s} 发送通知？` },
+  clipboard: { icon: "doc.on.clipboard", noun: "剪贴板" },
+  midi: { icon: "pianokeys", noun: "MIDI 设备" },
+  multipleDownloads: { icon: "arrow.down.circle", question: (s) => `允许 ${s} 下载多个文件？` },
+  localFonts: { icon: "textformat", noun: "字体" },
+  idleDetection: { icon: "person.crop.circle.badge.clock", question: (s) => `允许 ${s} 了解你何时正在使用此设备？` },
+  storageAccess: { icon: "externaldrive", question: (s) => `允许 ${s} 在嵌入其他网站时使用 Cookie 和网站数据？` },
+  diskQuota: { icon: "internaldrive", question: (s) => `允许 ${s} 在设备上存储文件？` },
+  windowManagement: { icon: "macwindow.on.rectangle", noun: "显示器以打开和放置窗口" },
+  fileSystem: { icon: "folder", noun: "文件" },
+  keyboardLock: { icon: "keyboard", noun: "键盘" },
+  pointerLock: { icon: "cursorarrow", noun: "鼠标指针" },
+  protectedMedia: { icon: "lock.shield", question: (s) => `允许 ${s} 播放受保护的内容？` },
+  protocolHandler: { icon: "envelope", question: (s) => `将 ${s} 设为默认邮件应用？` },
+  sensors: { icon: "gyroscope", noun: "运动传感器" },
+  localNetwork: { icon: "network", noun: "本地网络上的设备" },
+  vr: { icon: "visionpro", noun: "虚拟现实设备" },
+  ar: { icon: "visionpro", noun: "增强现实数据" },
+  handTracking: { icon: "hand.raised", noun: "手部跟踪" },
+  identityProvider: { icon: "person.badge.key", question: (s) => `允许 ${s} 通过身份提供方登录？` },
+  webAppInstallation: { icon: "app.badge", question: (s) => `允许 ${s} 安装网页应用？` },
+  capturedSurfaceControl: { icon: "rectangle.on.rectangle", question: (s) => `允许 ${s} 滚动和缩放你共享的标签页？` },
 };
 
-const list = (words: string[]) => (words.length < 2 ? (words[0] ?? "") : `${words.slice(0, -1).join(", ")} and ${words.at(-1)}`);
+const list = (words: string[]) => (words.length < 2 ? (words[0] ?? "") : `${words.slice(0, -1).join("、")}和${words.at(-1)}`);
 
 export function describePermission(request: PermissionRequest): { icons: string[]; question: string } {
   let site = request.origin;
@@ -113,6 +113,6 @@ export function describePermission(request: PermissionRequest): { icons: string[
   const single = kinds.length === 1 ? kinds[0]!.question : undefined;
   if (single) return { icons, question: single(site) };
   const nouns = kinds.map((k) => k.noun).filter((n): n is string => !!n);
-  if (nouns.length === kinds.length) return { icons, question: `Allow ${site} to access your ${list(nouns)}?` };
-  return { icons, question: `Allow ${site} to use ${list(request.permissions.map((k) => KINDS[k]?.noun ?? k))}?` };
+  if (nouns.length === kinds.length) return { icons, question: `允许 ${site} 访问你的${list(nouns)}？` };
+  return { icons, question: `允许 ${site} 使用${list(request.permissions.map((k) => KINDS[k]?.noun ?? k))}？` };
 }

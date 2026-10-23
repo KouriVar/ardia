@@ -35,16 +35,16 @@ import { ZoomStepper } from "./ZoomControls";
 type Permission = { type: SiteSettingType; title: string; icon: string; badge: string; choices: SiteSettingValue[] };
 
 const PERMISSIONS: Permission[] = [
-  { type: "camera", title: "Camera", icon: "video", badge: "video.fill", choices: ["ask", "allow", "block"] },
-  { type: "microphone", title: "Microphone", icon: "mic", badge: "mic.fill", choices: ["ask", "allow", "block"] },
-  { type: "location", title: "Location", icon: "location", badge: "location.fill", choices: ["ask", "allow", "block"] },
-  { type: "notifications", title: "Notifications", icon: "bell", badge: "bell.fill", choices: ["ask", "allow", "block"] },
-  { type: "popups", title: "Pop-ups and Redirects", icon: "macwindow.on.rectangle", badge: "macwindow.on.rectangle", choices: ["allow", "block"] },
-  { type: "sound", title: "Sound", icon: "speaker.wave.2", badge: "speaker.wave.2.fill", choices: ["allow", "block"] },
+  { type: "camera", title: "摄像头", icon: "video", badge: "video.fill", choices: ["ask", "allow", "block"] },
+  { type: "microphone", title: "麦克风", icon: "mic", badge: "mic.fill", choices: ["ask", "allow", "block"] },
+  { type: "location", title: "位置", icon: "location", badge: "location.fill", choices: ["ask", "allow", "block"] },
+  { type: "notifications", title: "通知", icon: "bell", badge: "bell.fill", choices: ["ask", "allow", "block"] },
+  { type: "popups", title: "弹出式窗口和重定向", icon: "macwindow.on.rectangle", badge: "macwindow.on.rectangle", choices: ["allow", "block"] },
+  { type: "sound", title: "声音", icon: "speaker.wave.2", badge: "speaker.wave.2.fill", choices: ["allow", "block"] },
 ];
 
 const choiceTitle = (type: SiteSettingType, value: SiteSettingValue) =>
-  type === "sound" ? (value === "block" ? "Muted" : "Allowed") : value === "allow" ? "Allowed" : value === "block" ? "Blocked" : "Ask";
+  type === "sound" ? (value === "block" ? "已静音" : "允许") : value === "allow" ? "允许" : value === "block" ? "阻止" : "询问";
 
 type Expanded = "connection" | "more" | null;
 type Blocker = { enabled: boolean; allowed: boolean };
@@ -145,22 +145,22 @@ function SiteControlsPanel({
     const failed = await setContentBlockerAllowed(host, !on).then(() => false, () => true);
     const allowed = await isContentBlockerAllowed(host);
     setBlocker((b) => (b ? { ...b, allowed } : b));
-    if (failed) return showToast(tab.windowId, "Couldn't Change the Ad Blocker", `Blocking on ${host} is as it was. Try again.`, { icon: "exclamationmark.triangle" });
+    if (failed) return showToast(tab.windowId, "无法更改广告拦截设置", `${host} 的拦截设置未变更，请重试。`, { icon: "exclamationmark.triangle" });
     void webviews.get(tabId)?.reload();
   };
   const clearData = async () => {
     if (!origin) return;
     const { confirmed } = await confirm({
-      title: `Clear cookies and site data for ${host}?`,
-      message: "You'll be signed out of this site, and its offline data will be deleted.",
-      confirmTitle: "Clear",
+      title: `清除 ${host} 的 Cookie 和网站数据？`,
+      message: "你将退出此网站的登录，其离线数据也会被删除。",
+      confirmTitle: "清理",
       destructive: true,
       windowId: tab.windowId,
     });
     if (!confirmed) return;
     const result = await webviews.get(tabId)?.clearSiteData();
     const n = result && typeof result.cookies === "number" ? result.cookies : 0;
-    setCleared(n ? `Cleared ${n} cookie${n === 1 ? "" : "s"} and site data` : "Cleared site data");
+    setCleared(n ? `已清除 ${n} 个 Cookie 及网站数据` : "已清除网站数据");
     void webviews.get(tabId)?.reload();
   };
   const share = () =>
@@ -177,11 +177,11 @@ function SiteControlsPanel({
   const findable = /^(https?|file):/i.test(url);
   const castTile = !video && !!origin;
   const tiles = [
-    canShare(tab) ? <ActionTile key="share" ref={shareTile} icon="square.and.arrow.up" label="Share…" onPress={share} /> : null,
+    canShare(tab) ? <ActionTile key="share" ref={shareTile} icon="square.and.arrow.up" label="分享…" onPress={share} /> : null,
     <ActionTile
       key="copy"
       icon="link"
-      label="Copy Clean Link"
+      label="复制无跟踪链接"
       onPress={() => {
         close();
         void copyPageUrl(tabId);
@@ -191,7 +191,7 @@ function SiteControlsPanel({
       <ActionTile
         key="find"
         icon="text.magnifyingglass"
-        label="Find on Page"
+        label="在页面中查找"
         onPress={() => {
           close();
           useBrowser.getState().setFind(tabId, { open: true, replace: false, focusRequest: Date.now() });
@@ -202,7 +202,7 @@ function SiteControlsPanel({
       <ActionTile
         key="pip"
         icon={pip ? "pip.exit" : "pip.enter"}
-        label={pip ? "Exit Picture in Picture" : "Picture in Picture"}
+        label={pip ? "退出画中画" : "画中画"}
         active={pip}
         onPress={() => {
           togglePip();
@@ -210,18 +210,18 @@ function SiteControlsPanel({
         }}
       />
     ) : castTile ? (
-      <ActionTile key="cast" icon="tv.and.mediabox" label="Cast…" onPress={cast} />
+      <ActionTile key="cast" icon="tv.and.mediabox" label="投屏…" onPress={cast} />
     ) : null,
   ].filter(Boolean);
 
   const blockerValue = !blocker
     ? "…"
     : !blocker.enabled
-      ? "Off in Settings"
+      ? "已在设置中关闭"
       : blocker.allowed
-        ? "Off for this site"
+        ? "已对此网站关闭"
         : blocked > 0
-          ? `On · ${blocked} blocked on this page`
+          ? `已开启 · 此页面已拦截 ${blocked} 项`
           : "On";
   const shownPermissions = featured ? PERMISSIONS.filter((p) => featured.has(p.type)) : [];
   const otherPermissions = PERMISSIONS.filter((p) => !featured?.has(p.type));
@@ -236,10 +236,10 @@ function SiteControlsPanel({
 
         {origin ? (
           <>
-            <SectionTitle title="Settings" tight />
+            <SectionTitle title="设置" tight />
             <SettingRow
               icon="shield.lefthalf.filled"
-              title="Block Ads & Trackers"
+              title="拦截广告和跟踪器"
               value={blockerValue}
               on={!!blocker?.enabled && !blocker.allowed}
               onPress={
@@ -282,8 +282,8 @@ function SiteControlsPanel({
         {expanded === "more" ? (
           <>
             <PopoverSeparator />
-            <PopoverRow icon="plus.magnifyingglass" title="Zoom" accessory={<ZoomStepper tabId={tabId} zoom={tab.zoom} />} />
-            {origin && !castTile ? <PopoverRow icon="tv.and.mediabox" title="Cast…" onPress={cast} /> : null}
+            <PopoverRow icon="plus.magnifyingglass" title="缩放" accessory={<ZoomStepper tabId={tabId} zoom={tab.zoom} />} />
+            {origin && !castTile ? <PopoverRow icon="tv.and.mediabox" title="投屏…" onPress={cast} /> : null}
             {origin ? (
               <>
                 <PopoverSeparator />
@@ -297,12 +297,12 @@ function SiteControlsPanel({
                   />
                 ))}
                 {otherPermissions.length ? <PopoverSeparator /> : null}
-                <PopoverRow icon="trash" title="Clear Cookies and Site Data…" detail={cleared ?? undefined} onPress={() => void clearData()} />
+                <PopoverRow icon="trash" title="清除 Cookie 和网站数据…" detail={cleared ?? undefined} onPress={() => void clearData()} />
               </>
             ) : null}
             <PopoverRow
               icon="text.alignleft"
-              title="Show Full URL"
+              title="显示完整网址"
               accessory={<Toggle value={showFullUrl} onChange={(v) => useBrowser.getState().updateSettings({ showFullUrl: v })} />}
             />
           </>
@@ -324,9 +324,9 @@ const CAUTION = "#F2B33D";
 function connectionLook(security: SecurityInfo | null) {
   const level = security?.level ?? "none";
   if (level === "secure") return { level, chip: "Secure", icon: "lock.fill", color: undefined };
-  if (level === "local" || level === "none") return { level, chip: "Local Page", icon: "info.circle", color: undefined };
-  if (level === "mixed") return { level, chip: "Not Fully Secure", icon: "lock.open.trianglebadge.exclamationmark.fill", color: CAUTION };
-  return { level, chip: "Not Secure", icon: "lock.open.trianglebadge.exclamationmark.fill", color: WARNING };
+  if (level === "local" || level === "none") return { level, chip: "本地页面", icon: "info.circle", color: undefined };
+  if (level === "mixed") return { level, chip: "未完全安全", icon: "lock.open.trianglebadge.exclamationmark.fill", color: CAUTION };
+  return { level, chip: "不安全", icon: "lock.open.trianglebadge.exclamationmark.fill", color: WARNING };
 }
 
 function ConnectionChip({ security, open, onPress }: { security: SecurityInfo | null; open: boolean; onPress: () => void }) {
@@ -340,16 +340,16 @@ function ConnectionRow({ security }: { security: SecurityInfo | null }) {
   const { level } = look;
   const secure = level === "secure";
   const local = level === "local" || level === "none";
-  const title = secure ? "Connection is secure" : local ? "This is a local or internal page" : "Connection is not secure";
+  const title = secure ? "连接安全" : local ? "这是本地或内部页面" : "连接不安全";
   const detail =
     level === "certificateError"
-      ? "The site's certificate isn't valid. Don't enter passwords or payment details."
+      ? "网站证书无效。请勿输入密码或付款信息。"
       : level === "mixed"
-        ? "Parts of this page aren't secure (such as images)."
+        ? "此页面的部分内容（例如图片）不安全。"
         : level === "insecure"
-          ? "Don't enter sensitive information on this site."
+          ? "请勿在此网站输入敏感信息。"
           : secure && security?.certificate
-            ? `Certificate issued by ${security.certificate.issuer.organizations[0] || security.certificate.issuer.commonName}`
+            ? `证书颁发者：${security.certificate.issuer.organizations[0] || security.certificate.issuer.commonName}`
             : undefined;
   return <PopoverRow icon={look.icon} iconColor={look.color ?? theme.icon} title={title} detail={detail} />;
 }
@@ -359,10 +359,10 @@ function CertificateDetails({ security }: { security: SecurityInfo }) {
   const cert = security.certificate!;
   const date = (ms: number) => new Date(ms).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
   const rows: [string, string][] = [
-    ["Issued to", cert.subject.commonName || cert.subject.displayName],
+    ["颁发给", cert.subject.commonName || cert.subject.displayName],
     ["Organization", cert.subject.organizations.join(", ") || "—"],
-    ["Issued by", cert.issuer.commonName || cert.issuer.displayName],
-    ["Valid from", date(cert.validFrom)],
+    ["颁发者", cert.issuer.commonName || cert.issuer.displayName],
+    ["有效期起始日期", date(cert.validFrom)],
     ["Expires", date(cert.validUntil)],
     ...(security.protocol ? [["Protocol", security.protocol] as [string, string]] : []),
     ...(cert.sha256 ? [["SHA-256", cert.sha256.replace(/[^0-9a-f]/gi, "").replace(/(.{2})(?!$)/g, "$1 ").slice(0, 47) + "…"] as [string, string]] : []),

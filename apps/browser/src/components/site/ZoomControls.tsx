@@ -24,7 +24,7 @@ export const ZoomIndicator = memo(function ZoomIndicator({ tabId, zoom, palette,
         setPopover(tabId, usePages.getState().popover[tabId] === "zoom" ? null : "zoom");
       }}
       active={open}
-      tooltip={`Zoom: ${Math.round(zoom * 100)}%`}
+      tooltip={`缩放：${Math.round(zoom * 100)}%`}
     />
   );
 });
@@ -35,9 +35,9 @@ export function ZoomPopover({ tabId, right, left, top }: { tabId: string; right?
   return (
     <Popover width={236} top={top} right={right} left={left} onDismiss={() => setPopover(tabId, null)}>
       <View style={{ flexDirection: "row", alignItems: "center", height: ZOOM_BAR, paddingLeft: PANEL.inset, paddingRight: (ZOOM_BAR - 28) / 2, gap: 8 }}>
-        <Text style={{ flex: 1, fontSize: 13, fontVariant: ["tabular-nums"], color: theme.textPrimary }}>{`Zoom: ${Math.round(zoom * 100)}%`}</Text>
+        <Text style={{ flex: 1, fontSize: 13, fontVariant: ["tabular-nums"], color: theme.textPrimary }}>{`缩放：${Math.round(zoom * 100)}%`}</Text>
         <ZoomStepper tabId={tabId} zoom={zoom} percent={false} />
-        <PromptButton title="Reset" onPress={() => void webviews.get(tabId)?.zoomStep(0)} />
+        <PromptButton title="重置" onPress={() => void webviews.get(tabId)?.zoomStep(0)} />
       </View>
     </Popover>
   );
@@ -49,15 +49,15 @@ export function ZoomStepper({ tabId, zoom, percent = true }: { tabId: string; zo
   const theme = useTheme();
   return (
     <View style={{ flexDirection: "row", alignItems: "center", gap: percent ? 2 : 4 }}>
-      <StepButton icon="minus" tooltip="Zoom Out (⌘-)" onPress={() => void webviews.get(tabId)?.zoomStep(-1)} />
+      <StepButton icon="minus" tooltip="缩小 (⌘-)" onPress={() => void webviews.get(tabId)?.zoomStep(-1)} />
       {percent ? (
-        <Pressable onPress={() => void webviews.get(tabId)?.zoomStep(0)} tooltip="Reset to 100%">
+        <Pressable onPress={() => void webviews.get(tabId)?.zoomStep(0)} tooltip="重置为 100%">
           <Text style={{ width: 44, textAlign: "center", fontSize: 12, fontVariant: ["tabular-nums"], color: zoom === 1 ? theme.textSecondary : theme.textPrimary }}>
             {Math.round(zoom * 100)}%
           </Text>
         </Pressable>
       ) : null}
-      <StepButton icon="plus" tooltip="Zoom In (⌘+)" onPress={() => void webviews.get(tabId)?.zoomStep(1)} />
+      <StepButton icon="plus" tooltip="放大 (⌘+)" onPress={() => void webviews.get(tabId)?.zoomStep(1)} />
     </View>
   );
 }

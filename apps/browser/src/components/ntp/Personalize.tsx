@@ -23,8 +23,8 @@ export function PersonalizeButton({ windowId }: { windowId: string }) {
   return (
     <>
       {open ? <PersonalizePanel windowId={windowId} onClose={() => setOpen(null)} /> : null}
-      <View {...hoverProps} tooltip="Personalize" style={{ position: "absolute", right: INSET, bottom: INSET - GLYPH_DROP }}>
-        <Pressable onPress={() => setOpen(open ? null : windowId)} accessibilityRole="button" accessibilityLabel="Personalize" accessibilityState={{ expanded: open }}>
+      <View {...hoverProps} tooltip="个性化" style={{ position: "absolute", right: INSET, bottom: INSET - GLYPH_DROP }}>
+        <Pressable onPress={() => setOpen(open ? null : windowId)} accessibilityRole="button" accessibilityLabel="个性化" accessibilityState={{ expanded: open }}>
           {({ pressed }) => (
             <View
               style={{
@@ -53,7 +53,7 @@ function PersonalizePanel({ windowId, onClose }: { windowId: string; onClose: ()
   }, []);
   return (
     <>
-      <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="Close Personalize" />
+      <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="关闭个性化面板" />
       <Animated.View
         style={{
           position: "absolute",

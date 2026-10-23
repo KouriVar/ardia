@@ -45,10 +45,10 @@ function RecoveryKitSheet() {
   };
   const more = async () => {
     const choice = await showMenu([
-      { id: "copy", title: "Copy", symbol: "doc.on.doc" },
-      { id: "share", title: "Share…", symbol: "square.and.arrow.up" },
+      { id: "copy", title: "复制", symbol: "doc.on.doc" },
+      { id: "share", title: "共享…", symbol: "square.and.arrow.up" },
       { separator: true },
-      { id: "text", title: "Save as Text…", symbol: "doc.plaintext" },
+      { id: "text", title: "存储为文本…", symbol: "doc.plaintext" },
     ]);
     if (choice === "copy") await SyncNative?.copyRecoveryKit();
     else if (choice === "share") await SyncNative?.shareRecoveryKit();
@@ -58,8 +58,8 @@ function RecoveryKitSheet() {
     <Sheet width={460} onClose={closeSettingsSheet}>
       <View style={{ flexDirection: "row", gap: 18 }}>
         <View style={{ flex: 1 }}>
-          <Title>Save Your Recovery Kit</Title>
-          <Body>Your Recovery Kit contains all you need to recover your data should you lose access to this device.</Body>
+          <Title>保存您的恢复套件</Title>
+          <Body>如果无法再使用此设备，恢复套件中包含恢复数据所需的全部信息。</Body>
           <View
             style={{
               flexDirection: "row",
@@ -72,22 +72,22 @@ function RecoveryKitSheet() {
           >
             <Symbol name="exclamationmark.triangle.fill" size={12} color="#FF9500" style={{ width: 16, height: 16 }} />
             <Text style={{ flex: 1, fontSize: 12, lineHeight: 16, color: theme.textPrimary }}>
-              Save a copy of your Recovery Kit to{" "}
-              <Text style={{ textDecorationLine: "underline" }}>another</Text> device or to the cloud. You’ll need it if you lose access to this device.
+              请将恢复套件的副本保存到
+              <Text style={{ textDecorationLine: "underline" }}>另一台</Text>设备或云端。如果无法再使用此设备，您将需要此副本。
             </Text>
           </View>
-          {saved ? <Body style={{ marginTop: 10 }}>Saved to {saved.replace(/^\/Users\/[^/]+/, "~")}.</Body> : null}
+          {saved ? <Body style={{ marginTop: 10 }}>已保存到 {saved.replace(/^\/Users\/[^/]+/, "~")}.</Body> : null}
         </View>
         <View
-          accessibilityLabel="Recovery kit preview"
+          accessibilityLabel="恢复套件预览"
           style={{ width: 168, height: 217, borderRadius: 4, overflow: "hidden", borderWidth: 1, borderColor: colors.groupBorder, backgroundColor: "#FFFFFF" }}
         >
           {preview ? <Image source={{ uri: preview }} style={{ width: 168, height: 217 }} /> : null}
         </View>
       </View>
-      <Buttons left={<Button title="Other Options" onPress={() => void more()} />}>
-        <Button title="Close" onPress={closeSettingsSheet} />
-        <Button title="Save…" kind="primary" onPress={() => void save("pdf")} />
+      <Buttons left={<Button title="其他选项" onPress={() => void more()} />}>
+        <Button title="关闭" onPress={closeSettingsSheet} />
+        <Button title="保存…" kind="primary" onPress={() => void save("pdf")} />
       </Buttons>
     </Sheet>
   );
@@ -101,19 +101,19 @@ const phraseError = (r: Awaited<ReturnType<typeof enterRecoveryPhrase>>): string
   if ("ok" in r) return null;
   switch (r.error) {
     case "wordCount":
-      return "Recovery phrase must be exactly 24 words.";
+      return "恢复短语必须恰好包含 24 个单词。";
     case "unknownWord":
-      return `“${r.word}” is not a valid recovery phrase word.`;
+      return `“${r.word}”不是有效的恢复短语单词。`;
     case "checksum":
-      return "This recovery phrase is not valid. Please check for typos.";
+      return "此恢复短语无效。请检查是否有拼写错误。";
     case "mismatch":
-      return "This recovery phrase doesn’t match the synced data in this folder. Check the phrase, or choose the folder your other devices sync to.";
+      return "此恢复短语与文件夹中的同步数据不匹配。请检查短语，或选择其他设备使用的同步文件夹。";
     case "noData":
-      return "There’s no synced data in this folder yet. Choose the folder your other devices sync to, or wait for it to finish downloading.";
+      return "此文件夹尚无同步数据。请选择其他设备使用的同步文件夹，或等待数据下载完成。";
     case "keychain":
-      return "Couldn’t save the sync key in your Keychain.";
+      return "无法将同步密钥保存到钥匙串。";
     case "unavailable":
-      return "Sync isn’t available in this build.";
+      return "此构建版本不支持同步。";
   }
 };
 
@@ -136,8 +136,8 @@ function PhraseSheet({ folder, onChooseFolder }: { folder: FolderInfo | null; on
   };
   return (
     <Sheet width={440} onClose={closeSettingsSheet}>
-      <Title>Connect with Recovery Phrase</Title>
-      <Body>Enter your 24-word recovery phrase to sync with another device.</Body>
+      <Title>使用恢复短语连接</Title>
+      <Body>输入您的 24 个单词恢复短语，以与另一台设备同步。</Body>
       <View
         style={{
           marginTop: 12,
@@ -157,7 +157,7 @@ function PhraseSheet({ folder, onChooseFolder }: { folder: FolderInfo | null; on
           }}
           multiline
           autoFocus
-          placeholder="Enter your 24-word recovery phrase"
+          placeholder="输入您的 24 个单词恢复短语"
           placeholderTextColor={theme.textTertiary}
           selectionColor={theme.selection}
           enableFocusRing={false}
@@ -169,7 +169,7 @@ function PhraseSheet({ folder, onChooseFolder }: { folder: FolderInfo | null; on
       <View style={{ flexDirection: "row", marginTop: 6 }}>
         <Text style={{ flex: 1, fontSize: 11.5, lineHeight: 15, color: error ? colors.destructive : theme.textSecondary }}>{error ?? ""}</Text>
         <Text style={{ fontSize: 11.5, color: count > WORDS ? colors.destructive : theme.textTertiary, fontVariant: ["tabular-nums"] }}>
-          {count > WORDS ? "too many words" : `${count}/${WORDS} words`}
+          {count > WORDS ? "单词过多" : `${count}/${WORDS} 个单词`}
         </Text>
       </View>
       {folder ? (
@@ -178,12 +178,12 @@ function PhraseSheet({ folder, onChooseFolder }: { folder: FolderInfo | null; on
           <Text numberOfLines={1} style={{ flex: 1, fontSize: 11.5, color: theme.textSecondary }}>
             {folderLabel(folder)}
           </Text>
-          {onChooseFolder ? <Button title="Change…" kind="plain" onPress={onChooseFolder} /> : null}
+          {onChooseFolder ? <Button title="更改…" kind="plain" onPress={onChooseFolder} /> : null}
         </View>
       ) : null}
       <Buttons>
-        <Button title="Cancel" onPress={closeSettingsSheet} />
-        <Button title={busy ? "Connecting…" : "Connect"} kind="primary" disabled={busy || count !== WORDS || !folder} onPress={() => void submit()} />
+        <Button title="取消" onPress={closeSettingsSheet} />
+        <Button title={busy ? "正在连接…" : "连接"} kind="primary" disabled={busy || count !== WORDS || !folder} onPress={() => void submit()} />
       </Buttons>
     </Sheet>
   );
@@ -201,17 +201,16 @@ function ConnectDeviceSheet() {
   useEffect(() => void SyncNative?.qrCode().then(setQr), []);
   return (
     <Sheet width={480} onClose={closeSettingsSheet}>
-      <Title>Connect Another Device</Title>
+      <Title>连接另一台设备</Title>
       <Body>
-        On your other Mac, open Ardia › Settings › Sync and choose the same sync folder. Then click Enter Recovery Phrase and enter the 24 words
-        of your recovery phrase.
+        在另一台 Mac 上，打开“Ardia › 设置 › 同步”并选择同一同步文件夹。然后点击“输入恢复短语”，输入恢复短语中的 24 个单词。
       </Body>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 16, marginTop: 16 }}>
         <View style={{ width: 132, height: 132, borderRadius: 8, backgroundColor: "#FFFFFF", alignItems: "center", justifyContent: "center" }}>
           {qr ? <Image source={{ uri: qr }} style={{ width: 120, height: 120 }} /> : null}
         </View>
         <Text style={{ flex: 1, fontSize: 12, lineHeight: 16, color: theme.textSecondary }}>
-          Or scan this code with your iPhone’s camera to copy the words, then paste them on your other Mac with Universal Clipboard.
+          也可使用 iPhone 相机扫描此二维码来复制单词，然后通过通用剪贴板粘贴到另一台 Mac 上。
         </Text>
       </View>
       {words ? (
@@ -227,12 +226,12 @@ function ConnectDeviceSheet() {
       <Buttons
         left={
           <>
-            <Button title={words ? "Hide Words" : "Show Words"} onPress={() => (words ? setWords(null) : void SyncNative?.recoveryWords().then(setWords))} />
-            <Button title="Copy Words" onPress={() => void SyncNative?.copyRecoveryPhrase()} />
+            <Button title={words ? "隐藏单词" : "显示单词"} onPress={() => (words ? setWords(null) : void SyncNative?.recoveryWords().then(setWords))} />
+            <Button title="复制单词" onPress={() => void SyncNative?.copyRecoveryPhrase()} />
           </>
         }
       >
-        <Button title="Done" kind="primary" onPress={closeSettingsSheet} />
+        <Button title="完成" kind="primary" onPress={closeSettingsSheet} />
       </Buttons>
     </Sheet>
   );
@@ -245,14 +244,13 @@ export function showStopSync() {
 function StopSheet() {
   return (
     <Sheet width={420} onClose={closeSettingsSheet}>
-      <Title>Stop Syncing This Device?</Title>
+      <Title>停止同步此设备？</Title>
       <Body>
-        Syncing will stop on this device. To re-enable sync, you’ll need another device that is currently syncing, or the recovery phrase from your
-        Recovery Kit. Everything on this Mac stays as it is.
+        此设备将停止同步。要重新开启同步，需要另一台正在同步的设备，或恢复套件中的恢复短语。此 Mac 上的所有数据保持不变。
       </Body>
-      <Buttons left={<Button title="Save Recovery Kit" onPress={() => showSettingsSheet(<RecoveryKitSheet />)} />}>
-        <Button title="Cancel" onPress={closeSettingsSheet} />
-        <Button title="Stop Syncing" kind="destructive" onPress={() => showSettingsSheet(<DeleteDataSheet />)} />
+      <Buttons left={<Button title="保存恢复套件" onPress={() => showSettingsSheet(<RecoveryKitSheet />)} />}>
+        <Button title="取消" onPress={closeSettingsSheet} />
+        <Button title="停止同步" kind="destructive" onPress={() => showSettingsSheet(<DeleteDataSheet />)} />
       </Buttons>
     </Sheet>
   );
@@ -268,17 +266,16 @@ function DeleteDataSheet() {
   };
   return (
     <Sheet width={420} onClose={() => void finish(false)}>
-      <Title>Delete Sync Data?</Title>
+      <Title>删除同步数据？</Title>
       <Body>
-        Would you also like to permanently delete your synced data from the sync folder? This will stop syncing on all your other devices too. To sync
-        again, you’ll need to set up each device from scratch. Your data on each Mac stays.
+        是否也永久删除同步文件夹中的同步数据？这也会停止所有其他设备的同步。要再次同步，需重新设置每台设备。各台 Mac 上的数据会保留。
       </Body>
       <View style={{ marginTop: 12 }}>
-        <Checkbox value={understood} onChange={setUnderstood} label="I understand this cannot be undone" />
+        <Checkbox value={understood} onChange={setUnderstood} label="我了解此操作无法撤销" />
       </View>
       <Buttons>
-        <Button title="Keep Sync Data" disabled={busy} onPress={() => void finish(false)} />
-        <Button title="Delete My Sync Data" kind="destructive" disabled={!understood || busy} onPress={() => void finish(true)} />
+        <Button title="保留同步数据" disabled={busy} onPress={() => void finish(false)} />
+        <Button title="删除我的同步数据" kind="destructive" disabled={!understood || busy} onPress={() => void finish(true)} />
       </Buttons>
     </Sheet>
   );

@@ -56,9 +56,9 @@ export async function startRename(windowId: string, target: Target) {
     if (!tab) return;
     if (tab.pinned && !tab.pinnedAsRow) {
       const name = await prompt({
-        title: "Rename Tab",
+        title: "重命名标签页",
         value: tab.customTitle ?? tab.title,
-        placeholder: tab.title || "Tab name",
+        placeholder: tab.title || "标签页名称",
         confirmTitle: "Update",
         windowId,
       });
@@ -78,7 +78,7 @@ async function renameGroupInSheet(windowId: string, groupId: string) {
   const g = store().groups[groupId];
   if (!g) return;
   const name = await prompt({
-    title: "Rename Group",
+    title: "重命名分组",
     value: g.name,
     placeholder: groupLabel(store(), g),
     confirmTitle: "Update",
@@ -119,7 +119,7 @@ export function newGroupWithSelection(windowId: string, ids = selectedTabIds(sto
 }
 
 const urlLabel = (url: string) => url.replace(/^[a-z][\w+.-]*:\/\//i, "").replace(/^www\./, "").replace(/\/$/, "");
-export const tabTitle = (t: Pick<Tab, "customTitle" | "title" | "url">) => t.customTitle || t.title || (t.url && urlLabel(t.url)) || "New Tab";
+export const tabTitle = (t: Pick<Tab, "customTitle" | "title" | "url">) => t.customTitle || t.title || (t.url && urlLabel(t.url)) || "新建标签页";
 
 export function copyUrls(ids: string[], markdown: boolean) {
   const tabs = ids.map((id) => store().tabs[id]).filter((t): t is Tab => !!t?.url);
@@ -133,7 +133,7 @@ export async function bookmarkTabs(windowId: string, ids: string[], folder: stri
   const profileId = bookmarkProfileId(s, s.windows[windowId]);
   let parentId: string | undefined = folder === "bar" ? undefined : folder;
   if (folder === "new") {
-    const title = await prompt({ title: "New Folder", placeholder: "Folder name", confirmTitle: "Create", windowId });
+    const title = await prompt({ title: "新建文件夹", placeholder: "文件夹名称", confirmTitle: "创建", windowId });
     if (!title) return;
     parentId = store().addBookmarkFolder({ profileId, title });
   }
@@ -147,10 +147,10 @@ export async function editPinnedPage(windowId: string, tabId: string) {
   const tab = store().tabs[tabId];
   if (!tab?.pinned) return;
   const url = await prompt({
-    title: "Edit Pinned Page",
+    title: "编辑固定页面",
     value: tab.pinnedUrl ?? tab.url,
-    placeholder: "Enter Pinned URL",
-    confirmTitle: "Save",
+    placeholder: "输入固定网址",
+    confirmTitle: "保存",
     windowId,
   });
   if (url) store().setPinnedUrl(tabId, url.includes("://") ? url : `https://${url}`);

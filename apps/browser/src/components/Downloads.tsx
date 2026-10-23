@@ -27,15 +27,15 @@ function formatBytes(n: number) {
 }
 
 function formatDuration(seconds: number) {
-  if (seconds < 60) return `${Math.max(1, Math.round(seconds))} sec left`;
-  if (seconds < 3600) return `${Math.round(seconds / 60)} min left`;
-  return `${Math.round(seconds / 3600)} hr left`;
+  if (seconds < 60) return `剩余 ${Math.max(1, Math.round(seconds))} 秒`;
+  if (seconds < 3600) return `剩余 ${Math.round(seconds / 60)} 分钟`;
+  return `剩余 ${Math.round(seconds / 3600)} 小时`;
 }
 
 export function downloadStatus(d: Download, exists = true) {
-  if (d.state === "finished") return exists ? formatBytes(d.total > 0 ? d.total : d.received) : "Deleted";
-  if (d.state === "failed") return "Failed to Download";
-  if (d.state === "cancelled") return "Cancelled";
+  if (d.state === "finished") return exists ? formatBytes(d.total > 0 ? d.total : d.received) : "已删除";
+  if (d.state === "failed") return "下载失败";
+  if (d.state === "cancelled") return "已取消";
   const progress = d.total > 0 ? `${formatBytes(d.received)} of ${formatBytes(d.total)}` : formatBytes(d.received);
   if (d.paused) return `${progress} — Paused`;
   if (d.speed > 0 && d.total > 0) return `${progress}, ${formatBytes(d.speed)}/s — ${formatDuration((d.total - d.received) / d.speed)}`;
@@ -63,21 +63,21 @@ export async function downloadMenu(d: Download, windowId: string) {
   const items: MenuItem[] =
     d.state === "downloading"
       ? [
-          { id: "whenDone", title: "Open When Done", checked: openWhenDone.has(d.id) },
-          { id: d.paused ? "resume" : "pause", title: d.paused ? "Resume" : "Pause" },
-          { id: "cancel", title: "Cancel" },
+          { id: "whenDone", title: "完成后打开", checked: openWhenDone.has(d.id) },
+          { id: d.paused ? "resume" : "pause", title: d.paused ? "继续" : "暂停" },
+          { id: "cancel", title: "取消" },
         ]
       : [
-          { id: "open", title: "Open", enabled: exists },
-          { id: "reveal", title: "Show in Finder", enabled: exists },
+          { id: "open", title: "打开", enabled: exists },
+          { id: "reveal", title: "在访达中显示", enabled: exists },
         ];
   items.push(
     { separator: true },
-    { id: "copy", title: "Copy Download Link" },
-    { id: "page", title: "Show All Downloads" },
+    { id: "copy", title: "复制下载链接" },
+    { id: "page", title: "显示所有下载内容" },
     { separator: true },
-    ...(exists ? [{ id: "trash", title: "Move to Trash" }] : []),
-    { id: "remove", title: "Remove from List", enabled: d.state !== "downloading" },
+    ...(exists ? [{ id: "trash", title: "移到废纸篓" }] : []),
+    { id: "remove", title: "从列表中移除", enabled: d.state !== "downloading" },
   );
   const choice = await showMenu(items);
   if (choice === "whenDone") toggleOpenWhenDone(d.id);
@@ -200,7 +200,7 @@ function DownloadsPanel({ windowId, closing, onClosed }: { windowId: string; clo
             </Text>
             {clearable && (
               <TextButton
-                title="Clear"
+                title="清理"
                 onPress={() => {
                   setOpen(false);
                   useBrowser.getState().clearDownloads(windowId);
@@ -210,7 +210,7 @@ function DownloadsPanel({ windowId, closing, onClosed }: { windowId: string; clo
           </View>
           {ids.length === 0 ? (
             <View style={{ height: PANEL.rowHeight, paddingHorizontal: PANEL.inset, justifyContent: "center" }}>
-              <Text style={{ fontSize: PANEL.titleSize, color: theme.textSecondary }}>No downloads yet</Text>
+              <Text style={{ fontSize: PANEL.titleSize, color: theme.textSecondary }}>还没有下载内容</Text>
             </View>
           ) : (
             <ScrollView style={{ maxHeight: VISIBLE_ROWS * ROW }} contentContainerStyle={{ paddingHorizontal: PANEL.rowInset }}>
@@ -221,7 +221,7 @@ function DownloadsPanel({ windowId, closing, onClosed }: { windowId: string; clo
           )}
           <PopoverSeparator />
           <FooterButton
-            title="View all downloads"
+            title="查看所有下载内容"
             onPress={() => {
               setOpen(false);
               openInternalPage("downloads", windowId);
@@ -334,7 +334,7 @@ function DownloadRow({ d, windowId }: { d: Download; windowId: string }) {
                       textDecorationLine: exists ? "none" : "line-through",
                     }}
                   >
-                    {d.filename || "Preparing…"}
+                    {d.filename || "正在准备…"}
                   </Text>
                   {d.state === "downloading" ? (
                     <View style={{ height: 3, borderRadius: 1.5, marginTop: 3, marginBottom: 2, backgroundColor: progressTrack(theme.dark) }}>
@@ -352,16 +352,16 @@ function DownloadRow({ d, windowId }: { d: Download; windowId: string }) {
                     <RowButton
                       icon={d.paused ? "play.circle.fill" : "pause.circle.fill"}
                       onPress={() => void (d.paused ? resumeDownload(d.id) : pauseDownload(d.id))}
-                      tooltip={d.paused ? "Resume" : "Pause"}
+                      tooltip={d.paused ? "继续" : "暂停"}
                     />
-                    <RowButton icon="xmark.circle.fill" onPress={() => void cancelDownload(d.id)} tooltip="Cancel" />
+                    <RowButton icon="xmark.circle.fill" onPress={() => void cancelDownload(d.id)} tooltip="取消" />
                   </View>
                 ) : done ? (
                   <HoverSlot
                     hovered={hovered}
                     width={ROW_BUTTON}
                     style={{ marginRight: -ROW_BUTTON_BEARING }}
-                    hover={<RowButton icon="magnifyingglass.circle.fill" onPress={() => void revealFile(d.path)} tooltip="Show in Finder" />}
+                    hover={<RowButton icon="magnifyingglass.circle.fill" onPress={() => void revealFile(d.path)} tooltip="在访达中显示" />}
                   />
                 ) : null}
               </View>

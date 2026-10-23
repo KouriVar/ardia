@@ -83,11 +83,11 @@ function runAppCommand({ command, windowId }: CommandEvent) {
 export async function sendFeedback(windowId?: string | null) {
   const app = systemInfo();
   const report = await diagnostics();
-  const body = `What happened?\n\n\nWhat did you expect?\n\n\n---\n${report}`;
+  const body = `发生了什么？\n\n\n你期望的结果是什么？\n\n\n---\n${report}`;
   const page = app.feedbackURL && /^https?:/i.test(app.feedbackURL) ? app.feedbackURL : null;
   if (page) return openUrls([page.replace("%s", encodeURIComponent(body))], windowId);
   const to = app.feedbackEmail && !/[\s?&]/.test(app.feedbackEmail) ? app.feedbackEmail : "";
-  const draft = `mailto:${to}?subject=${encodeURIComponent(`${app.appName} Feedback`)}&body=${encodeURIComponent(body)}`;
+  const draft = `mailto:${to}?subject=${encodeURIComponent(`${app.appName} 使用反馈`)}&body=${encodeURIComponent(body)}`;
   if (!(await openExternalURL(draft))) copyText(body);
 }
 
@@ -113,12 +113,12 @@ export async function diagnostics(): Promise<string> {
 async function recordPerformanceIssue() {
   if (await isTracing()) return;
   const start = await confirm({
-    title: "Record a performance issue?",
-    message: "Ardia records what the engine does while you reproduce the problem. The recording is saved to your Downloads folder.",
-    confirmTitle: "Start Recording",
+    title: "记录性能问题？",
+    message: "在你重现问题时，Ardia 会记录浏览器引擎的活动，并将记录保存到“下载”文件夹。",
+    confirmTitle: "开始记录",
   });
   if (!start.confirmed || !(await beginTracing())) return;
-  const stop = await confirm({ title: "Recording…", message: "Reproduce the problem now, then click Stop.", confirmTitle: "Stop", cancelTitle: "Discard" });
+  const stop = await confirm({ title: "正在记录…", message: "现在重现问题，然后点击“停止”。", confirmTitle: "停止", cancelTitle: "丢弃" });
   const path = await endTracing(stop.confirmed);
   if (path) void revealFile(path);
 }

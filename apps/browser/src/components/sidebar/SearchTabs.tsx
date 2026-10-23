@@ -33,7 +33,7 @@ function candidates(s: BrowserState, windowId: string): { open: Row[]; closed: R
       url: t.url,
       favicon: t.favicon,
       icon: t.customIcon,
-      where: t.windowId === windowId ? null : `Window ${windowNumber(t.windowId)}`,
+      where: t.windowId === windowId ? null : `窗口 ${windowNumber(t.windowId)}`,
       current: s.windows[t.windowId]?.activeTabIds[profileId] === t.id,
     }));
   const closed: Row[] = [
@@ -47,7 +47,7 @@ function candidates(s: BrowserState, windowId: string): { open: Row[]; closed: R
       url: c.tabs[0]?.url ?? "",
       favicon: c.tabs[0]?.favicon ?? null,
       icon: c.group.icon,
-      detail: c.tabs.length === 1 ? "Group · 1 tab" : `Group · ${c.tabs.length} tabs`,
+      detail: c.tabs.length === 1 ? "分组 · 1 个标签页" : `分组 · ${c.tabs.length} 个标签页`,
       at: c.closedAt,
     })),
   ]
@@ -87,14 +87,14 @@ function Panel({ windowId, windowWidth }: { windowId: string; windowWidth: numbe
   const sections = useMemo(() => {
     const { open, closed } = candidates(useBrowser.getState(), windowId);
     const q = query.trim();
-    if (!q) return [{ title: "Open Tabs", rows: open }, { title: "Recently Closed", rows: closed.slice(0, 8) }];
+    if (!q) return [{ title: "已打开的标签页", rows: open }, { title: "最近关闭", rows: closed.slice(0, 8) }];
     const rank = (rows: Row[]) =>
       rows
         .map((r) => ({ r, score: Math.max(fuzzyScore(q, r.title), fuzzyScore(q, host(r.url)) * 0.9, fuzzyScore(q, r.url) * 0.6) }))
         .filter((x) => x.score > 0)
         .sort((a, b) => b.score - a.score)
         .map((x) => x.r);
-    return [{ title: "Open Tabs", rows: rank(open) }, { title: "Recently Closed", rows: rank(closed).slice(0, 8) }];
+    return [{ title: "已打开的标签页", rows: rank(open) }, { title: "最近关闭", rows: rank(closed).slice(0, 8) }];
   }, [query, tabs, closedTabs, closedGroups, windowId]);
   const rows = sections.flatMap((s) => s.rows);
   const close = () => setSidebarUi({ searchTabs: null });
@@ -136,7 +136,7 @@ function Panel({ windowId, windowWidth }: { windowId: string; windowWidth: numbe
               setSelected(0);
               scroll.current?.scrollTo({ y: 0, animated: false });
             }}
-            placeholder="Search Tabs"
+            placeholder="搜索标签页"
             placeholderTextColor={theme.placeholder}
             selectionColor={theme.selection}
             enableFocusRing={false}
@@ -177,7 +177,7 @@ function Panel({ windowId, windowWidth }: { windowId: string; windowWidth: numbe
 
 function ResultRow({ row, selected, onHover, onPress }: { row: Row; selected: boolean; onHover(): void; onPress(): void }) {
   const theme = useTheme();
-  const detail = row.kind === "tab" ? (row.current && !row.where ? "Current Tab" : row.where) : row.detail;
+  const detail = row.kind === "tab" ? (row.current && !row.where ? "当前标签页" : row.where) : row.detail;
   return (
     <Pressable onPress={onPress}>
       <View

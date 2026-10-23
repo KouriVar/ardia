@@ -66,11 +66,11 @@ export function sidebarMenuState(s: BrowserState, windowId: string | undefined) 
     titles.togglePinnedRow = movePinnedTitle(tab);
     const selected = selectedTabIds(s, windowId).filter((id) => !s.tabs[id]?.pinned);
     if (!selected.length) disabled.push("newGroupWithTabs");
-    if (selected.length > 1) titles.newGroupWithTabs = `New Group with ${plural(selected.length, "Tab")}`;
+    if (selected.length > 1) titles.newGroupWithTabs = `将 ${selected.length} 个标签页加入新分组`;
   }
   const recentlyClosedGroups: MenuEntry[] = [...s.closedGroups]
     .reverse()
     .slice(0, 10)
-    .map((c) => ({ id: c.id, title: `${c.group.name} (${plural(c.tabs.length, "Tab")})` }));
+    .map((c) => ({ id: c.id, title: `${c.group.name} (${c.tabs.length} 个标签页)` }));
   return { disabled, titles, recentlyClosedGroups };
 }

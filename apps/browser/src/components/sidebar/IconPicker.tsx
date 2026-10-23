@@ -93,7 +93,7 @@ function PickerPanel({ picker, sidebarWidth }: { picker: Picker; sidebarWidth: n
               autoFocus
               value={query}
               onChangeText={setQuery}
-              placeholder={tab === "emoji" ? "Search emoji" : "Search icons"}
+              placeholder={tab === "emoji" ? "搜索表情符号" : "搜索图标"}
               placeholderTextColor={theme.placeholder}
               enableFocusRing={false}
               keyDownEvents={[{ key: "Escape" }]}
@@ -115,14 +115,14 @@ function PickerPanel({ picker, sidebarWidth }: { picker: Picker; sidebarWidth: n
             {items.map((icon) => (
               <Cell key={icon} icon={icon} selected={icon === current} onPress={() => choose(icon)} />
             ))}
-            {items.length === 0 ? <Text style={{ padding: 8, fontSize: 12, color: theme.textTertiary }}>No matches</Text> : null}
+            {items.length === 0 ? <Text style={{ padding: 8, fontSize: 12, color: theme.textTertiary }}>没有匹配项</Text> : null}
           </View>
         </ScrollView>
         {current ? (
           <Pressable onPress={() => choose(null)}>
             {({ pressed }) => (
               <View style={{ height: 26, borderRadius: 8, alignItems: "center", justifyContent: "center", backgroundColor: pressed ? tokens.pickerCellHover : theme.urlPill }}>
-                <Text style={{ fontSize: 12, color: theme.textPrimary }}>Reset Icon</Text>
+                <Text style={{ fontSize: 12, color: theme.textPrimary }}>重置图标</Text>
               </View>
             )}
           </Pressable>

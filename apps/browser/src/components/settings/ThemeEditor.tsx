@@ -32,12 +32,12 @@ const SWATCH = 20;
 const LABEL = 112;
 
 const MODES: { value: ThemeMode; symbol: string; title: string }[] = [
-  { value: "light", symbol: "sun.max", title: "Light" },
-  { value: "dark", symbol: "moon", title: "Dark" },
-  { value: "auto", symbol: "circle.lefthalf.filled", title: "Match System" },
+  { value: "light", symbol: "sun.max", title: "浅色" },
+  { value: "dark", symbol: "moon", title: "深色" },
+  { value: "auto", symbol: "circle.lefthalf.filled", title: "跟随系统" },
 ];
 
-const TEXTURE_NAMES: Record<ThemeTexture, string> = { grain: "Grain", sand: "Sand", denim: "Denim", tweed: "Tweed" };
+const TEXTURE_NAMES: Record<ThemeTexture, string> = { grain: "颗粒", sand: "沙粒", denim: "牛仔布", tweed: "粗花呢" };
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
@@ -75,18 +75,18 @@ export function ThemeSection({ profileId }: { profileId: string }) {
   return (
     <>
       <SectionHeader
-        title="Theme"
-        description="Tints this profile's windows, New Tab page and highlights."
-        action={<Button title="Import from Arc…" onPress={() => void importArcTheme(profileId)} />}
+        title="主题"
+        description="为此个人资料的窗口、新标签页和高亮内容着色。"
+        action={<Button title="从 Arc 导入…" onPress={() => void importArcTheme(profileId)} />}
       />
       <Group>
         <Row
-          title="Colour"
+          title="颜色"
           description={
             stored?.dark
-              ? `Separate light and dark looks. Editing keeps the ${themeDark(stored, appDark) ? "dark" : "light"} one.`
+              ? `分别设置浅色和深色外观。编辑时保留${themeDark(stored, appDark) ? "深色" : "浅色"}外观。`
               : custom
-                ? "Custom gradient"
+                ? "自定义渐变"
                 : PROFILE_COLORS[profile.color]?.name
           }
         >
@@ -98,7 +98,7 @@ export function ThemeSection({ profileId }: { profileId: string }) {
                 </SwatchRing>
               </Pressable>
             ))}
-            <Pressable onPress={chooseCustom} tooltip="Custom">
+            <Pressable onPress={chooseCustom} tooltip="自定义">
               <SwatchRing selected={!!custom} ring={custom ? themeAccent(custom) : "#8E8E93"}>
                 <CustomSwatch theme={custom} />
               </SwatchRing>
@@ -156,7 +156,7 @@ function ThemeEditor({ theme, onChange }: { theme: ProfileTheme; onChange: (next
           <View style={{ flexDirection: "row", gap: 4 }}>
             <SmallButton
               symbol="minus"
-              tooltip="Remove Colour"
+              tooltip="移除颜色"
               disabled={theme.stops.length <= 1}
               onPress={() => {
                 onChange(withoutStop(theme, index), true);
@@ -165,7 +165,7 @@ function ThemeEditor({ theme, onChange }: { theme: ProfileTheme; onChange: (next
             />
             <SmallButton
               symbol="plus"
-              tooltip="Add Colour"
+              tooltip="添加颜色"
               disabled={theme.stops.length >= MAX_THEME_STOPS}
               onPress={() => {
                 onChange(withAddedStop(theme), true);
@@ -177,13 +177,13 @@ function ThemeEditor({ theme, onChange }: { theme: ProfileTheme; onChange: (next
       </View>
       <View style={{ flex: 1, gap: 11 }}>
         <Preview theme={theme} />
-        <Slider label="Intensity" value={theme.intensity} onChange={(v, settle) => onChange({ ...theme, intensity: v }, settle)} />
+        <Slider label="强度" value={theme.intensity} onChange={(v, settle) => onChange({ ...theme, intensity: v }, settle)} />
         <Slider
-          label="Pass-through blur"
+          label="背景模糊"
           value={theme.translucency}
           onChange={(v, settle) => onChange({ ...theme, translucency: v }, settle)}
         />
-        <Slider label="Noise" value={theme.grain} onChange={(v, settle) => onChange({ ...theme, grain: v }, settle)}>
+        <Slider label="噪点" value={theme.grain} onChange={(v, settle) => onChange({ ...theme, grain: v }, settle)}>
           <PopUp
             value={theme.texture}
             minWidth={78}
@@ -192,7 +192,7 @@ function ThemeEditor({ theme, onChange }: { theme: ProfileTheme; onChange: (next
           />
         </Slider>
         <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <Text style={{ width: LABEL + 10, fontSize: 12, color: ui.textPrimary }}>Appearance</Text>
+          <Text style={{ width: LABEL + 10, fontSize: 12, color: ui.textPrimary }}>外观</Text>
           <View style={{ flexDirection: "row", borderRadius: 6, backgroundColor: colors.control, borderWidth: StyleSheet.hairlineWidth * 2, borderColor: colors.controlBorder, padding: 1 }}>
             {MODES.map((m) => (
               <Pressable key={m.value} tooltip={m.title} onPress={() => onChange({ ...theme, mode: m.value }, true)}>
@@ -410,7 +410,7 @@ export async function importArcTheme(profileId: string): Promise<boolean> {
   const choices = await arcThemeChoices();
   const items: MenuItem[] = choices.length
     ? choices.map((c) => ({ id: c.id, title: c.emoji ? `${c.emoji}  ${c.name}` : c.name, swatch: themeAccent(c.theme) }))
-    : [{ id: "none", title: "No Arc spaces with a theme found", enabled: false }];
+    : [{ id: "none", title: "未找到带有主题的 Arc 空间", enabled: false }];
   const choice = await showMenu(items);
   const picked = choices.find((c) => c.id === choice);
   if (!picked) return false;

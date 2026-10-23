@@ -216,7 +216,7 @@ export function AutoHideToolbar({
       },
     [moved, bar, fade, H],
   );
-  const host = url.startsWith("file:") ? "File" : breadcrumb(url).host;
+  const host = url.startsWith("file:") ? "文件" : breadcrumb(url).host;
 
   return (
     <View pointerEvents="box-none" style={{ position: "absolute", left: 0, right: 0, top: 0, height: H }}>
@@ -237,7 +237,7 @@ export function AutoHideToolbar({
             }}
             onMouseEnter={() => modeNow.current === "collapsed" && peekLater(true, PEEK_DELAY)}
             onMouseLeave={() => modeNow.current === "collapsed" && clearTimeout(peekTimer.current)}
-            tooltip="Show Toolbar"
+            tooltip="显示工具栏"
             style={{ flex: 1, alignItems: "center", justifyContent: "center", paddingHorizontal: 12 }}
           >
             <Text numberOfLines={1} style={{ fontSize: 11, fontWeight: "500", color: palette.secondary }}>

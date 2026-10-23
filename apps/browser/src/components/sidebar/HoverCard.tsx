@@ -95,9 +95,9 @@ function TabCard({ tabId, windowId, anchor }: { tabId: string; windowId: string;
         </Text>
       ) : null}
       {sleeping ? (
-        <View accessible accessibilityLabel="Web content has been discarded" style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 }}>
+        <View accessible accessibilityLabel="网页内容已释放" style={{ flexDirection: "row", alignItems: "center", gap: 4, marginTop: 4 }}>
           <Symbol name="moon.zzz" size={10} color={theme.textTertiary} style={{ width: 14, height: 14 }} />
-          <Text style={{ fontSize: 11.5, color: theme.textTertiary }}>This tab needs to reload</Text>
+          <Text style={{ fontSize: 11.5, color: theme.textTertiary }}>此标签页需要重新加载</Text>
         </View>
       ) : null}
       {away && tab.pinnedUrl ? (
@@ -106,29 +106,29 @@ function TabCard({ tabId, windowId, anchor }: { tabId: string; windowId: string;
         </Text>
       ) : null}
       <View style={{ flexDirection: "row", gap: 4, marginTop: 8 }}>
-        <Action icon={tab.pinned ? "pin.slash" : "pin"} label={tab.pinned ? "Unpin" : "Pin"} onPress={() => s().togglePin(tabId)} />
+        <Action icon={tab.pinned ? "pin.slash" : "pin"} label={tab.pinned ? "取消固定" : "固定"} onPress={() => s().togglePin(tabId)} />
         {tab.url ? (
           <Action
             icon={bookmarked ? "bookmark.fill" : "bookmark"}
-            label={bookmarked ? "Bookmarked" : "Bookmark"}
+            label={bookmarked ? "已添加书签" : "书签"}
             onPress={() => s().toggleBookmark(bookmarkProfileId(s(), s().windows[windowId]), { url: tab.url, title: tabTitle(tab), favicon: tab.favicon })}
           />
         ) : null}
         {!isActive && !tab.pinned ? (
           <Action
             icon="rectangle.split.2x1"
-            label="Split"
+            label="分屏"
             onPress={() => {
               dismissHover();
               openInSplit(tabId);
             }}
           />
         ) : null}
-        {video ? <Action icon={pip ? "pip.exit" : "pip.enter"} label={pip ? "Exit PiP" : "PiP"} onPress={togglePip} /> : null}
+        {video ? <Action icon={pip ? "pip.exit" : "pip.enter"} label={pip ? "退出画中画" : "画中画"} onPress={togglePip} /> : null}
         {away ? (
           <Action
             icon="arrow.uturn.backward"
-            label="Reset"
+            label="重置"
             onPress={() => {
               dismissHover();
               s().returnToPinnedUrl(tabId);

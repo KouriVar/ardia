@@ -255,7 +255,7 @@ if (!g.__ardiaStore) {
     if (!id) return;
     if (store.waiting) { const w = store.waiting; store.waiting = null; w(id); } else store.queued.push(id);
   };
-  // "Remove from Chrome" would bring up Chrome's own dialog.
+  // "从 Chrome 移除" would bring up Chrome's own dialog.
   const mg = g.chrome && g.chrome.management;
   if (mg && typeof mg.uninstall === "function") {
     Object.defineProperty(mg, "uninstall", { configurable: true, writable: true, value: (id, options, callback) => {
@@ -269,8 +269,8 @@ if (!g.__ardiaStore) {
     for (const el of document.querySelectorAll("button, button *")) {
       if (el.childElementCount) continue;
       const t = el.textContent;
-      if (t === "Add to Chrome") el.textContent = "Add to Ardia";
-      else if (t === "Remove from Chrome") el.textContent = "Remove from Ardia";
+      if (t === "添加到 Chrome") el.textContent = "添加到 Ardia";
+      else if (t === "从 Chrome 移除") el.textContent = "从 Ardia 移除";
     }
   };
   relabel();

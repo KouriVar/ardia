@@ -57,9 +57,9 @@ export const useSettingsNav = create<Nav>((set, get) => ({
 
 export function openSettings(pane?: SettingsPane, profileId?: string | null) {
   if (pane) useSettingsNav.getState().go(pane, profileId ?? null);
-  void openWindow(SETTINGS_WINDOW_ID, { kind: "settings", title: "Settings" });
+  void openWindow(SETTINGS_WINDOW_ID, { kind: "settings", title: "设置" });
 }
 
 export function openImport() {
-  void openWindow(IMPORT_WINDOW_ID, { kind: "import", title: "Import from Another Browser" });
+  void openWindow(IMPORT_WINDOW_ID, { kind: "import", title: "从其他浏览器导入" });
 }

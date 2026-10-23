@@ -55,6 +55,6 @@ export function connectGoogleDrive(windowId: string, clientId: string, clientSec
       if (error) reject(error);
       else resolve();
     };
-    pending = { cancel: () => finish(new Error("Cancelled")) };
+    pending = { cancel: () => finish(new Error("已取消")) };
   });
 }

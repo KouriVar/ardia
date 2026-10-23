@@ -47,13 +47,13 @@ import { extensionsAdapterFor, extensionSyncAvailable, probeExtensionSync, watch
 type DataType = "bookmarks" | "history" | "tabs" | "pinned" | "passwords" | "extensions" | "settings";
 
 export const DATA_TYPES: { id: DataType; title: string; description: string }[] = [
-  { id: "bookmarks", title: "Bookmarks", description: "Each synced profile’s bookmarks bar and other bookmarks." },
-  { id: "history", title: "History", description: "The last 90 days." },
-  { id: "tabs", title: "Open Tabs", description: "Your other devices’ tabs show in the tab overflow menu." },
-  { id: "pinned", title: "Pinned Tabs and Groups", description: "Pinned tabs and pinned tab groups." },
-  { id: "passwords", title: "Passwords", description: "Saved passwords. Turning sync off never removes them from this Mac." },
-  { id: "extensions", title: "Extensions", description: "Extensions from the Chrome Web Store, whether they’re on, and whether they’re pinned." },
-  { id: "settings", title: "Settings", description: "Search engine, appearance, tab and keyboard settings." },
+  { id: "bookmarks", title: "书签", description: "各同步个人资料的书签栏和其他书签。" },
+  { id: "history", title: "历史记录", description: "最近 90 天的记录。" },
+  { id: "tabs", title: "打开的标签页", description: "其他设备的标签页会显示在标签页的更多菜单中。" },
+  { id: "pinned", title: "固定标签页与分组", description: "固定的标签页和标签页分组。" },
+  { id: "passwords", title: "密码", description: "已保存的密码。关闭同步不会删除这台 Mac 上的密码。" },
+  { id: "extensions", title: "扩展", description: "Chrome 应用商店中的扩展，以及它们的启用和固定状态。" },
+  { id: "settings", title: "设置", description: "搜索引擎、外观、标签页和键盘设置。" },
 ];
 
 type ProfileLink = {

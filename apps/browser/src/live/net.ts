@@ -29,9 +29,9 @@ export async function request<T>(url: string, init: RequestInit = {}): Promise<T
   } catch {
     throw new LiveError("network", "Couldn't connect");
   }
-  if (res.status === 401) throw new LiveError("signedOut", "Signed out");
+  if (res.status === 401) throw new LiveError("signedOut", "已退出登录");
   if (res.status === 403 && res.headers.get("x-github-sso")) throw new LiveError("sso", "Needs Single Sign-On");
-  if (res.status === 429 || (res.status === 403 && res.headers.get("x-ratelimit-remaining") === "0")) throw new LiveError("rateLimited", "Rate Limit Exceeded");
+  if (res.status === 429 || (res.status === 403 && res.headers.get("x-ratelimit-remaining") === "0")) throw new LiveError("rateLimited", "请求频率超限");
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new LiveError(res.status === 403 ? "signedOut" : "other", `${res.status} ${text.slice(0, 200)}`.trim());

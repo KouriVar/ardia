@@ -22,9 +22,9 @@ import { SETTINGS_WINDOW_ID } from "../windows";
 
 type SiteAccess = "allSites" | "specificSites" | "onClick";
 const SITE_ACCESS: { value: SiteAccess; title: string }[] = [
-  { value: "allSites", title: "On all sites" },
-  { value: "specificSites", title: "On specific sites" },
-  { value: "onClick", title: "On click" },
+  { value: "allSites", title: "在所有网站上" },
+  { value: "specificSites", title: "在指定网站上" },
+  { value: "onClick", title: "点击时" },
 ];
 const siteAccessOf = (ext: InstalledExtension): SiteAccess =>
   ext.siteAccess === "ON_CLICK" ? "onClick" : ext.siteAccess === "ON_SPECIFIC_SITES" ? "specificSites" : "allSites";
@@ -56,8 +56,8 @@ export function ExtensionsPane() {
   return (
     <View>
       <SectionHeader
-        title="Extensions"
-        description="Add features to Ardia with extensions from the Chrome Web Store. Each profile has its own."
+        title="扩展"
+        description="通过 Chrome 应用商店中的扩展为 Ardia 添加功能。每份个人资料的扩展独立管理。"
         action={
           profiles.length > 1 ? (
             <PopUp value={profileId} options={profiles.map((p) => ({ value: p.id, title: p.name }))} onChange={setProfileId} />
@@ -73,7 +73,7 @@ export function ExtensionsPane() {
               title={
                 <Text numberOfLines={1} style={{ fontSize: 13, color: theme.textPrimary }}>
                   {ext.name}
-                  <Text style={{ color: theme.textTertiary }}>{`  ${ext.version}${ext.fromWebStore ? "" : " · Developer"}`}</Text>
+                  <Text style={{ color: theme.textTertiary }}>{`  ${ext.version}${ext.fromWebStore ? "" : " · 开发者"}`}</Text>
                 </Text>
               }
               description={ext.errors.length && !ext.enabled ? ext.errors[0] : ext.description}
@@ -85,30 +85,30 @@ export function ExtensionsPane() {
         </Group>
       ) : (
         <Group>
-          <Row title="No extensions yet" description="Extensions you add appear here and in the Extensions menu." />
+          <Row title="暂无扩展" description="添加的扩展会显示在这里及扩展菜单中。" />
         </Group>
       )}
 
-      <SectionHeader title="Add extensions" />
+      <SectionHeader title="添加扩展" />
       <Group>
-        <Row title="Chrome Web Store" description="Browse the store; its Add to Ardia button installs here.">
+        <Row title="Chrome 应用商店" description="浏览应用商店，点击“添加至 Ardia”即可安装到这里。">
           <Button
-            title="Open Web Store"
+            title="打开应用商店"
             onPress={() => {
               const windowId = resolveWindowId(useBrowser.getState());
               if (windowId) useBrowser.getState().newTab(windowId, { url: "https://chromewebstore.google.com/category/extensions" });
             }}
           />
         </Row>
-        <Row title="Add from a link" description="Paste a Chrome Web Store link or extension ID.">
+        <Row title="通过链接添加" description="粘贴 Chrome 应用商店链接或扩展 ID。">
           <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
             <TextField value={link} onChangeText={setLink} placeholder="chromewebstore.google.com/detail/…" onSubmit={addLink} style={{ width: 210 }} />
-            <Button title="Add" disabled={!link.trim()} onPress={addLink} />
+            <Button title="添加" disabled={!link.trim()} onPress={addLink} />
           </View>
         </Row>
-        <Row title="Load unpacked extension" description="For developers: load an extension folder with a manifest.json.">
+        <Row title="加载已解压的扩展" description="面向开发者：加载包含 manifest.json 的扩展文件夹。">
           <Button
-            title="Choose Folder…"
+            title="选择文件夹…"
             onPress={() => {
               void loadUnpacked(SETTINGS_WINDOW_ID, profile);
               showInstall();
@@ -129,64 +129,64 @@ function ExtensionDetails({ ext, profile, onBack }: { ext: InstalledExtension; p
   return (
     <View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginTop: 18 }}>
-        <Button title="All Extensions" icon="chevron.left" kind="plain" onPress={onBack} />
+        <Button title="所有扩展" icon="chevron.left" kind="plain" onPress={onBack} />
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 14, marginTop: 14 }}>
         <Image source={{ uri: ext.icon }} style={{ width: 48, height: 48 }} />
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 17, fontWeight: "600", color: theme.textPrimary }}>{ext.name}</Text>
           <Text style={{ fontSize: 12, color: theme.textSecondary, marginTop: 2 }}>
-            {`Version ${ext.version}${ext.fromWebStore ? " · Chrome Web Store" : " · Unpacked"}`}
+            {`版本 ${ext.version}${ext.fromWebStore ? " · Chrome 应用商店" : " · 已解压"}`}
           </Text>
         </View>
         <Toggle value={ext.enabled} onChange={(on) => void setEnabled(profile, ext.id, on)} />
       </View>
       {ext.description ? <Text style={{ fontSize: 13, color: theme.textSecondary, marginTop: 12, lineHeight: 18 }}>{ext.description}</Text> : null}
 
-      <SectionHeader title="Permissions" />
+      <SectionHeader title="权限" />
       <Group>
         {ext.permissions.length ? (
           ext.permissions.map((p) => <Row key={p} title={p} />)
         ) : (
-          <Row title="This extension requires no special permissions." />
+          <Row title="此扩展不需要特殊权限。" />
         )}
         {ext.siteAccess ? (
-          <Row title="Site access" description="Which sites the extension can read and change.">
+          <Row title="网站访问权限" description="此扩展可以读取和更改哪些网站。">
             <PopUp value={siteAccessOf(ext)} options={SITE_ACCESS} onChange={(siteAccess) => void configure(profile, ext.id, { siteAccess })} />
           </Row>
         ) : null}
       </Group>
 
-      <SectionHeader title="Settings" />
+      <SectionHeader title="设置" />
       <Group>
-        <Row title="Pin to toolbar" description="Show its button next to the address.">
+        <Row title="固定到工具栏" description="在地址栏旁显示扩展按钮。">
           <Toggle value={ext.pinned} onChange={(pinned) => void setPinned(profile, ext.id, pinned)} />
         </Row>
-        <Row title="Allow in Incognito" description="Incognito can't stop extensions from recording your browsing.">
+        <Row title="允许在无痕模式下运行" description="无痕模式无法阻止扩展记录您的浏览活动。">
           <Toggle value={ext.incognito} onChange={(incognito) => void configure(profile, ext.id, { incognito })} />
         </Row>
         {ext.optionsUrl ? (
-          <Row title="Extension options">
-            <Button title="Open" onPress={() => openTab(ext.optionsUrl!)} />
+          <Row title="扩展选项">
+            <Button title="打开" onPress={() => openTab(ext.optionsUrl!)} />
           </Row>
         ) : null}
         {ext.webStoreUrl ? (
-          <Row title="View in Chrome Web Store">
-            <Button title="Open" onPress={() => openTab(ext.webStoreUrl!)} />
+          <Row title="在 Chrome 应用商店中查看">
+            <Button title="打开" onPress={() => openTab(ext.webStoreUrl!)} />
           </Row>
         ) : null}
         {!ext.fromWebStore ? (
-          <Row title="Reload" description={ext.path ?? undefined}>
-            <Button title="Reload" onPress={() => void reloadExtension(ext.id, profile).finally(() => refreshExtensions(profile))} />
+          <Row title="重新加载" description={ext.path ?? undefined}>
+            <Button title="重新加载" onPress={() => void reloadExtension(ext.id, profile).finally(() => refreshExtensions(profile))} />
           </Row>
         ) : null}
-        {ext.errors.length ? <Row title="Errors" description={ext.errors.slice(0, 5).join("\n")} /> : null}
+        {ext.errors.length ? <Row title="错误" description={ext.errors.slice(0, 5).join("\n")} /> : null}
         <Row title={<Text style={{ fontSize: 13, color: theme.textTertiary }}>{`ID ${ext.id}`}</Text>} />
       </Group>
 
       <View style={{ alignItems: "flex-start", marginTop: 18 }}>
         <Button
-          title="Remove Extension…"
+          title="移除扩展…"
           kind="destructive"
           disabled={!ext.mayModify}
           onPress={() => void removeExtension(profile, ext, SETTINGS_WINDOW_ID)}

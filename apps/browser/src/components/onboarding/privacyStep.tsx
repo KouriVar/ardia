@@ -15,7 +15,7 @@ export function PrivacyStep() {
     next();
   };
   return (
-    <StepLayout actions={<PrimaryButton title="Continue" onPress={done} />} preview={<Receipt on={share} />}>
+    <StepLayout actions={<PrimaryButton title="继续" onPress={done} />} preview={<Receipt on={share} />}>
       <Reveal delay={60}>
         <StepTitle title={SHARING_COPY.onboarding.title} subtitle={SHARING_COPY.onboarding.subtitle} />
       </Reveal>
@@ -27,8 +27,8 @@ export function PrivacyStep() {
   );
 }
 
-const SENT = ["Crash reports", "Error types", "Feature counts", "Speed and memory"];
-const NEVER = ["Sites you visit", "What you type", "Your tabs", "Your name"];
+const SENT = ["崩溃报告", "错误类型", "功能使用次数", "速度与内存"];
+const NEVER = ["访问的网站", "输入的内容", "你的标签页", "你的姓名"];
 const MONO = "Menlo";
 
 function Receipt({ on }: { on: boolean }) {
@@ -63,12 +63,12 @@ function Receipt({ on }: { on: boolean }) {
         ITEMIZED. UNLIKE SOME EXPENSES.
       </Text>
       {rule}
-      <View style={{ gap: 6 }}>{SENT.map((label) => line(label, on ? "SENT" : "—", !on))}</View>
+      <View style={{ gap: 6 }}>{SENT.map((label) => line(label, on ? "已发送" : "—", !on))}</View>
       {rule}
-      <View style={{ gap: 6 }}>{NEVER.map((label) => line(label, "NEVER", false))}</View>
+      <View style={{ gap: 6 }}>{NEVER.map((label) => line(label, "从不发送", false))}</View>
       {rule}
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={{ fontFamily: MONO, fontSize: 11, fontWeight: "700", color: colors.title }}>PERSONAL DATA</Text>
+        <Text style={{ fontFamily: MONO, fontSize: 11, fontWeight: "700", color: colors.title }}>个人数据</Text>
         <Text style={{ fontFamily: MONO, fontSize: 11, fontWeight: "700", color: colors.title }}>0.00</Text>
       </View>
       <View
@@ -84,7 +84,7 @@ function Receipt({ on }: { on: boolean }) {
         }}
       >
         <Text style={{ fontFamily: MONO, fontSize: 10, fontWeight: "700", letterSpacing: 1, color: on ? "#2F9E5B" : colors.steps }}>
-          {on ? "THANK YOU" : "NOT SHARED"}
+          {on ? "感谢支持" : "未共享"}
         </Text>
       </View>
     </View>

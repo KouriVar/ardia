@@ -15,11 +15,11 @@ import { Button, Group, Row, SectionHeader, Sheet, TextField } from "../controls
 import { closeSettingsSheet, showSettingsSheet } from "../sheet";
 
 const DESCRIPTIONS: Record<LiveSourceId, string> = {
-  github: "Your open pull requests and the ones waiting for your review, with checks and conflicts.",
-  bitbucket: "Your open pull requests on Bitbucket Cloud, with build status.",
-  notion: "Pages recently edited in your workspace.",
-  confluence: "Pages you created, edited or watch.",
-  gdrive: "Documents recently changed in your Drive.",
+  github: "您待处理的拉取请求及等待您审查的请求，包含检查和冲突状态。",
+  bitbucket: "您在 Bitbucket Cloud 上待处理的拉取请求，包含构建状态。",
+  notion: "工作区内最近编辑的页面。",
+  confluence: "您创建、编辑或关注的页面。",
+  gdrive: "您的云端硬盘中最近修改的文档。",
 };
 
 export function LiveFoldersPane() {
@@ -29,35 +29,35 @@ export function LiveFoldersPane() {
   return (
     <View>
       <SectionHeader
-        title="Live folders"
-        description="Right-click empty space in the sidebar and choose New Live Folder to add one. Live folders refresh every few minutes; items open as tabs that stay in the folder."
+        title="动态文件夹"
+        description="右键点击侧栏空白处，选择“新建动态文件夹”即可添加。动态文件夹每隔几分钟刷新；项目会作为标签页打开并保留在文件夹中。"
       />
       {folders.length ? (
         <Group>
           {folders.map((f) => (
-            <Row key={f.id} title={f.name} description={`${profiles[f.profileId]?.name ?? "Profile"} · ${f.sources.map((s) => SOURCES[s].name).join(", ")} · ${statusText(f.id)}`}>
+            <Row key={f.id} title={f.name} description={`${profiles[f.profileId]?.name ?? "个人资料"} · ${f.sources.map((s) => SOURCES[s].name).join(", ")} · ${statusText(f.id)}`}>
               <View style={{ flexDirection: "row", gap: 6 }}>
-                <Button title="Refresh" onPress={() => void refreshFolder(f.id)} />
-                <Button title="Delete" kind="destructive" onPress={() => deleteLiveFolder(f.id)} />
+                <Button title="刷新" onPress={() => void refreshFolder(f.id)} />
+                <Button title="删除" kind="destructive" onPress={() => deleteLiveFolder(f.id)} />
               </View>
             </Row>
           ))}
         </Group>
       ) : null}
 
-      <SectionHeader title="Pull Requests" />
+      <SectionHeader title="拉取请求" />
       <Group>
         <SourceRow id="github" />
         <SourceRow id="bitbucket" />
       </Group>
 
-      <SectionHeader title="Documents" />
+      <SectionHeader title="文档" />
       <Group>
         <SourceRow id="notion" />
         <SourceRow id="confluence" />
         <SourceRow id="gdrive" />
       </Group>
-      {isMocked ? <Text style={{ marginTop: 10, fontSize: 11, color: "#D29922" }}>Development build: services are served by ARDIA_LIVE_MOCK.</Text> : null}
+      {isMocked ? <Text style={{ marginTop: 10, fontSize: 11, color: "#D29922" }}>开发构建：服务由 ARDIA_LIVE_MOCK 提供。</Text> : null}
     </View>
   );
 }
@@ -74,12 +74,12 @@ function SourceRow({ id }: { id: LiveSourceId }) {
     <Row
       icon={<Favicon url={source.site} size={18} />}
       title={source.name}
-      description={account ? `Connected as ${connectedAs(id, account)}` : DESCRIPTIONS[id]}
+      description={account ? `已连接：${connectedAs(id, account)}` : DESCRIPTIONS[id]}
     >
       {account ? (
-        <Button title="Disconnect" onPress={() => void disconnect(id)} />
+        <Button title="断开连接" onPress={() => void disconnect(id)} />
       ) : (
-        <Button title="Connect…" onPress={() => showSettingsSheet(<ConnectSheet id={id} />)} />
+        <Button title="连接…" onPress={() => showSettingsSheet(<ConnectSheet id={id} />)} />
       )}
     </Row>
   );
@@ -185,13 +185,13 @@ function GithubConnect({ busy, run }: ConnectProps) {
   if (flow) {
     return (
       <View>
-        <Help>Enter this code on GitHub (it's on your clipboard), then approve Ardia. This sheet closes when you're signed in.</Help>
+        <Help>在 GitHub 上输入此代码（已复制到剪贴板），然后授权 Ardia。登录后此面板会自动关闭。</Help>
         <Text selectable style={{ fontSize: 26, fontWeight: "600", letterSpacing: 3, fontFamily: "Menlo", color: theme.textPrimary, textAlign: "center", marginVertical: 8 }}>
           {flow.userCode}
         </Text>
         <Actions>
-          <Button title="Cancel" onPress={() => (flow.cancel(), setFlow(null))} />
-          <Button title="Open GitHub" kind="primary" onPress={() => openInBrowser(flow.verificationUri)} />
+          <Button title="取消" onPress={() => (flow.cancel(), setFlow(null))} />
+          <Button title="打开 GitHub" kind="primary" onPress={() => openInBrowser(flow.verificationUri)} />
         </Actions>
       </View>
     );
@@ -199,22 +199,22 @@ function GithubConnect({ busy, run }: ConnectProps) {
   return (
     <View>
       <Help>
-        Paste a personal access token (classic: "repo" and "read:org" scopes; fine-grained: read access to pull requests, checks and metadata).
+        粘贴个人访问令牌（经典令牌需包含“repo”和“read:org”范围；细粒度令牌需具有拉取请求、检查和元数据的读取权限）。
       </Help>
-      <Field label="Personal access token">
+      <Field label="个人访问令牌">
         <TextField value={token} onChangeText={setToken} placeholder="ghp_…" secure onSubmit={() => token && void run(() => connectGithub(token))} />
       </Field>
       <Actions>
-        <Button title="Cancel" onPress={closeSettingsSheet} />
-        <Button title={busy ? "Checking…" : "Connect"} kind="primary" disabled={!token.trim() || busy} onPress={() => void run(() => connectGithub(token))} />
+        <Button title="取消" onPress={closeSettingsSheet} />
+        <Button title={busy ? "正在检查…" : "连接"} kind="primary" disabled={!token.trim() || busy} onPress={() => void run(() => connectGithub(token))} />
       </Actions>
       <View style={{ height: 1, backgroundColor: theme.divider, marginVertical: 14 }} />
-      <Help>Or sign in with your own GitHub OAuth app (Settings › Developer settings › OAuth Apps, with Device Flow enabled).</Help>
-      <Field label="OAuth app client ID">
+      <Help>也可使用您自己的 GitHub OAuth 应用登录（Settings › Developer settings › OAuth Apps，并启用 Device Flow）。</Help>
+      <Field label="OAuth 应用客户端 ID">
         <TextField value={clientId} onChangeText={setClientId} placeholder="Iv1.…" />
       </Field>
       <Actions>
-        <Button title="Sign In with GitHub…" disabled={!clientId.trim() || busy} onPress={() => void signIn()} />
+        <Button title="使用 GitHub 登录…" disabled={!clientId.trim() || busy} onPress={() => void signIn()} />
       </Actions>
     </View>
   );
@@ -226,16 +226,16 @@ function BitbucketConnect({ busy, run }: ConnectProps) {
   const go = () => void run(() => connectBitbucket(user, token));
   return (
     <View>
-      <Help>Create an API token (bitbucket.org › Personal settings › API tokens, with read access to pull requests and repositories), then enter your Atlassian account email with it. Bitbucket can't search review requests across repositories, so the folder lists your own pull requests.</Help>
-      <Field label="Email or username">
+      <Help>创建 API 令牌（bitbucket.org › Personal settings › API tokens，授予拉取请求和仓库的读取权限），并输入 Atlassian 账户邮箱。Bitbucket 无法跨仓库搜索审查请求，因此文件夹只列出您自己的拉取请求。</Help>
+      <Field label="邮箱或用户名">
         <TextField value={user} onChangeText={setUser} placeholder="you@example.com" />
       </Field>
-      <Field label="API token">
+      <Field label="API 令牌">
         <TextField value={token} onChangeText={setToken} secure onSubmit={go} />
       </Field>
       <Actions>
-        <Button title="Cancel" onPress={closeSettingsSheet} />
-        <Button title={busy ? "Checking…" : "Connect"} kind="primary" disabled={!user.trim() || !token.trim() || busy} onPress={go} />
+        <Button title="取消" onPress={closeSettingsSheet} />
+        <Button title={busy ? "正在检查…" : "连接"} kind="primary" disabled={!user.trim() || !token.trim() || busy} onPress={go} />
       </Actions>
     </View>
   );
@@ -246,13 +246,13 @@ function NotionConnect({ busy, run }: ConnectProps) {
   const go = () => void run(() => connectNotion(token));
   return (
     <View>
-      <Help>Create an internal integration at notion.so/my-integrations (read content; read user information for editor names), copy its secret, and share the pages or teamspaces you want with it (••• › Connections).</Help>
-      <Field label="Internal integration secret">
+      <Help>在 notion.so/my-integrations 创建内部集成（读取内容；读取用户信息以获取编辑者姓名），复制密钥，并将所需页面或团队空间共享给它（••• › 连接）。</Help>
+      <Field label="内部集成密钥">
         <TextField value={token} onChangeText={setToken} placeholder="ntn_…" secure onSubmit={go} />
       </Field>
       <Actions>
-        <Button title="Cancel" onPress={closeSettingsSheet} />
-        <Button title={busy ? "Checking…" : "Connect"} kind="primary" disabled={!token.trim() || busy} onPress={go} />
+        <Button title="取消" onPress={closeSettingsSheet} />
+        <Button title={busy ? "正在检查…" : "连接"} kind="primary" disabled={!token.trim() || busy} onPress={go} />
       </Actions>
     </View>
   );
@@ -266,19 +266,19 @@ function ConfluenceConnect({ busy, run }: ConnectProps) {
   const go = () => void run(() => connectConfluence(site, email, token));
   return (
     <View>
-      <Help>Create an API token at id.atlassian.com › Security › API tokens, then enter your Confluence Cloud site and account email.</Help>
-      <Field label="Site">
+      <Help>在 id.atlassian.com › Security › API tokens 创建 API 令牌，然后输入 Confluence Cloud 网站和账户邮箱。</Help>
+      <Field label="网站">
         <TextField value={site} onChangeText={setSite} placeholder="https://your-team.atlassian.net" />
       </Field>
-      <Field label="Email">
+      <Field label="邮箱">
         <TextField value={email} onChangeText={setEmail} placeholder="you@example.com" />
       </Field>
-      <Field label="API token">
+      <Field label="API 令牌">
         <TextField value={token} onChangeText={setToken} secure onSubmit={go} />
       </Field>
       <Actions>
-        <Button title="Cancel" onPress={closeSettingsSheet} />
-        <Button title={busy ? "Checking…" : "Connect"} kind="primary" disabled={!site.trim() || !email.trim() || !token.trim() || busy} onPress={go} />
+        <Button title="取消" onPress={closeSettingsSheet} />
+        <Button title={busy ? "正在检查…" : "连接"} kind="primary" disabled={!site.trim() || !email.trim() || !token.trim() || busy} onPress={go} />
       </Actions>
     </View>
   );
@@ -290,24 +290,24 @@ function GoogleConnect({ busy, run }: ConnectProps) {
   const go = () =>
     void run(async () => {
       const windowId = browserWindow();
-      if (!windowId) throw new Error("Open a browser window first");
+      if (!windowId) throw new Error("请先打开浏览器窗口");
       void focusWindow(windowId);
       await connectGoogleDrive(windowId, clientId, secret);
     });
   return (
     <View>
       <Help>
-        In Google Cloud Console, enable the Drive API and create an OAuth client of type "Desktop app" (add yourself as a test user). Ardia opens Google's consent page in a tab and reads the result from its redirect; it asks only to see your files' names and dates.
+        In Google Cloud Console, enable the Drive API and create an OAuth client of type "桌面应用" (add yourself as a test user). Ardia opens Google's consent page in a tab and reads the result from its redirect; it asks only to see your files' names and dates.
       </Help>
-      <Field label="Client ID">
+      <Field label="客户端 ID">
         <TextField value={clientId} onChangeText={setClientId} placeholder="…apps.googleusercontent.com" />
       </Field>
-      <Field label="Client secret">
+      <Field label="客户端密钥">
         <TextField value={secret} onChangeText={setSecret} secure />
       </Field>
       <Actions>
-        <Button title="Cancel" onPress={closeSettingsSheet} />
-        <Button title={busy ? "Waiting for Google…" : "Sign In with Google…"} kind="primary" disabled={!clientId.trim() || !secret.trim() || busy} onPress={go} />
+        <Button title="取消" onPress={closeSettingsSheet} />
+        <Button title={busy ? "正在等待 Google…" : "使用 Google 登录…"} kind="primary" disabled={!clientId.trim() || !secret.trim() || busy} onPress={go} />
       </Actions>
     </View>
   );

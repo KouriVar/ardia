@@ -44,7 +44,7 @@ function Sheet({ state }: { state: EditorState }) {
     close();
   };
 
-  const heading = state.folder ? (node ? "Rename Folder" : "New Folder") : node ? "Edit Bookmark" : "Add Bookmark";
+  const heading = state.folder ? (node ? "重命名文件夹" : "新建文件夹") : node ? "编辑书签" : "添加书签";
 
   return (
     <View style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center" }]}>
@@ -61,17 +61,17 @@ function Sheet({ state }: { state: EditorState }) {
         style={{ width: 420, padding: 18 }}
       >
         <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>{heading}</Text>
-        <Label text="Name" />
+        <Label text="名称" />
         <TextField value={title} onChangeText={setTitle} autoFocus selectOnFocus onSubmit={save} onEscape={close} />
         {!state.folder && (
           <>
-            <Label text="URL" />
+            <Label text="网址" />
             <TextField value={url} onChangeText={setUrl} placeholder="https://" onSubmit={save} onEscape={close} />
           </>
         )}
         {(!state.folder || !node) && (
           <>
-            <Label text="Folder" />
+            <Label text="文件夹" />
             <View
               style={{ height: 180, borderRadius: 7, borderWidth: StyleSheet.hairlineWidth * 2, borderColor: colors.fieldBorder, backgroundColor: colors.field }}
             >
@@ -82,8 +82,8 @@ function Sheet({ state }: { state: EditorState }) {
           </>
         )}
         <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 8, marginTop: 18 }}>
-          <Button title="Cancel" onPress={close} />
-          <Button title="Save" kind="primary" disabled={!valid} onPress={save} />
+          <Button title="取消" onPress={close} />
+          <Button title="保存" kind="primary" disabled={!valid} onPress={save} />
         </View>
       </Surface>
     </View>

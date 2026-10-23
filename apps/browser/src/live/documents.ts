@@ -24,7 +24,7 @@ export const NOTION_SEARCH_BODY = {
 
 function notionTitle(p: NotionPage): string {
   const title = p.title ?? Object.values(p.properties ?? {}).find((v) => v.type === "title")?.title ?? [];
-  return title.map((t) => t.plain_text).join("").trim() || "Untitled";
+  return title.map((t) => t.plain_text).join("").trim() || "未命名";
 }
 
 export function mapNotion(json: NotionSearch, users: NotionUsers | null, workspace: string | null): LiveItem[] {
@@ -39,7 +39,7 @@ export function mapNotion(json: NotionSearch, users: NotionUsers | null, workspa
       subtitle: workspace ?? "Notion",
       icon: p.icon?.type === "emoji" ? p.icon.emoji : p.icon?.type === "external" ? p.icon.external.url : p.icon?.type === "file" ? p.icon.file.url : null,
       updatedAt: Date.parse(p.last_edited_time) || 0,
-      doc: { kind: p.object === "database" ? "Database" : "Page", editedBy: (p.last_edited_by && names.get(p.last_edited_by.id)) ?? null, place: workspace },
+      doc: { kind: p.object === "database" ? "数据库" : "页面", editedBy: (p.last_edited_by && names.get(p.last_edited_by.id)) ?? null, place: workspace },
     }));
 }
 
@@ -63,11 +63,11 @@ export function mapConfluence(json: ConfluenceSearch, site: string): LiveItem[] 
     id: `confluence:${r.id}`,
     source: "confluence" as const,
     url: base + r._links.webui,
-    title: r.title || "Untitled",
+    title: r.title || "未命名",
     subtitle: r.space?.name ?? "Confluence",
     icon: null,
     updatedAt: Date.parse(r.history?.lastUpdated?.when ?? "") || 0,
-    doc: { kind: "Page", editedBy: r.history?.lastUpdated?.by?.displayName ?? null, place: r.space?.name ?? null },
+    doc: { kind: "页面", editedBy: r.history?.lastUpdated?.by?.displayName ?? null, place: r.space?.name ?? null },
   }));
 }
 
@@ -91,11 +91,11 @@ export const DRIVE_QUERY = {
 };
 
 const DRIVE_KINDS: Record<string, string> = {
-  "application/vnd.google-apps.document": "Document",
-  "application/vnd.google-apps.spreadsheet": "Spreadsheet",
-  "application/vnd.google-apps.presentation": "Presentation",
-  "application/vnd.google-apps.form": "Form",
-  "application/vnd.google-apps.drawing": "Drawing",
+  "application/vnd.google-apps.document": "文档",
+  "application/vnd.google-apps.spreadsheet": "电子表格",
+  "application/vnd.google-apps.presentation": "演示文稿",
+  "application/vnd.google-apps.form": "表单",
+  "application/vnd.google-apps.drawing": "绘图",
   "application/pdf": "PDF",
 };
 
@@ -104,11 +104,11 @@ export function mapDrive(json: DriveFiles): LiveItem[] {
     id: `gdrive:${f.id}`,
     source: "gdrive" as const,
     url: f.webViewLink,
-    title: f.name || "Untitled",
+    title: f.name || "未命名",
     subtitle: DRIVE_KINDS[f.mimeType] ?? "Google Drive",
     icon: null,
     updatedAt: Date.parse(f.modifiedTime) || 0,
-    doc: { kind: DRIVE_KINDS[f.mimeType] ?? "File", editedBy: f.lastModifyingUser?.displayName ?? null, place: null },
+    doc: { kind: DRIVE_KINDS[f.mimeType] ?? "文件", editedBy: f.lastModifyingUser?.displayName ?? null, place: null },
   }));
 }
 

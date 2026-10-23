@@ -36,7 +36,7 @@ export const TranslateButton = memo(function TranslateButton({ tabId, palette, o
         toggleTranslation(tabId);
       }}
       onContextMenu={() => void showTranslateMenu(tabId)}
-      tooltip={translated ? `Show Original (${languageName(state.source ?? "")})` : "Translate this page"}
+      tooltip={translated ? `显示原文 (${languageName(state.source ?? "")})` : "翻译此页面"}
     />
   );
 });
@@ -54,11 +54,11 @@ async function showTranslateMenu(tabId: string) {
   if (!tab) return;
   const translated = translateStateOf(tabId).status !== "idle";
   const items: MenuItem[] = [
-    translated ? { id: "original", title: "Show Original", symbol: "arrow.uturn.backward" } : { id: "translate", title: `Translate to ${languageName(defaultTarget())}`, symbol: "translate" },
-    { id: "choose", title: "Choose Another Language…", symbol: "globe" },
+    translated ? { id: "original", title: "显示原文", symbol: "arrow.uturn.backward" } : { id: "translate", title: `翻译为${languageName(defaultTarget())}`, symbol: "translate" },
+    { id: "choose", title: "选择其他语言…", symbol: "globe" },
   ];
   if (!isIncognitoProfile(tab.profileId)) {
-    items.push({ separator: true }, { id: "never", title: "Never Translate This Site", checked: isNeverTranslated(tab.profileId, tab.url) });
+    items.push({ separator: true }, { id: "never", title: "永不翻译此网站", checked: isNeverTranslated(tab.profileId, tab.url) });
   }
   const choice = await showMenu(items);
   if (choice === "original") void revertPage(tabId);
@@ -79,7 +79,7 @@ export function TranslateRows({ tabId, onClose }: { tabId: string; onClose: () =
       {!never && (
         <PopoverRow
           icon={translated ? "arrow.uturn.backward" : "translate"}
-          title={translated ? `Show Original (${languageName(state.source ?? "")})` : `Translate to ${languageName(defaultTarget())}`}
+          title={translated ? `显示原文 (${languageName(state.source ?? "")})` : `翻译为${languageName(defaultTarget())}`}
           onPress={() => {
             onClose();
             toggleTranslation(tabId);
@@ -89,7 +89,7 @@ export function TranslateRows({ tabId, onClose }: { tabId: string; onClose: () =
       {!never && (
         <PopoverRow
           icon="globe"
-          title="Choose Another Language…"
+          title="选择其他语言…"
           onPress={() => {
             onClose();
             void chooseLanguage(tabId);
@@ -97,7 +97,7 @@ export function TranslateRows({ tabId, onClose }: { tabId: string; onClose: () =
         />
       )}
       {!isIncognitoProfile(tab.profileId) && (
-        <PopoverRow icon="nosign" title="Never Translate This Site" accessory={<Toggle value={never} onChange={(v) => setNeverTranslate(tabId, v)} />} />
+        <PopoverRow icon="nosign" title="永不翻译此网站" accessory={<Toggle value={never} onChange={(v) => setNeverTranslate(tabId, v)} />} />
       )}
       <PopoverSeparator />
     </>

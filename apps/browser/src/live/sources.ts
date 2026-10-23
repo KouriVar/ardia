@@ -15,7 +15,7 @@ export type LiveSource = {
 
 async function secret(source: LiveSourceId): Promise<string> {
   const value = await getSecret(source);
-  if (!value) throw new LiveError(live().accounts[source] ? "signedOut" : "notConfigured", "Not signed in");
+  if (!value) throw new LiveError(live().accounts[source] ? "signedOut" : "notConfigured", "尚未登录");
   return value;
 }
 
@@ -76,7 +76,7 @@ const bitbucket: LiveSource = {
     if (!folder.filters.authored) return [];
     const auth = await bitbucketAuth();
     const me = live().accounts.bitbucket;
-    if (!me) throw new LiveError("signedOut", "Not signed in");
+    if (!me) throw new LiveError("signedOut", "尚未登录");
     const page = await request<{ values: BitbucketPR[] }>(`${endpoints.bitbucket}/pullrequests/${encodeURIComponent(me.login)}?state=OPEN&pagelen=50`, {
       headers: { Authorization: auth },
     });
@@ -116,7 +116,7 @@ const confluence: LiveSource = {
   site: "https://www.atlassian.com",
   async fetch() {
     const { confluenceSite, confluenceEmail } = live().config;
-    if (!confluenceSite) throw new LiveError("notConfigured", "No Confluence site");
+    if (!confluenceSite) throw new LiveError("notConfigured", "未设置 Confluence 站点");
     const auth = basic(confluenceEmail, await secret("confluence"));
     const url = `${endpoints.confluence(confluenceSite)}/wiki/rest/api/content/search?limit=30&expand=space,history.lastUpdated&cql=${encodeURIComponent(CONFLUENCE_CQL)}`;
     return mapConfluence(await request<ConfluenceSearch>(url, { headers: { Authorization: auth } }), confluenceSite);
@@ -184,9 +184,9 @@ export async function startGithubDeviceFlow(clientId: string): Promise<DeviceFlo
       });
       if (json.access_token) return connectGithub(json.access_token);
       if (json.error === "slow_down") interval = (json.interval ?? interval / 1000 + 5) * 1000;
-      else if (json.error && json.error !== "authorization_pending") throw new LiveError("signedOut", json.error === "access_denied" ? "Access was denied" : json.error);
+      else if (json.error && json.error !== "authorization_pending") throw new LiveError("signedOut", json.error === "access_denied" ? "访问被拒绝" : json.error);
     }
-    throw new LiveError("signedOut", cancelled ? "Cancelled" : "The code expired");
+    throw new LiveError("signedOut", cancelled ? "已取消" : "验证码已过期");
   })();
   return { userCode: code.user_code, verificationUri: code.verification_uri, expiresAt, done, cancel: () => (cancelled = true) };
 }

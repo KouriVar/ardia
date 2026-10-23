@@ -198,7 +198,7 @@ export function FooterChip({ icon, title, color, open, onPress }: { icon: string
   const theme = useTheme();
   const { hovered, hoverProps } = useHover();
   return (
-    <View {...hoverProps} tooltip={onPress ? (open ? "Hide Connection Details" : "Connection Details") : undefined}>
+    <View {...hoverProps} tooltip={onPress ? (open ? "隐藏连接详情" : "连接详情") : undefined}>
       <Pressable onPress={onPress} disabled={!onPress} accessibilityRole="button" accessibilityLabel={title}>
         {({ pressed }) => (
           <View
@@ -227,7 +227,7 @@ export function FooterChip({ icon, title, color, open, onPress }: { icon: string
 export function MoreButton({ open, onPress }: { open: boolean; onPress: () => void }) {
   const theme = useTheme();
   const { hovered, hoverProps } = useHover();
-  const label = open ? "Fewer Site Controls" : "More Site Controls";
+  const label = open ? "收起网站设置" : "更多网站设置";
   return (
     <View {...hoverProps} tooltip={label}>
       <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label}>

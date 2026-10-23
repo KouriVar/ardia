@@ -109,7 +109,7 @@ const MINUTE = 60_000;
 export function badgeText(events: CalendarEvent[], now: number, withinMs = 60 * MINUTE): string | null {
   const e = currentOrNext(events, now);
   if (!e) return null;
-  if (e.start <= now) return "Now";
+  if (e.start <= now) return "现在";
   const ms = e.start - now;
   if (ms > withinMs) return null;
   const min = Math.ceil(ms / MINUTE);
@@ -118,44 +118,44 @@ export function badgeText(events: CalendarEvent[], now: number, withinMs = 60 * 
 
 export function relativeTime(at: number, now: number): string {
   const min = Math.round((at - now) / MINUTE);
-  if (min === 0) return "Now";
+  if (min === 0) return "现在";
   const abs = Math.abs(min);
-  const text = abs >= 60 ? `${Math.floor(abs / 60)} hr${abs % 60 ? ` ${abs % 60} min` : ""}` : `${abs} min`;
-  return min > 0 ? `in ${text}` : `${text} ago`;
+  const text = abs >= 60 ? `${Math.floor(abs / 60)} 小时${abs % 60 ? ` ${abs % 60} 分钟` : ""}` : `${abs} 分钟`;
+  return min > 0 ? `${text}后` : `${text}前`;
 }
 
 export function ago(at: number, now: number): string {
   const min = Math.floor(Math.max(0, now - at) / MINUTE);
-  if (min < 1) return "just now";
-  if (min < 60) return `${min} min ago`;
+  if (min < 1) return "刚刚";
+  if (min < 60) return `${min} 分钟前`;
   const hr = Math.floor(min / 60);
-  if (hr < 24) return `${hr} hr ago`;
+  if (hr < 24) return `${hr} 小时前`;
   const days = Math.floor(hr / 24);
-  return days === 1 ? "yesterday" : `${days} days ago`;
+  return days === 1 ? "昨天" : `${days} 天前`;
 }
 
 export function timeRemaining(end: number, now: number): string {
   const min = Math.ceil((end - now) / MINUTE);
-  if (min <= 0) return "Ending now";
-  return min >= 60 ? `${Math.floor(min / 60)} hr ${min % 60} min left` : `${min} min left`;
+  if (min <= 0) return "即将结束";
+  return min >= 60 ? `还剩 ${Math.floor(min / 60)} 小时 ${min % 60} 分钟` : `还剩 ${min} 分钟`;
 }
 
 export const WIGGLE_MARKS_MIN = [5, 2];
 
-const displayName = (p: CalendarParticipant) => p.name || p.email.split("@")[0] || "Guest";
+const displayName = (p: CalendarParticipant) => p.name || p.email.split("@")[0] || "来宾";
 
 export function attendeesLabel(event: Pick<CalendarEvent, "attendees">): string {
   const others = event.attendees.filter((p) => !p.me);
   const names = others.map(displayName);
   if (names.length === 0) return "";
   if (names.length === 1) return names[0]!;
-  if (names.length === 2) return `${names[0]} and ${names[1]}`;
-  return `${names[0]}, ${names[1]} and ${names.length - 2} more`;
+  if (names.length === 2) return `${names[0]} 和 ${names[1]}`;
+  return `${names[0]}、${names[1]} 等 ${names.length} 人`;
 }
 
 export function guestsLabel(event: Pick<CalendarEvent, "attendees">): string {
   const n = event.attendees.length;
-  return n === 1 ? "1 guest" : `${n} guests`;
+  return `${n} 位来宾`;
 }
 
 export function timeRange(event: Pick<CalendarEvent, "start" | "end">): string {
@@ -164,20 +164,20 @@ export function timeRange(event: Pick<CalendarEvent, "start" | "end">): string {
 }
 
 export function joinTitle(provider: MeetingProvider | undefined): string {
-  if (provider === "meet") return "Join with Google Meet";
-  if (provider === "zoom") return "Join with Zoom";
-  if (provider === "teams") return "Join Microsoft Teams Meeting";
-  return "Join";
+  if (provider === "meet") return "通过 Google Meet 加入";
+  if (provider === "zoom") return "通过 Zoom 加入";
+  if (provider === "teams") return "加入 Microsoft Teams 会议";
+  return "加入";
 }
 
 export const ALERT_LEADS: { value: string; title: string; minutes: number | null }[] = [
-  { value: "never", title: "Never", minutes: null },
-  { value: "start", title: "At Meeting Start", minutes: 0 },
-  { value: "1", title: "One Minute Before", minutes: 1 },
-  { value: "2", title: "Two Minutes Before", minutes: 2 },
-  { value: "3", title: "Three Minutes Before", minutes: 3 },
-  { value: "5", title: "Five Minutes Before", minutes: 5 },
-  { value: "10", title: "Ten Minutes Before", minutes: 10 },
+  { value: "never", title: "从不", minutes: null },
+  { value: "start", title: "会议开始时", minutes: 0 },
+  { value: "1", title: "提前 1 分钟", minutes: 1 },
+  { value: "2", title: "提前 2 分钟", minutes: 2 },
+  { value: "3", title: "提前 3 分钟", minutes: 3 },
+  { value: "5", title: "提前 5 分钟", minutes: 5 },
+  { value: "10", title: "提前 10 分钟", minutes: 10 },
 ];
 
 export function dueAlerts(events: CalendarEvent[], now: number, leadMinutes: number, dismissed: Set<string>): CalendarEvent[] {

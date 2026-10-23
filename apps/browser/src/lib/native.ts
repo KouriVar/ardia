@@ -30,6 +30,7 @@ import { windowOpens } from "./windowOpenOrder";
 import { openExternalUrls } from "../components/littleArdia/actions";
 import { LITTLE_ARDIA_DISABLED_COMMANDS } from "../components/littleArdia/menu";
 import { runCommand } from "./commands";
+import { NATIVE_TITLES } from "./nativeTitles";
 import { flushPersistence, resumePersistence } from "./persist";
 import { startWindowCloseGuard } from "./windowClose";
 import { startExtensionsBridge } from "../components/extensions/bridge";
@@ -194,8 +195,8 @@ function bookmarkMenus(b: Bookmarks, profileId: string): BookmarkMenus {
   const menus: BookmarkMenus = roots
     ? {
         bookmarkFolders: [
-          { id: roots.bar, title: "Bookmarks Bar" },
-          { id: roots.other, title: "Other Bookmarks" },
+          { id: roots.bar, title: "书签栏" },
+          { id: roots.other, title: "其他书签" },
           ...[...folderChildren(b, roots.bar), ...folderChildren(b, roots.other)]
             .filter((n) => n.kind === "folder")
             .map((n) => ({ id: n.id, title: n.title })),
@@ -246,26 +247,26 @@ export function menuState(s: BrowserState): MenuState {
   if ((w?.tabLayout ?? s.settings.tabLayout) === "sidebar") checked.push("toggleTabLayout");
   if (w && !w.sidebarOpen) checked.push("toggleSidebar");
 
-  const titles: Record<string, string> = {};
-  if (tab?.pinned) titles.togglePin = "Unpin";
-  if (tab?.muted) titles.toggleMute = "Unmute Site";
+  const titles: Record<string, string> = { ...NATIVE_TITLES };
+  if (tab?.pinned) titles.togglePin = "取消固定";
+  if (tab?.muted) titles.toggleMute = "取消网站静音";
   if (tab?.url && isBookmarked(s.bookmarks, bookmarkProfile, tab.url)) {
-    titles.bookmarkPage = "Edit Bookmark…";
+    titles.bookmarkPage = "编辑书签…";
   }
 
-  if (!s.settings.openLinksInLittleArdia) titles.toggleOpenLinksInLittleArdia = "Open Links from Other Apps in Little Ardia";
+  if (!s.settings.openLinksInLittleArdia) titles.toggleOpenLinksInLittleArdia = "在 Little Ardia 中打开其他应用的链接";
 
   const sidebar = sidebarMenuState(s, windowId);
   disabled.push(...sidebar.disabled);
   Object.assign(titles, sidebar.titles);
   if (w?.kind === "small") {
     disabled.push(...LITTLE_ARDIA_DISABLED_COMMANDS);
-    titles.openFile = "Open in Ardia";
+    titles.openFile = "在 Ardia 中打开";
   }
 
   const closed = [
     ...s.closedTabs.filter((c) => !c.tab.profileId.startsWith("incognito:")).map((c) => ({ id: c.id, title: c.tab.title || tabLabel(c.tab), at: c.closedAt })),
-    ...s.closedWindows.map((c) => ({ id: c.id, title: c.tabs.length === 1 ? "Window (1 Tab)" : `Window (${c.tabs.length} Tabs)`, at: c.closedAt })),
+    ...s.closedWindows.map((c) => ({ id: c.id, title: `窗口（${c.tabs.length} 个标签页）`, at: c.closedAt })),
   ]
     .sort((a, b) => b.at - a.at)
     .slice(0, 10)

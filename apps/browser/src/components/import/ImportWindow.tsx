@@ -20,21 +20,21 @@ type Step = "loading" | "choose" | "profiles" | "safari" | "access" | "unlock" |
 type Status = "pending" | "active" | "done" | "failed";
 
 const KINDS: { kind: ImportKind; title: string; icon: string }[] = [
-  { kind: "bookmarks", title: "Bookmarks", icon: "bookmark" },
-  { kind: "history", title: "History", icon: "clock" },
-  { kind: "passwords", title: "Passwords", icon: "key" },
-  { kind: "cookies", title: "Cookies (stay signed in)", icon: "person.badge.key" },
-  { kind: "autofill", title: "Addresses and cards", icon: "creditcard" },
-  { kind: "tabs", title: "Tabs", icon: "square.on.square" },
-  { kind: "spaces", title: "Spaces", icon: "square.stack" },
-  { kind: "pinnedTabs", title: "Pinned tabs", icon: "pin" },
-  { kind: "favorites", title: "Favorites", icon: "star" },
+  { kind: "bookmarks", title: "书签", icon: "bookmark" },
+  { kind: "history", title: "历史记录", icon: "clock" },
+  { kind: "passwords", title: "密码", icon: "key" },
+  { kind: "cookies", title: "Cookie（保留登录状态）", icon: "person.badge.key" },
+  { kind: "autofill", title: "地址和银行卡", icon: "creditcard" },
+  { kind: "tabs", title: "标签页", icon: "square.on.square" },
+  { kind: "spaces", title: "空间", icon: "square.stack" },
+  { kind: "pinnedTabs", title: "固定标签页", icon: "pin" },
+  { kind: "favorites", title: "收藏", icon: "star" },
 ];
 const kindTitle = (k: ImportKind) => KINDS.find((x) => x.kind === k)?.title ?? k;
 
 const ENCRYPTED: ImportKind[] = ["passwords", "cookies", "autofill"];
 
-const DIA_NOT_SHARED = "Custom tab names, colours, spaces and folders stay in Dia: its AppleScript doesn't share them.";
+const DIA_NOT_SHARED = "自定义标签页名称、颜色、空间和文件夹会留在 Dia 中，其 AppleScript 接口不提供这些数据。";
 
 export function ImportWindow() {
   const theme = useTheme();
@@ -165,7 +165,7 @@ export function ImportWindow() {
       void run(kinds);
     } catch {
       setUnlocking(false);
-      setError(`macOS didn't allow access to ${source.name}'s keychain item. Try again, or skip the encrypted data.`);
+      setError(`macOS 未允许访问 ${source.name} 的钥匙串项目。请重试，或跳过加密数据。`);
     }
   };
 
@@ -175,11 +175,11 @@ export function ImportWindow() {
     const clash = s.profileOrder.find((id) => s.profiles[id]!.name.trim().toLowerCase() === name.trim().toLowerCase());
     if (clash) {
       const { confirmed } = await confirm({
-        title: "Import as new profile?",
+        title: "导入为新的个人资料？",
         message:
-          "Import this data as a new profile to avoid data loss. If you replace a profile, your passwords, cookies, and payment info will be replaced, while your bookmarks and history will be combined.",
-        confirmTitle: "Import as new profile",
-        cancelTitle: "Replace this profile",
+          "将数据导入为新的个人资料可避免数据丢失。如果替换现有个人资料，密码、Cookie 和付款信息将被替换，书签与历史记录则会合并。",
+        confirmTitle: "导入为新的个人资料",
+        cancelTitle: "替换此个人资料",
       });
       if (!confirmed) return clash;
     }
@@ -236,7 +236,7 @@ export function ImportWindow() {
         const profileSpaces = result.spaces;
         let first: string | null = null;
         for (const space of profileSpaces) {
-          const name = space.name || "Space";
+          const name = space.name || "空间";
           const dest = await destination(destinationIndex++, name, space.color, space.emoji);
           first ??= dest;
           const r = importArcSpace(dest, space, name);
@@ -282,7 +282,7 @@ export function ImportWindow() {
   const openDia = async () => {
     if (!api) return;
     diaLaunched.current = Date.now();
-    await api.openDia().catch(() => setError("Couldn't open Dia. Open it yourself, then click Check Again."));
+    await api.openDia().catch(() => setError("无法打开 Dia。请手动打开，然后点击“重新检查”。"));
     void refreshDia();
   };
 
@@ -310,7 +310,7 @@ export function ImportWindow() {
   const takeDiaResult = (result: DiaTabsResult) => {
     setDia(result);
     if (!result.profiles.length) {
-      return setError(result.windowCount ? "Dia has no open or pinned web pages to import." : "Dia has no open windows. Open one, then try again.");
+      return setError(result.windowCount ? "Dia 没有可导入的已打开或固定网页。" : "Dia 没有打开的窗口。请先打开窗口再重试。");
     }
     const profiles: BrowserProfile[] = result.profiles.map((p, i) => ({
       id: p.id,
@@ -359,7 +359,7 @@ export function ImportWindow() {
       setTimeout(() => setStep("done"), 700);
     } catch (e) {
       setStep("safari");
-      setError((e as { code?: string }).code === "unsupported" ? "Please select a folder or zip file." : "The selected file is invalid. Please try again.");
+      setError((e as { code?: string }).code === "unsupported" ? "请选择文件夹或 zip 文件。" : "所选文件无效，请重试。");
     }
   };
 
@@ -383,8 +383,8 @@ export function ImportWindow() {
       setStep("safari");
       setError(
         (e as { code?: string }).code === "locked"
-          ? "Ardia still doesn't have Full Disk Access. Grant it above, or use the export file below."
-          : "Couldn't read Safari's data. Try the export file below.",
+          ? "Ardia 仍未获得完全磁盘访问权限。请在上方授权，或使用下方的导出文件。"
+          : "无法读取 Safari 数据。请使用下方的导出文件。",
       );
       setFullDiskAccess(api.safariHasFullDiskAccess());
     }
@@ -396,14 +396,14 @@ export function ImportWindow() {
     if (!path) return;
     try {
       const root = await api.importBookmarksHTML(path);
-      const n = importBookmarks(target, root, "HTML File");
+      const n = importBookmarks(target, root, "HTML 文件");
       setCounts({ ...emptyCounts(), bookmarks: n });
       setFailures([]);
       setStatus({ bookmarks: "done" });
       setSource(null);
       setStep("done");
     } catch {
-      setError("The selected file is invalid. Please try again.");
+      setError("所选文件无效，请重试。");
     }
   };
 
@@ -442,7 +442,7 @@ export function ImportWindow() {
   const targetPicker =
     profiles.length > 1 ? (
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-        <Text style={{ fontSize: 12, color: theme.textSecondary }}>Import into</Text>
+        <Text style={{ fontSize: 12, color: theme.textSecondary }}>导入到</Text>
         <PopUp value={target} options={profiles.map((p) => ({ value: p.id, title: p.name }))} onChange={setTarget} minWidth={130} />
       </View>
     ) : (
@@ -454,11 +454,11 @@ export function ImportWindow() {
   } else if (step === "choose") {
     body = (
       <>
-        <Title title="Import from Another Browser" subtitle="Import once and stay in your flow. Your tabs, passwords, bookmarks and history come with you, and you stay signed in." />
+        <Title title="从其他浏览器导入" subtitle="一次导入，无缝衔接。标签页、密码、书签和历史记录都会一起迁移，并保留登录状态。" />
         {!api ? (
-          <Note text={`Importing isn't available in this build of ${APP}.`} />
+          <Note text={`此版本的 ${APP} 不支持导入。`} />
         ) : browsers.length === 0 ? (
-          <Note text="No other browsers with data to import were found on this Mac." />
+          <Note text="这台 Mac 上没有找到含可导入数据的其他浏览器。" />
         ) : (
           <View style={{ gap: 6 }}>
             {browsers.map((b) => (
@@ -468,7 +468,7 @@ export function ImportWindow() {
         )}
         {source && !source.requiresExport && !source.needsFullDiskAccess && (
           <View style={{ marginTop: 18 }}>
-            <Text style={{ fontSize: 12, fontWeight: "600", color: theme.textSecondary, marginBottom: 8 }}>What to import</Text>
+            <Text style={{ fontSize: 12, fontWeight: "600", color: theme.textSecondary, marginBottom: 8 }}>选择导入内容</Text>
             <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 14 }}>
               {(isDiaTabs
                 ? KINDS.filter((k) => k.kind === "tabs" || k.kind === "pinnedTabs")
@@ -476,7 +476,7 @@ export function ImportWindow() {
               ).map((k) => (
                 <Checkbox
                   key={k.kind}
-                  label={k.kind === "tabs" && isArc ? "Spaces and tabs" : k.kind === "tabs" && isDiaTabs ? "Open tabs" : k.title}
+                  label={k.kind === "tabs" && isArc ? "空间和标签页" : k.kind === "tabs" && isDiaTabs ? "已打开的标签页" : k.title}
                   value={kinds.has(k.kind)}
                   onChange={(v) =>
                     setKinds((prev) => {
@@ -491,7 +491,7 @@ export function ImportWindow() {
             </View>
             {isDiaTabs && (
               <Text style={{ fontSize: 12, lineHeight: 17, color: theme.textSecondary, marginTop: 10 }}>
-                {`${APP} asks Dia for each profile's open and pinned tabs while Dia is running. ${DIA_NOT_SHARED}`}
+                {`${APP} 会在 Dia 运行时获取各个人资料的已打开和固定标签页。${DIA_NOT_SHARED}`}
               </Text>
             )}
           </View>
@@ -501,18 +501,18 @@ export function ImportWindow() {
     );
     footer = (
       <>
-        {api ? <Button title="Bookmarks HTML File…" onPress={() => void importHtml()} /> : null}
+        {api ? <Button title="书签 HTML 文件…" onPress={() => void importHtml()} /> : null}
         <View style={{ flex: 1 }} />
         {targetPicker}
-        <Button title="Cancel" onPress={close} />
-        <Button title="Continue" kind="primary" disabled={!source || (!source.requiresExport && !source.needsFullDiskAccess && kinds.size === 0)} onPress={next} />
+        <Button title="取消" onPress={close} />
+        <Button title="继续" kind="primary" disabled={!source || (!source.requiresExport && !source.needsFullDiskAccess && kinds.size === 0)} onPress={next} />
       </>
     );
   } else if (step === "profiles" && source) {
     body = isArc ? (
       <>
-        <Title title="Select spaces to import" subtitle={`We'll import your Arc spaces, tabs, and folders to ${APP}.`} />
-        <Text style={{ fontSize: 12, color: theme.textSecondary, marginBottom: 10 }}>{`Customize which spaces to bring over to ${APP}. Each space becomes a profile.`}</Text>
+        <Title title="选择要导入的空间" subtitle={`我们会将你的 Arc 空间、标签页和文件夹导入 ${APP}。`} />
+        <Text style={{ fontSize: 12, color: theme.textSecondary, marginBottom: 10 }}>{`选择要导入 ${APP} 的空间。每个空间将成为独立的个人资料。`}</Text>
         <View style={{ gap: 6 }}>
           {allSpaces.map((s) => (
             <SelectRow
@@ -520,8 +520,8 @@ export function ImportWindow() {
               selected={spaces.includes(s.id)}
               onToggle={(v) => setSpaces((prev) => (v ? [...prev, s.id] : prev.filter((x) => x !== s.id)))}
               icon={<SpaceIcon space={s} />}
-              title={s.name || "Space"}
-              subtitle={`${plural(s.pinnedCount, "pinned tab")} · ${plural(s.tabCount, "tab")}`}
+              title={s.name || "空间"}
+              subtitle={`${`${s.pinnedCount} 个固定标签页`} · ${`${s.tabCount} 个标签页`}`}
             />
           ))}
         </View>
@@ -529,11 +529,11 @@ export function ImportWindow() {
     ) : (
       <>
         {isDiaTabs ? (
-          <Title title="Choose Dia profiles" subtitle="Select the profiles whose tabs you want to bring over." />
+          <Title title="选择 Dia 个人资料" subtitle="选择要迁移标签页的个人资料。" />
         ) : (
-          <Title title="Unlock your data for import" subtitle="Select the profiles you want to import." />
+          <Title title="解锁数据以导入" subtitle="选择要导入的个人资料。" />
         )}
-        <Text style={{ fontSize: 12, color: theme.textSecondary, marginBottom: 10 }}>{`Customize which profiles to bring over to ${APP}. The first goes into your selected profile; the others become new profiles.`}</Text>
+        <Text style={{ fontSize: 12, color: theme.textSecondary, marginBottom: 10 }}>{`选择要导入 ${APP} 的个人资料。第一个将导入所选个人资料，其余将创建为新的个人资料。`}</Text>
         <View style={{ gap: 6 }}>
           {source.profiles.map((p) => (
             <SelectRow
@@ -548,7 +548,7 @@ export function ImportWindow() {
                 )
               }
               title={p.name}
-              subtitle={isDiaTabs ? diaProfileSummary(dia, p.id) : (p.email ?? (p.isDefault ? "Default profile" : undefined))}
+              subtitle={isDiaTabs ? diaProfileSummary(dia, p.id) : (p.email ?? (p.isDefault ? "默认个人资料" : undefined))}
             />
           ))}
         </View>
@@ -556,10 +556,10 @@ export function ImportWindow() {
     );
     footer = (
       <>
-        <Button title="Back" onPress={() => setStep("choose")} />
+        <Button title="返回" onPress={() => setStep("choose")} />
         <View style={{ flex: 1 }} />
         {targetPicker}
-        <Button title="Continue" kind="primary" disabled={isArc ? !spaces.length : !sourceProfiles.length} onPress={next} />
+        <Button title="继续" kind="primary" disabled={isArc ? !spaces.length : !sourceProfiles.length} onPress={next} />
       </>
     );
   } else if (step === "unlock" && source) {
@@ -567,8 +567,8 @@ export function ImportWindow() {
     body = (
       <>
         <Title
-          title="Unlock your data for import"
-          subtitle={`${APP} can securely import logins, cookies and cards from your previous browser, so you stay signed in and don't have to enter your passwords again.`}
+          title="解锁数据以导入"
+          subtitle={`${APP} 可安全导入原浏览器的登录信息、Cookie 和银行卡，让你保持登录，无需再次输入密码。`}
         />
         <View style={{ alignItems: "center", marginTop: 10, gap: 14 }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
@@ -578,11 +578,11 @@ export function ImportWindow() {
           </View>
           <Text style={{ fontSize: 13, lineHeight: 18, textAlign: "center", color: theme.textPrimary, maxWidth: 420 }}>
             {many
-              ? `Some data is encrypted, so macOS will ask for your computer password once for each selected profile.`
-              : `Some data is encrypted, so macOS will ask for your computer password to bring it securely into ${APP}.`}
+              ? `部分数据已加密，因此 macOS 会为每个所选个人资料请求一次电脑密码。`
+              : `部分数据已加密，因此 macOS 会请求电脑密码，以便将数据安全导入 ${APP}。`}
           </Text>
           <Text style={{ fontSize: 12, lineHeight: 17, textAlign: "center", color: theme.textSecondary, maxWidth: 420 }}>
-            {`macOS may ask whether ${APP} can use “${source.name} Safe Storage” from your keychain: it's the key ${source.name} encrypts passwords, cookies and cards with. Click Allow. Your data stays on this Mac.`}
+            {`macOS 可能会询问是否允许 ${APP} 使用钥匙串中的“${source.name} Safe Storage”，这是 ${source.name} 用来加密密码、Cookie 和银行卡的密钥。请点击“允许”。数据只保存在这台 Mac 上。`}
           </Text>
         </View>
         {error && <ErrorText text={error} />}
@@ -590,10 +590,10 @@ export function ImportWindow() {
     );
     footer = (
       <>
-        <Button title="Back" onPress={() => setStep(source.profiles.length > 1 || isArc ? "profiles" : "choose")} />
+        <Button title="返回" onPress={() => setStep(source.profiles.length > 1 || isArc ? "profiles" : "choose")} />
         <View style={{ flex: 1 }} />
         <Button
-          title="Skip Encrypted Data"
+          title="跳过加密数据"
           onPress={() => {
             const without = new Set(kinds);
             without.delete("passwords");
@@ -602,23 +602,23 @@ export function ImportWindow() {
             void run(without);
           }}
         />
-        <Button title={unlocking ? "Waiting for password..." : "Continue"} kind="primary" disabled={unlocking} onPress={() => void unlock()} />
+        <Button title={unlocking ? "等待输入密码…" : "继续"} kind="primary" disabled={unlocking} onPress={() => void unlock()} />
       </>
     );
   } else if (step === "safari") {
     body = fullDiskAccess ? (
       <>
-        <Title title="Import from Safari" subtitle={`Ardia can read Safari directly. Bring your bookmarks, history, Reading List, open tabs and sign-ins into ${APP}.`} />
+        <Title title="从 Safari 导入" subtitle={`Ardia 可直接读取 Safari，将书签、历史记录、阅读列表、已打开的标签页和登录信息导入 ${APP}。`} />
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12, marginBottom: 18 }}>
           {source?.iconPath ? <Image source={{ uri: `file://${source.iconPath}` }} style={{ width: 40, height: 40 }} /> : null}
           <View style={{ flex: 1 }}>
-            <Text style={{ fontSize: 13, fontWeight: "600", color: theme.textPrimary }}>Bookmarks, history, Reading List and tabs</Text>
-            <Text style={{ fontSize: 12, color: theme.textSecondary, marginTop: 1 }}>Full Disk Access is granted.</Text>
+            <Text style={{ fontSize: 13, fontWeight: "600", color: theme.textPrimary }}>书签、历史记录、阅读列表和标签页</Text>
+            <Text style={{ fontSize: 12, color: theme.textSecondary, marginTop: 1 }}>已授予完全磁盘访问权限。</Text>
             <View style={{ marginTop: 8 }}>
-              <Checkbox label="Cookies (stay signed in)" value={safariCookies} onChange={setSafariCookies} />
+              <Checkbox label="Cookie（保留登录状态）" value={safariCookies} onChange={setSafariCookies} />
             </View>
           </View>
-          <Button title="Import from Safari" kind="primary" onPress={() => void importSafariDirect()} />
+          <Button title="从 Safari 导入" kind="primary" onPress={() => void importSafariDirect()} />
         </View>
         <Text style={{ fontSize: 12, fontWeight: "600", color: theme.textSecondary, marginBottom: 8 }}>
           Passwords and payment cards can't be read directly — import them from an export file:
@@ -628,13 +628,13 @@ export function ImportWindow() {
       </>
     ) : (
       <>
-        <Title title="Give Ardia access to Safari" subtitle={`To import Safari's bookmarks, history and tabs directly, ${APP} needs Full Disk Access.`} />
+        <Title title="允许 Ardia 访问 Safari" subtitle={`要直接导入 Safari 的书签、历史记录和标签页，${APP} 需要完全磁盘访问权限。`} />
         <FullDiskAccessSteps onOpen={() => void api?.openFullDiskAccessSettings()} onRecheck={() => void recheckAccess()} />
         <Text style={{ fontSize: 12, fontWeight: "600", color: theme.textSecondary, marginBottom: 8 }}>
           Or import everything (including passwords) from an export file:
         </Text>
         <View style={{ gap: 6, marginBottom: 12 }}>
-          {["Open Safari", "File menu › Export Browsing Data to File", `Upload the .zip file to ${APP}`].map((t, i) => (
+          {["打开 Safari", "文件菜单 › 将浏览数据导出到文件", `将 .zip 文件上传到 ${APP}`].map((t, i) => (
             <Text key={t} style={{ fontSize: 12, color: theme.textSecondary }}>{`${i + 1}. ${t}`}</Text>
           ))}
         </View>
@@ -644,39 +644,39 @@ export function ImportWindow() {
     );
     footer = (
       <>
-        <Button title="Back" onPress={() => setStep("choose")} />
+        <Button title="返回" onPress={() => setStep("choose")} />
         <View style={{ flex: 1 }} />
         {targetPicker}
-        <Button title="Cancel" onPress={close} />
+        <Button title="取消" onPress={close} />
       </>
     );
   } else if (step === "access" && source) {
     body = (
       <>
-        <Title title={`Give ${APP} access to ${source.name}`} subtitle={`macOS protects ${source.name}'s data from other apps. To import your bookmarks, history, tabs, passwords and cookies, ${APP} needs Full Disk Access.`} />
+        <Title title={`允许 ${APP} 访问 ${source.name}`} subtitle={`macOS 会保护 ${source.name} 的数据不被其他应用访问。要导入书签、历史记录、标签页、密码和 Cookie，${APP} 需要完全磁盘访问权限。`} />
         <FullDiskAccessSteps onOpen={() => void api?.openFullDiskAccessSettings()} onRecheck={() => void recheckAccess()} />
         {error && <ErrorText text={error} />}
       </>
     );
     footer = (
       <>
-        <Button title="Back" onPress={() => setStep("choose")} />
+        <Button title="返回" onPress={() => setStep("choose")} />
         <View style={{ flex: 1 }} />
-        <Button title="Cancel" onPress={close} />
+        <Button title="取消" onPress={close} />
       </>
     );
   } else if (step === "dia" && source) {
-    const retry = <Button title="Check Again" onPress={() => void refreshDia()} />;
+    const retry = <Button title="重新检查" onPress={() => void refreshDia()} />;
     if (diaStatus === "checking" || diaStatus === "reading") {
-      body = <Title title="Reading Dia's tabs" subtitle="Asking Dia for its profiles, open tabs and pinned tabs..." spinner />;
+      body = <Title title="正在读取 Dia 标签页" subtitle="正在向 Dia 获取个人资料、已打开和固定的标签页…" spinner />;
     } else if (diaStatus === "notInstalled") {
-      body = <Title title="Dia isn't installed" subtitle={`Install Dia and open it to import its tabs into ${APP}.`} />;
+      body = <Title title="尚未安装 Dia" subtitle={`安装并打开 Dia，即可将其标签页导入 ${APP}。`} />;
     } else if (diaStatus === "notRunning") {
       body = (
         <>
-          <Title title="Open Dia to import its tabs" subtitle={`${APP} asks Dia for its tabs, so Dia has to be running. Open it and this continues on its own.`} />
+          <Title title="打开 Dia 以导入标签页" subtitle={`${APP} 需要向 Dia 获取标签页，因此 Dia 必须处于运行状态。打开后会自动继续。`} />
           <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-            <Button title="Open Dia" kind="primary" onPress={() => void openDia()} />
+            <Button title="打开 Dia" kind="primary" onPress={() => void openDia()} />
             {retry}
           </View>
         </>
@@ -684,7 +684,7 @@ export function ImportWindow() {
     } else if (diaStatus === "notDetermined") {
       body = (
         <>
-          <Title title={`Allow ${APP} to read Dia's tabs`} subtitle="Dia shares its tabs through AppleScript, and macOS asks you before an app can use it." />
+          <Title title={`允许 ${APP} 读取 Dia 标签页`} subtitle="Dia 通过 AppleScript 提供标签页数据，macOS 会在其他应用访问前征求你的同意。" />
           <View style={{ alignItems: "center", marginTop: 10, gap: 14 }}>
             <View style={{ flexDirection: "row", alignItems: "center", gap: 16 }}>
               {source.iconPath ? <Image source={{ uri: `file://${source.iconPath}` }} style={{ width: 56, height: 56 }} /> : null}
@@ -692,7 +692,7 @@ export function ImportWindow() {
               <Symbol name="square.on.square" size={30} color={theme.icon} style={{ width: 56, height: 56 }} />
             </View>
             <Text style={{ fontSize: 13, lineHeight: 18, textAlign: "center", color: theme.textPrimary, maxWidth: 440 }}>
-              {`When you continue, macOS asks whether “${APP}” may control “Dia”. Click Allow, and ${APP} asks Dia for its profiles, open tabs and pinned tabs. It only reads them: nothing in Dia changes.`}
+              {`继续后，macOS 会询问是否允许“${APP}”控制“Dia”。点击“允许”，${APP} 将获取 Dia 的个人资料、已打开和固定的标签页。此操作只会读取数据，不会更改 Dia 中的内容。`}
             </Text>
             <Text style={{ fontSize: 12, lineHeight: 17, textAlign: "center", color: theme.textSecondary, maxWidth: 440 }}>{DIA_NOT_SHARED}</Text>
           </View>
@@ -701,10 +701,10 @@ export function ImportWindow() {
     } else if (diaStatus === "denied") {
       body = (
         <>
-          <Title title={`${APP} can't read Dia's tabs`} subtitle={`macOS doesn't allow ${APP} to control Dia. You can allow it in System Settings › Privacy & Security › Automation.`} />
+          <Title title={`${APP} 无法读取 Dia 标签页`} subtitle={`macOS 尚未允许 ${APP} 控制 Dia。可在“系统设置 › 隐私与安全性 › 自动化”中授权。`} />
           <SettingsSteps
-            steps={["Click “Open Automation Settings” below", `Under ${APP}, turn on Dia`, "Come back here: we'll continue automatically"]}
-            openTitle="Open Automation Settings"
+            steps={["点击下方的“打开自动化设置”", `在 ${APP} 下方启用 Dia`, "返回这里后会自动继续"]}
+            openTitle="打开自动化设置"
             onOpen={() => void api?.openAutomationSettings()}
             onRecheck={() => void refreshDia()}
           />
@@ -713,8 +713,8 @@ export function ImportWindow() {
     } else {
       body = (
         <>
-          <Title title="Import tabs from Dia" subtitle={DIA_NOT_SHARED} />
-          <Button title="Try Again" onPress={() => void readDia()} />
+          <Title title="从 Dia 导入标签页" subtitle={DIA_NOT_SHARED} />
+          <Button title="重试" onPress={() => void readDia()} />
         </>
       );
     }
@@ -726,12 +726,12 @@ export function ImportWindow() {
     );
     footer = (
       <>
-        <Button title="Back" onPress={() => setStep("choose")} />
+        <Button title="返回" onPress={() => setStep("choose")} />
         <View style={{ flex: 1 }} />
         {targetPicker}
-        <Button title="Cancel" onPress={close} />
+        <Button title="取消" onPress={close} />
         {diaStatus === "notDetermined" && (
-          <Button title={asking ? "Waiting for macOS..." : "Continue"} kind="primary" disabled={asking} onPress={() => void allowDia()} />
+          <Button title={asking ? "正在等待 macOS…" : "继续"} kind="primary" disabled={asking} onPress={() => void allowDia()} />
         )}
       </>
     );
@@ -739,11 +739,11 @@ export function ImportWindow() {
     body = (
       <>
         <Title
-          title={`Importing from ${isDiaTabs ? "Dia" : (source?.name ?? "file")}`}
-          subtitle={preparing > 1 ? `Preparing ${preparing} profiles` : "Preparing your profile"}
+          title={`正在从 ${isDiaTabs ? "Dia" : (source?.name ?? "文件")} 导入`}
+          subtitle={preparing > 1 ? `正在准备 ${preparing} 个个人资料` : "正在准备个人资料"}
           spinner
         />
-        <Text style={{ fontSize: 12, color: theme.textSecondary, marginBottom: 12 }}>Hold on while we fetch your data...</Text>
+        <Text style={{ fontSize: 12, color: theme.textSecondary, marginBottom: 12 }}>正在获取数据，请稍候…</Text>
         <View style={{ gap: 6 }}>
           {KINDS.filter((k) => status[k.kind]).map((k, i) => (
             <CategoryRow key={k.kind} title={k.title} icon={k.icon} status={status[k.kind]!} index={i} />
@@ -755,7 +755,7 @@ export function ImportWindow() {
       <>
         <View style={{ flex: 1 }} />
         <Button
-          title="Cancel"
+          title="取消"
           onPress={() => {
             abort.current?.abort();
             close();
@@ -765,13 +765,13 @@ export function ImportWindow() {
     );
   } else if (step === "done") {
     const summary = [
-      counts.bookmarks && plural(counts.bookmarks, "bookmark"),
-      counts.history && plural(counts.history, "history item"),
-      counts.passwords && plural(counts.passwords, "password"),
-      counts.cookies && plural(counts.cookies, "cookie"),
-      counts.addresses && `${counts.addresses} ${counts.addresses === 1 ? "address" : "addresses"}`,
-      counts.cards && plural(counts.cards, "card"),
-      counts.tabs && plural(counts.tabs, "tab"),
+      counts.bookmarks && `${counts.bookmarks} 条书签`,
+      counts.history && `${counts.history} 条历史记录`,
+      counts.passwords && `${counts.passwords} 个密码`,
+      counts.cookies && `${counts.cookies} 个 Cookie`,
+      counts.addresses && `${counts.addresses} 个地址`,
+      counts.cards && `${counts.cards} 张银行卡`,
+      counts.tabs && `${counts.tabs} 个标签页`,
     ].filter(Boolean) as string[];
     const leftBehind = notes.length ? (
       <Text style={{ fontSize: 12, lineHeight: 17, marginTop: 10, color: theme.textTertiary, textAlign: failures.length ? "left" : "center" }}>
@@ -781,19 +781,19 @@ export function ImportWindow() {
     const extensionList = extensions.list.length ? (
       <View style={{ alignSelf: "stretch", marginTop: 14, gap: 8 }}>
         <Text style={{ fontSize: 12, color: theme.textSecondary, textAlign: "center" }}>
-          {`${source?.name ?? "Your browser"} has ${plural(extensions.list.length, "extension")} from the Chrome Web Store. Add the ones you want there:`}
+          {`${source?.name ?? "你的浏览器"} 有 ${extensions.list.length} 个来自 Chrome 应用商店的扩展程序。请在那里添加需要的扩展程序：`}
         </Text>
         <Text style={{ fontSize: 12, color: theme.textPrimary, textAlign: "center" }} numberOfLines={3}>
           {extensions.list.map((e) => e.name).join(", ")}
         </Text>
         {extensions.opened ? (
           <Text style={{ fontSize: 12, color: theme.textSecondary, textAlign: "center" }}>
-            {`${extensions.list.length === 1 ? "Its page is" : "Their pages are"} open in your sidebar${onboarding ? ", ready when you finish setting up" : ""}. Click Add to ${APP} on each one you want.`}
+            {`扩展程序页面已在侧边栏打开${onboarding ? "，设置完成后即可使用" : ""}。请在需要的扩展程序页面上点击“添加到 ${APP}”。`}
           </Text>
         ) : (
           <View style={{ alignItems: "center" }}>
             <Button
-              title={extensions.list.length === 1 ? "Open in Chrome Web Store" : `Open ${extensions.list.length} in Chrome Web Store`}
+              title={extensions.list.length === 1 ? "在 Chrome 应用商店中打开" : `在 Chrome 应用商店中打开 ${extensions.list.length} 个扩展程序`}
               onPress={() => {
                 openInWebStore(extensions.profileId || target, extensions.list.map((e) => e.webStoreUrl));
                 setExtensions((x) => ({ ...x, opened: true }));
@@ -805,24 +805,24 @@ export function ImportWindow() {
     ) : null;
     body = failures.length ? (
       <>
-        <Title title={summary.length ? "Partially imported" : "Import failed"} subtitle="Only some of your data imported. Please try again!" />
-        <Text style={{ fontSize: 13, fontWeight: "600", color: theme.textPrimary, marginBottom: 6 }}>Some import steps failed:</Text>
+        <Title title={summary.length ? "部分导入成功" : "导入失败"} subtitle="仅导入了部分数据，请重试。" />
+        <Text style={{ fontSize: 13, fontWeight: "600", color: theme.textPrimary, marginBottom: 6 }}>部分导入步骤失败：</Text>
         {failures.map((f) => (
           <Text key={f.kind} style={{ fontSize: 13, color: theme.textSecondary, marginBottom: 3 }}>
-            {f.profiles.length ? `${kindTitle(f.kind)} import failed for profiles ${f.profiles.join(", ")}` : `${kindTitle(f.kind)} import failed`}
+            {f.profiles.length ? `${f.profiles.join("、")} 的${kindTitle(f.kind)}导入失败` : `${kindTitle(f.kind)}导入失败`}
           </Text>
         ))}
-        {summary.length > 0 && <Text style={{ fontSize: 12, marginTop: 12, color: theme.textSecondary }}>{`Imported ${summary.join(", ")}.`}</Text>}
+        {summary.length > 0 && <Text style={{ fontSize: 12, marginTop: 12, color: theme.textSecondary }}>{`已导入${summary.join("、")}。`}</Text>}
         {leftBehind}
         {extensionList}
-        <Text style={{ fontSize: 12, marginTop: 12, color: theme.textTertiary }}>You can retry the import later from the app menu.</Text>
+        <Text style={{ fontSize: 12, marginTop: 12, color: theme.textTertiary }}>之后可从应用菜单重新尝试导入。</Text>
       </>
     ) : (
       <View style={{ alignItems: "center", marginTop: 40, gap: 12 }}>
         <SuccessMark />
-        <Text style={{ fontSize: 20, fontWeight: "600", color: theme.textPrimary }}>You're all set</Text>
+        <Text style={{ fontSize: 20, fontWeight: "600", color: theme.textPrimary }}>一切准备就绪</Text>
         <Text style={{ fontSize: 13, color: theme.textSecondary, textAlign: "center" }}>
-          {summary.length ? `Imported ${summary.join(", ")}.` : "There was nothing new to import."}
+          {summary.length ? `已导入${summary.join("、")}。` : "没有新的内容可导入。"}
         </Text>
         {leftBehind}
         {extensionList}
@@ -831,8 +831,8 @@ export function ImportWindow() {
     footer = (
       <>
         <View style={{ flex: 1 }} />
-        {failures.length > 0 && <Button title="Try Again" onPress={() => setStep("choose")} />}
-        <Button title={failures.length ? "Continue" : "Finish importing"} kind="primary" onPress={close} />
+        {failures.length > 0 && <Button title="重试" onPress={() => setStep("choose")} />}
+        <Button title={failures.length ? "继续" : "完成导入"} kind="primary" onPress={close} />
       </>
     );
   }
@@ -897,15 +897,15 @@ function BrowserRow({ browser, selected, onPress }: { browser: BrowserSource; se
   const { hovered, hoverProps } = useHover();
   const spaces = browser.profiles.reduce((n, p) => n + (p.spaces?.length ?? 0), 0);
   const detail = browser.needsFullDiskAccess
-    ? "Needs Full Disk Access"
+    ? "需要完全磁盘访问权限"
     : browser.family === "automation"
-    ? "Asks Dia while it's open"
+    ? "在 Dia 运行时获取数据"
     : browser.requiresExport
-    ? "Direct or from an exported .zip"
+    ? "直接导入或从导出的 .zip 文件导入"
     : browser.family === "arc" && spaces
-      ? plural(spaces, "space")
+      ? `${spaces} 个空间`
       : browser.profiles.length > 1
-        ? plural(browser.profiles.length, "profile")
+        ? `${browser.profiles.length} 个个人资料`
         : "";
   return (
     <View {...hoverProps}>
@@ -1063,14 +1063,14 @@ function SuccessMark() {
 
 function diaProfileSummary(dia: DiaTabsResult | null, id: string): string | undefined {
   const p = dia?.profiles.find((x) => x.id === id);
-  return p ? `${plural(p.pinned.length, "pinned tab")} · ${plural(p.tabs.length, "open tab")}` : undefined;
+  return p ? `${`${p.pinned.length} 个固定标签页`} · ${`${p.tabs.length} 个已打开的标签页`}` : undefined;
 }
 
 function FullDiskAccessSteps({ onOpen, onRecheck }: { onOpen: () => void; onRecheck: () => void }) {
   return (
     <SettingsSteps
-      steps={["Click “Open Full Disk Access Settings” below", `Turn on ${APP} in the list`, "Come back here: we'll continue automatically"]}
-      openTitle="Open Full Disk Access Settings"
+      steps={["点击下方的“打开完全磁盘访问设置”", `在列表中启用 ${APP}`, "返回这里后会自动继续"]}
+      openTitle="打开完全磁盘访问设置"
       onOpen={onOpen}
       onRecheck={onRecheck}
     />
@@ -1093,7 +1093,7 @@ function SettingsSteps({ steps, openTitle, onOpen, onRecheck }: { steps: string[
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginBottom: 18 }}>
         <Button title={openTitle} kind="primary" onPress={onOpen} />
-        <Button title="Check Again" onPress={onRecheck} />
+        <Button title="重新检查" onPress={onRecheck} />
       </View>
     </>
   );
@@ -1126,9 +1126,9 @@ function FileDrop({ onFile, onChoose }: { onFile: (path: string) => void; onChoo
       }}
     >
       <Symbol name="doc.zipper" size={24} color={theme.textSecondary} style={{ width: 32, height: 32 }} />
-      <Text style={{ fontSize: 13, color: theme.textSecondary }}>Choose .zip file or drag it here</Text>
+      <Text style={{ fontSize: 13, color: theme.textSecondary }}>选择 .zip 文件或将其拖到这里</Text>
       <Button
-        title="Choose .zip file"
+        title="选择 .zip 文件"
         onPress={() =>
           void onChoose().then((path) => {
             if (path) onFile(path);

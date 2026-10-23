@@ -24,20 +24,20 @@ import { useSettingsSheet } from "./sheet";
 import { useSettingsNav, type SettingsPane } from "./windows";
 
 const PANES: { id: SettingsPane; title: string; icon: string }[] = [
-  { id: "general", title: "General", icon: "gearshape" },
-  { id: "profiles", title: "Profiles", icon: "person.2" },
-  { id: "sync", title: "Sync", icon: "arrow.triangle.2.circlepath" },
-  { id: "tabs", title: "Tabs", icon: "square.on.square" },
-  { id: "appearance", title: "Appearance", icon: "circle.lefthalf.filled" },
-  { id: "privacy", title: "Privacy & Security", icon: "hand.raised" },
-  { id: "passwords", title: "Passwords", icon: "key" },
-  { id: "autofill", title: "Autofill", icon: "creditcard" },
-  { id: "extensions", title: "Extensions", icon: "puzzlepiece.extension" },
-  { id: "search", title: "Search Engine", icon: "magnifyingglass" },
-  { id: "shortcuts", title: "Keyboard Shortcuts", icon: "keyboard" },
-  { id: "liveFolders", title: "Live Folders", icon: "dot.radiowaves.left.and.right" },
-  { id: "calendar", title: "Calendar", icon: "calendar" },
-  { id: "advanced", title: "Advanced", icon: "slider.horizontal.3" },
+  { id: "general", title: "通用", icon: "gearshape" },
+  { id: "profiles", title: "个人资料", icon: "person.2" },
+  { id: "sync", title: "同步", icon: "arrow.triangle.2.circlepath" },
+  { id: "tabs", title: "标签页", icon: "square.on.square" },
+  { id: "appearance", title: "外观", icon: "circle.lefthalf.filled" },
+  { id: "privacy", title: "隐私与安全", icon: "hand.raised" },
+  { id: "passwords", title: "密码", icon: "key" },
+  { id: "autofill", title: "自动填充", icon: "creditcard" },
+  { id: "extensions", title: "扩展", icon: "puzzlepiece.extension" },
+  { id: "search", title: "搜索引擎", icon: "magnifyingglass" },
+  { id: "shortcuts", title: "键盘快捷键", icon: "keyboard" },
+  { id: "liveFolders", title: "动态文件夹", icon: "dot.radiowaves.left.and.right" },
+  { id: "calendar", title: "日历", icon: "calendar" },
+  { id: "advanced", title: "高级", icon: "slider.horizontal.3" },
 ];
 
 const SIDEBAR = 214;
@@ -66,8 +66,8 @@ export function SettingsWindow() {
       <View style={{ flex: 1 }}>
         <View style={{ height: TOOLBAR, flexDirection: "row", alignItems: "center", paddingHorizontal: 12, gap: 2 }}>
           <WindowDragRegion style={StyleSheet.absoluteFill} />
-          <IconButton icon="chevron.left" size={13} box={28} radius={6} disabled={!nav.back.length} onPress={nav.goBack} tooltip="Back" />
-          <IconButton icon="chevron.right" size={13} box={28} radius={6} disabled={!nav.forward.length} onPress={nav.goForward} tooltip="Forward" />
+          <IconButton icon="chevron.left" size={13} box={28} radius={6} disabled={!nav.back.length} onPress={nav.goBack} tooltip="后退" />
+          <IconButton icon="chevron.right" size={13} box={28} radius={6} disabled={!nav.forward.length} onPress={nav.goForward} tooltip="前进" />
           <Text style={{ marginLeft: 8, fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>{title}</Text>
         </View>
         <ScrollView key={`${nav.pane}:${nav.profileId}`} contentContainerStyle={{ alignItems: "center", paddingBottom: 40 }}>

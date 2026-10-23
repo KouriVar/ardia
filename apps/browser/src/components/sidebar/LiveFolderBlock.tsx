@@ -102,9 +102,9 @@ function FolderRowView({ row, folderId, windowId }: { row: FolderRow; folderId: 
 function FolderNote({ folderId }: { folderId: string }) {
   const status = useLive((s) => s.status[folderId]);
   const kind = useLive((s) => s.folders[folderId]?.kind);
-  if (!status || status.state === "initializing" || (status.state === "updating" && !status.lastFetch)) return <NoteRow text="Loading…" spinner />;
+  if (!status || status.state === "initializing" || (status.state === "updating" && !status.lastFetch)) return <NoteRow text="正在加载…" spinner />;
   if (status.error) return <NoteRow text={errorText(status.error.kind, status.error.source)} onPress={() => openSettings("liveFolders")} icon="exclamationmark.triangle.fill" />;
-  return <NoteRow text={kind === "pullRequests" ? "No open pull requests" : "No recent documents"} />;
+  return <NoteRow text={kind === "pullRequests" ? "没有未关闭的拉取请求" : "没有最近的文档"} />;
 }
 
 function FolderHeader({ folderId, windowId, collapsed }: { folderId: string; windowId: string; collapsed: boolean }) {
@@ -264,7 +264,7 @@ function StackRow({ folderId, windowId, stack }: { folderId: string; windowId: s
       <View {...hoverProps}>
         <Pressable
           onPress={() => setLive((s) => ({ expandedStacks: { ...s.expandedStacks, [stack.id]: collapsed } }))}
-          accessibilityLabel={collapsed ? "Expand pull request stack" : "Collapse pull request stack"}
+          accessibilityLabel={collapsed ? "展开拉取请求列表" : "折叠拉取请求列表"}
         >
           <View style={{ height: 26, borderRadius: 8, flexDirection: "row", alignItems: "center", paddingLeft: 9, paddingRight: 8, backgroundColor: hovered ? theme.rowHover : undefined }}>
             <Symbol name="square.stack.3d.up" size={11} color={theme.textSecondary} style={{ width: 16, height: 16 }} />
@@ -351,7 +351,7 @@ function LiveItemRow({ folderId, item, windowId, indent = 0 }: { folderId: strin
                 <HoverSlot
                   hovered={hovered && !!tabId && !completion}
                   width={22}
-                  hover={<IconButton icon="xmark" size={10} weight="semibold" box={22} radius={6} onPress={() => tabId && void closeTab(tabId)} tooltip="Close Tab (⌘W)" />}
+                  hover={<IconButton icon="xmark" size={10} weight="semibold" box={22} radius={6} onPress={() => tabId && void closeTab(tabId)} tooltip="关闭标签页 (⌘W)" />}
                 >
                   <Trailing item={item} completion={completion} colors={colors} />
                 </HoverSlot>
@@ -403,18 +403,18 @@ function ItemIcon({ item, completion, colors }: { item: LiveItem; completion: Co
 }
 
 const BADGES: Record<NonNullable<ReturnType<typeof prBadge>>, { symbol: string | null; color: keyof LiveColors; tip: string }> = {
-  conflict: { symbol: "exclamationmark.triangle.fill", color: "conflict", tip: "Merge conflicts" },
-  failing: { symbol: "xmark.circle.fill", color: "failure", tip: "Checks are failing" },
-  changesRequested: { symbol: "arrow.uturn.backward.circle.fill", color: "failure", tip: "Changes Requested" },
-  pending: { symbol: null, color: "pending", tip: "Some checks haven't completed yet" },
-  approved: { symbol: "checkmark.circle.fill", color: "success", tip: "Approved" },
-  passed: { symbol: "checkmark", color: "success", tip: "All checks have passed" },
+  conflict: { symbol: "exclamationmark.triangle.fill", color: "conflict", tip: "合并冲突" },
+  failing: { symbol: "xmark.circle.fill", color: "failure", tip: "检查未通过" },
+  changesRequested: { symbol: "arrow.uturn.backward.circle.fill", color: "failure", tip: "已请求更改" },
+  pending: { symbol: null, color: "pending", tip: "部分检查尚未完成" },
+  approved: { symbol: "checkmark.circle.fill", color: "success", tip: "已批准" },
+  passed: { symbol: "checkmark", color: "success", tip: "所有检查均已通过" },
 };
 
 function Trailing({ item, completion, colors }: { item: LiveItem; completion: CompletedItem["state"] | null; colors: LiveColors }): ReactNode {
   const theme = useTheme();
   if (completion) {
-    return <Text style={{ fontSize: 11, fontWeight: "500", color: colors[COMPLETION_GLYPH[completion].color], marginRight: 4 }}>{completion === "merged" ? "Merged" : completion === "reviewed" ? "Reviewed" : "Closed"}</Text>;
+    return <Text style={{ fontSize: 11, fontWeight: "500", color: colors[COMPLETION_GLYPH[completion].color], marginRight: 4 }}>{completion === "merged" ? "已合并" : completion === "reviewed" ? "已审阅" : "已关闭"}</Text>;
   }
   const badge = item.pr ? prBadge(item.pr) : null;
   if (!badge) return null;

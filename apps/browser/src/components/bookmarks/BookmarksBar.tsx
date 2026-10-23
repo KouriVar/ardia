@@ -109,7 +109,7 @@ function Bar({ windowId }: { windowId: string }) {
         {children.length === 0 && !hideImport ? (
           <ImportButton />
         ) : children.length === 0 ? (
-          <Text style={{ fontSize: 12, color: theme.textTertiary, marginLeft: 4 }}>For quick access, place your bookmarks here on the bookmarks bar.</Text>
+          <Text style={{ fontSize: 12, color: theme.textTertiary, marginLeft: 4 }}>将书签放在此书签栏上，即可快速访问。</Text>
         ) : (
           children.map((id) => (
             <BarItem
@@ -132,7 +132,7 @@ function Bar({ windowId }: { windowId: string }) {
       {hidden.length > 0 && (
         <BarButton
           icon="chevron.right.2"
-          tooltip="More bookmarks"
+          tooltip="更多书签"
           onPress={(e) => void openFolderMenu(windowId, hidden, e)}
           width={OVERFLOW_WIDTH}
         />
@@ -142,7 +142,7 @@ function Bar({ windowId }: { windowId: string }) {
           <View style={{ width: StyleSheet.hairlineWidth * 2, height: 14, marginHorizontal: 6, backgroundColor: theme.divider }} />
           <BarButton
             icon="folder"
-            title="Other Bookmarks"
+            title="其他书签"
             onPress={(e) => void openFolderMenu(windowId, folderChildren(useBrowser.getState().bookmarks, otherId).map((n) => n.id), e, otherId)}
           />
         </View>
@@ -291,11 +291,11 @@ function ImportButton() {
   return (
     <ContextMenuArea
       onContextMenu={async () => {
-        const choice = await showMenu([{ id: "hide", title: "Hide Import Bookmarks Button" }]);
+        const choice = await showMenu([{ id: "hide", title: "隐藏导入书签按钮" }]);
         if (choice === "hide") useBrowser.getState().updateSettings({ hideBookmarksBarImport: true });
       }}
     >
-      <BarButton icon="rectangle.portrait.and.arrow.right" title="Import bookmarks" tooltip="Add bookmarks from another browser" onPress={() => openImport()} />
+      <BarButton icon="rectangle.portrait.and.arrow.right" title="导入书签" tooltip="从其他浏览器添加书签" onPress={() => openImport()} />
     </ContextMenuArea>
   );
 }
@@ -311,14 +311,14 @@ async function openFolderMenu(windowId: string, ids: string[], _e?: ClickMods, f
           ? { id: `open:${n.id}`, title: n.title || n.url, symbol: "globe" }
           : { id: `folder:${n.id}`, title: n.title, symbol: "folder", children: depth < 8 ? build(n.children, n.id, depth + 1) : [] },
       );
-    if (!items.length) items.push({ id: "empty", title: "Empty", enabled: false });
+    if (!items.length) items.push({ id: "empty", title: "暂无内容", enabled: false });
     const links = parent ? folderLinks(b, parent).length : 0;
     if (links > 0) {
       items.push(
         { separator: true },
-        { id: `openAll:${parent}`, title: `Open All (${links})` },
-        { id: `openAllWindow:${parent}`, title: "Open All in New Window" },
-        { id: `openAllIncognito:${parent}`, title: "Open All in Incognito Window" },
+        { id: `openAll:${parent}`, title: `全部打开 (${links})` },
+        { id: `openAllWindow:${parent}`, title: "在新窗口中全部打开" },
+        { id: `openAllIncognito:${parent}`, title: "在无痕窗口中全部打开" },
       );
     }
     return items;
@@ -344,40 +344,40 @@ async function openBarMenu(windowId: string, profileId: string, node: BookmarkNo
   const items: MenuItem[] = [];
   if (node?.kind === "url") {
     items.push(
-      { id: "tab", title: "Open in New Tab" },
-      { id: "window", title: "Open in New Window" },
-      { id: "incognito", title: "Open in Incognito Window" },
-      { id: "split", title: "Open in Split View" },
+      { id: "tab", title: "在新标签页中打开" },
+      { id: "window", title: "在新窗口中打开" },
+      { id: "incognito", title: "在无痕窗口中打开" },
+      { id: "split", title: "在分屏视图中打开" },
       { separator: true },
-      { id: "edit", title: "Edit…" },
-      { id: "copy", title: "Copy Link" },
-      { id: "delete", title: "Delete" },
+      { id: "edit", title: "编辑…" },
+      { id: "copy", title: "复制链接" },
+      { id: "delete", title: "删除" },
       { separator: true },
     );
   } else if (node?.kind === "folder") {
     const n = folderLinks(s.bookmarks, node.id).length;
     items.push(
-      { id: "openAll", title: `Open All (${n})`, enabled: n > 0 },
-      { id: "openAllWindow", title: "Open All in New Window", enabled: n > 0 },
-      { id: "openAllIncognito", title: "Open All in Incognito Window", enabled: n > 0 },
+      { id: "openAll", title: `全部打开 (${n})`, enabled: n > 0 },
+      { id: "openAllWindow", title: "在新窗口中全部打开", enabled: n > 0 },
+      { id: "openAllIncognito", title: "在无痕窗口中全部打开", enabled: n > 0 },
       { separator: true },
-      { id: "rename", title: "Rename…" },
-      { id: "delete", title: "Delete" },
+      { id: "rename", title: "重命名…" },
+      { id: "delete", title: "删除" },
       { separator: true },
     );
   }
   items.push(
-    { id: "addPage", title: "Add Page…" },
-    { id: "addFolder", title: "Add Folder…" },
+    { id: "addPage", title: "添加页面…" },
+    { id: "addFolder", title: "添加文件夹…" },
     { separator: true },
-    { id: "manage", title: "Manage Bookmarks" },
+    { id: "manage", title: "管理书签" },
     {
       id: "show",
-      title: "Show Bookmarks Bar",
+      title: "显示书签栏",
       children: [
-        { id: "bar:always", title: "Always", checked: barMode === "always" },
-        { id: "bar:newTab", title: "On New Tab Only", checked: barMode === "newTab" },
-        { id: "bar:never", title: "Never", checked: barMode === "never" },
+        { id: "bar:always", title: "始终", checked: barMode === "always" },
+        { id: "bar:newTab", title: "仅在新标签页显示", checked: barMode === "newTab" },
+        { id: "bar:never", title: "从不", checked: barMode === "never" },
       ],
     },
   );
@@ -403,7 +403,7 @@ async function openBarMenu(windowId: string, profileId: string, node: BookmarkNo
   const index = node && parentId ? (folderChildren(useBrowser.getState().bookmarks, parentId).findIndex((n) => n.id === node.id) + 1) : undefined;
   if (choice === "addPage") void editBookmark(null, windowId, { profileId, parentId: parentId ?? undefined, index });
   if (choice === "addFolder") {
-    const title = await prompt({ title: "New Folder", placeholder: "Folder name", confirmTitle: "Create", windowId });
+    const title = await prompt({ title: "新建文件夹", placeholder: "文件夹名称", confirmTitle: "创建", windowId });
     if (title) useBrowser.getState().addBookmarkFolder({ profileId, title, parentId: parentId ?? undefined, index });
   }
   if (choice === "manage") openInternalPage("bookmarks", windowId);

@@ -96,7 +96,7 @@ test("a profile that shares data on one Mac shares the same profile's data on th
     const remote = engineB.useSync.getState().remoteProfiles;
     const work = remote.find((p) => p.name === "Work");
     const kids = remote.find((p) => p.name === "Kids");
-    assert.deepEqual(work?.sharesWith, { name: "Personal", added: false });
+    assert.deepEqual(work?.sharesWith, { name: "个人", added: false });
     assert.deepEqual(kids?.sharesWith, { name: "Home", added: false }, "Home paired by name, so Kids shares this Mac's Home");
 
     const workHere = engineB.addRemoteProfile(work.syncId);
@@ -285,7 +285,7 @@ test("a profile deleted and added back from sync shares its owner's data again",
     await engineA.syncNow();
     await engineA.syncNow();
     const offered = engineA.useSync.getState().remoteProfiles.find((p) => p.name === "Work");
-    assert.deepEqual(offered?.sharesWith, { name: "Personal", added: false }, "its share: record wasn't deleted with it");
+    assert.deepEqual(offered?.sharesWith, { name: "个人", added: false }, "its share: record wasn't deleted with it");
     const again = engineA.addRemoteProfile(offered.syncId);
     assert.equal(S().profiles[again].dataId, "default");
   });

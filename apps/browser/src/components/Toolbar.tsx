@@ -98,7 +98,7 @@ export function Toolbar({
             icon="sidebar.left"
             size={GLYPH}
             onPress={() => useBrowser.getState().toggleSidebar(windowId)}
-            tooltip="Auto-Hide Tabs (⌘S)"
+            tooltip="自动隐藏标签页 (⌘S)"
           />
         )}
         <HistoryButton style={at.back} tabId={tab.id} windowId={tab.windowId} direction={-1} disabled={!history.back} palette={palette} onFocus={focus} />
@@ -110,8 +110,8 @@ export function Toolbar({
         ) : null}
         {inSplit && (
           <View style={{ position: "absolute", top, right: 8, flexDirection: "row", gap: -2 }}>
-            <ToolbarButton palette={palette} icon="rectangle.split.2x1" size={14} box={30} onPress={() => showSplitMenu(tab.id)} tooltip="Split View" />
-            <ToolbarButton palette={palette} icon="xmark" size={12} weight="medium" box={30} onPress={() => closePane(tab.id)} tooltip="Close Pane" />
+            <ToolbarButton palette={palette} icon="rectangle.split.2x1" size={14} box={30} onPress={() => showSplitMenu(tab.id)} tooltip="分屏视图" />
+            <ToolbarButton palette={palette} icon="xmark" size={12} weight="medium" box={30} onPress={() => closePane(tab.id)} tooltip="关闭此分屏" />
           </View>
         )}
       </Animated.View>
@@ -167,7 +167,7 @@ export const ReloadButton = memo(function ReloadButton({
         if (m.metaKey) return void useBrowser.getState().newTab(tab.windowId, { url: tab.url, background: true, openerId: tab.id });
         void withLivePage(tab.id, (page) => (m.shiftKey ? page.forceReload() : page.reload()));
       }}
-      tooltip={loading ? "Stop Loading This Page" : "Refresh (⌘R)"}
+      tooltip={loading ? "停止加载此页面" : "刷新 (⌘R)"}
     />
   );
 });
@@ -244,7 +244,7 @@ export const HistoryButton = memo(function HistoryButton({
         onPress={onPress}
         onLongPress={openMenu}
         onContextMenu={openMenu}
-        tooltip={direction < 0 ? "Go Back (⌘[)" : "Go Forward (⌘])"}
+        tooltip={direction < 0 ? "后退 (⌘[)" : "前进 (⌘])"}
       />
     </MouseArea>
   );
@@ -290,7 +290,7 @@ export const UrlField = memo(function UrlField({
   const popover = usePages((p) => p.popover[tab.id] ?? null);
   const hovered = pointerOver || popover === "siteControls";
   const isFile = tab.url.startsWith("file:");
-  const host = isFile ? "File" : breadcrumb(tab.url).host;
+  const host = isFile ? "文件" : breadcrumb(tab.url).host;
   const full = isFile ? ` ${safeDecode(tab.url.slice("file://".length))}` : urlForDisplay(tab.url);
   const path = !isFile && full.startsWith(host) ? full.slice(host.length) : full;
   const web = isWebUrl(tab.url);
@@ -322,7 +322,7 @@ export const UrlField = memo(function UrlField({
         )
       ) : null}
       {insecure && (
-        <Pressable onPress={toggleSiteControls} style={{ paddingLeft: LOCK.left }} tooltip="Connection is not secure">
+        <Pressable onPress={toggleSiteControls} style={{ paddingLeft: LOCK.left }} tooltip="连接不安全">
           <Symbol
             name="lock.open.trianglebadge.exclamationmark.fill"
             size={12}
@@ -370,12 +370,12 @@ export const UrlField = memo(function UrlField({
               setPopover(tab.id, currentPopover(tab.id) === "popups" ? null : "popups");
             }}
             active={popover === "popups"}
-            tooltip="Pop-ups blocked on this page"
+            tooltip="此页面已拦截弹出式窗口"
           />
         )}
         {hovered && (
           <>
-            <ToolbarButton palette={palette} icon={bookmarked ? "bookmark.fill" : "bookmark"} size={13} box={24} radius={6} onPress={toggleBookmark} tooltip={bookmarked ? "Remove Bookmark" : "Bookmark This Page (⌘D)"} />
+            <ToolbarButton palette={palette} icon={bookmarked ? "bookmark.fill" : "bookmark"} size={13} box={24} radius={6} onPress={toggleBookmark} tooltip={bookmarked ? "移除书签" : "将此页面加入书签 (⌘D)"} />
             {!inSplit && !sidebar && (
               <ToolbarButton
                 palette={palette}
@@ -384,10 +384,10 @@ export const UrlField = memo(function UrlField({
                 box={24}
                 radius={6}
                 onPress={() => openSplitPane(windowId, { anchorTabId: tab.id })}
-                tooltip="Open Split View (⌃⇧=)"
+                tooltip="打开分屏视图 (⌃⇧=)"
               />
             )}
-            <ToolbarButton palette={palette} icon="slider.horizontal.3" size={13} box={24} radius={6} onPress={toggleSiteControls} active={popover === "siteControls"} tooltip="Site Controls" />
+            <ToolbarButton palette={palette} icon="slider.horizontal.3" size={13} box={24} radius={6} onPress={toggleSiteControls} active={popover === "siteControls"} tooltip="网站设置" />
           </>
         )}
         {sidebar?.accessory}
@@ -401,7 +401,7 @@ function CaptureIndicator({ camera, microphone, screen, onPress }: { camera: boo
   const icon = screen ? "rectangle.inset.filled.on.rectangle" : camera ? "video.fill" : "mic.fill";
   const what = [camera && "camera", microphone && "microphone", screen && "screen"].filter(Boolean).join(" and ");
   return (
-    <Pressable onPress={onPress} tooltip={`This page is using your ${what}`} style={{ width: 24, height: 24, alignItems: "center", justifyContent: "center" }}>
+    <Pressable onPress={onPress} tooltip={`此页面正在使用你的${what}`} style={{ width: 24, height: 24, alignItems: "center", justifyContent: "center" }}>
       <Symbol name={icon} size={12} color="#FF453A" style={{ width: 18, height: 18 }} />
     </Pressable>
   );

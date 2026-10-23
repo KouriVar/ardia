@@ -18,7 +18,7 @@ import { Text, View } from "react-native";
 import { useTheme } from "../../../lib/theme";
 import { useBrowser } from "../../../store/browser";
 import { useProfiles } from "../../../store/hooks";
-import { engineProfile, plural } from "../../../store/model";
+import { engineProfile } from "../../../store/model";
 import { importModule } from "../../import/module";
 import { hostLabel, matchesQuery } from "../../pages/PageLayout";
 import { Favicon, IconButton } from "../../primitives";
@@ -26,10 +26,10 @@ import { Button, Group, PopUp, Row, SearchField, SectionHeader, Sheet, TextField
 import { closeSettingsSheet, showSettingsSheet } from "../sheet";
 
 function passwordManagerAppsNote() {
-  const apps = "1Password, Bitwarden, KeePassXC and Proton Pass extensions connect to their Mac apps.";
+  const apps = "1Password、Bitwarden、KeePassXC 和 Proton Pass 扩展可连接各自的 Mac 应用。";
   return systemInfo().inApplicationsFolder === false
-    ? `${apps} For 1Password, move Ardia to your Applications folder and reopen it (1Password only connects to browsers there), then in the 1Password app open Settings › Browser › Add Browser and choose it.`
-    : `${apps} For 1Password, add Ardia once: in the 1Password app, open Settings › Browser › Add Browser and choose Ardia.`;
+    ? `${apps} 使用 1Password 时，请将 Ardia 移入“应用程序”文件夹并重新打开（1Password 仅连接该位置的浏览器），然后在 1Password 的“设置 › 浏览器 › 添加浏览器”中选择它。`
+    : `${apps} 使用 1Password 时，只需添加一次 Ardia：打开 1Password 的“设置 › 浏览器 › 添加浏览器”，选择 Ardia。`;
 }
 
 const UNLOCK_MS = 5 * 60_000;
@@ -67,26 +67,26 @@ export function PasswordsPane({ profileId: initial }: { profileId?: string | nul
 
   const importCsv = async () => {
     const mod = importModule();
-    if (!mod) return setImportStatus("Importing isn't available in this build.");
+    if (!mod) return setImportStatus("此构建版本不支持导入。");
     const path = await mod.chooseImportFile("passwordsCSV");
     if (!path) return;
     try {
       const creds = await mod.importPasswordsCSV(path);
       let saved = 0;
       for (const c of creds) if (c.url && c.password && (await savePassword(profile, originOf(c.url), c.username, c.password))) saved++;
-      setImportStatus(`Imported ${plural(saved, "password")}.`);
+      setImportStatus(`已导入 ${saved} 个密码。`);
       load();
     } catch (e) {
-      setImportStatus(`Couldn't import that file: ${(e as Error).message}`);
+      setImportStatus(`无法导入此文件：${(e as Error).message}`);
     }
   };
 
   const exportCsv = async () => {
     const { status, path } = await exportPasswords(profile);
     const folder = path ? path.split("/").slice(-2, -1)[0] : "";
-    if (status === "succeeded") setExportStatus(`Saved to “${folder}”. Delete the file once you're done with it.`);
-    else if (status === "writeFailed") setExportStatus("Couldn't write the file. Try another folder.");
-    else if (status === "inProgress") setExportStatus("An export is already running.");
+    if (status === "succeeded") setExportStatus(`已保存到“${folder}”。使用完毕后请删除该文件。`);
+    else if (status === "writeFailed") setExportStatus("无法写入文件。请尝试其他文件夹。");
+    else if (status === "inProgress") setExportStatus("已有导出任务正在运行。");
     else setExportStatus("");
   };
 
@@ -95,8 +95,8 @@ export function PasswordsPane({ profileId: initial }: { profileId?: string | nul
   return (
     <View>
       <SectionHeader
-        title="Passwords"
-        description="Saved on this Mac, separately for each profile, and encrypted with a key in your Keychain."
+        title="密码"
+        description="按个人资料分别保存在此 Mac 上，并使用钥匙串中的密钥加密。"
         action={
           profiles.length > 1 ? (
             <PopUp value={profileId} options={profiles.map((p) => ({ value: p.id, title: p.name }))} onChange={setProfileId} />
@@ -104,38 +104,38 @@ export function PasswordsPane({ profileId: initial }: { profileId?: string | nul
         }
       />
       <Group>
-        <Row title="Offer to save and fill passwords" description="Offers to save a login after you sign in, and suggests saved ones when you click a login field.">
+        <Row title="提示保存并填充密码" description="登录后提示保存登录信息；点击登录输入框时建议已保存的登录信息。">
           <Toggle value={autofill} onChange={(v) => void setPasswordAutofill(v, profile).then(() => setAutofill(v))} />
         </Row>
-        <Row title="Import passwords" description={importStatus || "From a CSV exported by Chrome, Safari, Firefox, 1Password, Bitwarden…"}>
-          <Button title="Import CSV…" onPress={() => void importCsv()} />
+        <Row title="导入密码" description={importStatus || "从 Chrome、Safari、Firefox、1Password、Bitwarden 等导出的 CSV 文件中导入。"}>
+          <Button title="导入 CSV…" onPress={() => void importCsv()} />
         </Row>
-        <Row title="Export passwords" description={exportStatus || "To a CSV file. Anyone who can open the file can read your passwords."}>
-          <Button title="Export CSV…" onPress={() => void exportCsv()} />
+        <Row title="导出密码" description={exportStatus || "导出为 CSV 文件。任何能打开此文件的人都可以读取您的密码。"}>
+          <Button title="导出 CSV…" onPress={() => void exportCsv()} />
         </Row>
-        <Row title="Password manager apps" description={passwordManagerAppsNote()} />
+        <Row title="密码管理器应用" description={passwordManagerAppsNote()} />
       </Group>
 
       {!unlocked ? (
         <View style={{ alignItems: "center", gap: 10, marginTop: 40 }}>
           <Symbol name="lock.fill" size={26} color={theme.textTertiary} style={{ width: 36, height: 36 }} />
-          <Text style={{ fontSize: 14, fontWeight: "500", color: theme.textPrimary }}>Passwords are locked</Text>
-          <Text style={{ fontSize: 12, color: theme.textSecondary }}>Unlock with Touch ID or your login password to see them.</Text>
-          <Button title="Unlock" kind="primary" onPress={() => void unlock()} style={{ marginTop: 6 }} />
+          <Text style={{ fontSize: 14, fontWeight: "500", color: theme.textPrimary }}>密码已锁定</Text>
+          <Text style={{ fontSize: 12, color: theme.textSecondary }}>使用触控 ID 或登录密码解锁后查看。</Text>
+          <Button title="解锁" kind="primary" onPress={() => void unlock()} style={{ marginTop: 6 }} />
         </View>
       ) : (
         <>
-          <SectionHeader title={list ? plural(list.length, "Saved Password") : "Saved Passwords"} action={<SearchField value={query} onChangeText={setQuery} placeholder="Search" width={200} />} />
+          <SectionHeader title={list ? `已保存的密码（${list.length}）` : "已保存的密码"} action={<SearchField value={query} onChangeText={setQuery} placeholder="搜索" width={200} />} />
           <Group>
             {list && shown.length === 0 ? (
-              <Row title={query ? "No passwords match" : "No saved passwords"} />
+              <Row title={query ? "没有匹配的密码" : "没有已保存的密码"} />
             ) : (
               shown.map((p) => (
                 <Row
                   key={`${p.origin}|${p.username}`}
                   icon={<Favicon url={p.origin} />}
                   title={hostLabel(p.origin)}
-                  description={p.username || "(no username)"}
+                  description={p.username || "（无用户名）"}
                   onPress={() => showSettingsSheet(<PasswordSheet profile={profile} saved={p} onChanged={load} />)}
                 />
               ))
@@ -143,11 +143,11 @@ export function PasswordsPane({ profileId: initial }: { profileId?: string | nul
           </Group>
           {never.length > 0 && (
             <>
-              <SectionHeader title="Never saved" description="Sites where you chose “Never on This Site”." />
+              <SectionHeader title="不保存密码的网站" description="您选择了“永不为此网站保存”的网站。" />
               <Group>
                 {never.map((origin) => (
                   <Row key={origin} icon={<Favicon url={origin} />} title={hostLabel(origin)}>
-                    <Button title="Remove" onPress={() => void setNeverSavePasswords(profile, origin, false).then(load)} />
+                    <Button title="移除" onPress={() => void setNeverSavePasswords(profile, origin, false).then(load)} />
                   </Row>
                 ))}
               </Group>
@@ -182,9 +182,9 @@ function PasswordSheet({ profile, saved, onChanged }: { profile: string; saved: 
   };
   const remove = async () => {
     const { confirmed } = await confirm({
-      title: `Delete the password for ${hostLabel(saved.origin)}?`,
-      message: "You won't be able to sign in with it automatically any more.",
-      confirmTitle: "Delete",
+      title: `删除 ${hostLabel(saved.origin)} 的密码？`,
+      message: "您将无法再使用此密码自动登录。",
+      confirmTitle: "删除",
       destructive: true,
     });
     if (!confirmed) return;
@@ -201,8 +201,8 @@ function PasswordSheet({ profile, saved, onChanged }: { profile: string; saved: 
       </View>
       <View style={{ marginTop: 14 }}>
         <Group>
-          <Row title="Website" description={saved.origin} />
-          <Row title="Username">
+          <Row title="网站" description={saved.origin} />
+          <Row title="用户名">
             {editing ? (
               <TextField value={username} onChangeText={setUsername} style={{ width: 220 }} />
             ) : (
@@ -210,11 +210,11 @@ function PasswordSheet({ profile, saved, onChanged }: { profile: string; saved: 
                 <Text selectable style={{ fontSize: 13, color: theme.textPrimary }}>
                   {saved.username}
                 </Text>
-                <IconButton icon="doc.on.doc" size={11} box={24} radius={6} onPress={() => copyText(saved.username)} tooltip="Copy Username" />
+                <IconButton icon="doc.on.doc" size={11} box={24} radius={6} onPress={() => copyText(saved.username)} tooltip="复制用户名" />
               </View>
             )}
           </Row>
-          <Row title="Password">
+          <Row title="密码">
             {editing ? (
               <TextField value={password ?? ""} onChangeText={setPassword} secure={!revealed} style={{ width: 220 }} />
             ) : (
@@ -222,25 +222,25 @@ function PasswordSheet({ profile, saved, onChanged }: { profile: string; saved: 
                 <Text selectable style={{ fontSize: 13, color: theme.textPrimary, fontFamily: revealed ? "Menlo" : undefined }}>
                   {password === null ? "…" : revealed ? password : "•".repeat(Math.min(password.length, 12))}
                 </Text>
-                <IconButton icon={revealed ? "eye.slash" : "eye"} size={11} box={24} radius={6} onPress={() => setRevealed(!revealed)} tooltip={revealed ? "Hide" : "Show"} />
-                <IconButton icon="doc.on.doc" size={11} box={24} radius={6} onPress={() => password && copyText(password)} tooltip="Copy Password" />
+                <IconButton icon={revealed ? "eye.slash" : "eye"} size={11} box={24} radius={6} onPress={() => setRevealed(!revealed)} tooltip={revealed ? "隐藏" : "显示"} />
+                <IconButton icon="doc.on.doc" size={11} box={24} radius={6} onPress={() => password && copyText(password)} tooltip="复制密码" />
               </View>
             )}
           </Row>
         </Group>
       </View>
       <View style={{ flexDirection: "row", gap: 8, marginTop: 18 }}>
-        <Button title="Delete" kind="destructive" onPress={() => void remove()} />
+        <Button title="删除" kind="destructive" onPress={() => void remove()} />
         <View style={{ flex: 1 }} />
         {editing ? (
           <>
-            <Button title="Cancel" onPress={() => setEditing(false)} />
-            <Button title="Save" kind="primary" disabled={!password} onPress={() => void save()} />
+            <Button title="取消" onPress={() => setEditing(false)} />
+            <Button title="保存" kind="primary" disabled={!password} onPress={() => void save()} />
           </>
         ) : (
           <>
-            <Button title="Edit" onPress={() => setEditing(true)} />
-            <Button title="Done" kind="primary" onPress={closeSettingsSheet} />
+            <Button title="编辑" onPress={() => setEditing(true)} />
+            <Button title="完成" kind="primary" onPress={closeSettingsSheet} />
           </>
         )}
       </View>

@@ -63,12 +63,12 @@ export function SadTab({ tabId }: { tabId: string }) {
     return (
       <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.dark ? "#1C1A1B" : "#F6F5F6", alignItems: "center", justifyContent: "center", padding: 24 }]}>
         <Symbol name="exclamationmark.triangle" size={30} weight="light" color={theme.textSecondary} style={{ width: 44, height: 40, marginBottom: 14 }} />
-        <Text style={{ fontSize: 17, fontWeight: "600", color: theme.textPrimary, marginBottom: 6 }}>This tab needs to reload</Text>
+        <Text style={{ fontSize: 17, fontWeight: "600", color: theme.textPrimary, marginBottom: 6 }}>此标签页需要重新加载</Text>
         <Text style={{ fontSize: 13, color: theme.textSecondary, textAlign: "center", maxWidth: 340, marginBottom: 18 }}>
           Something went wrong with this tab. Reloading often fixes it.
         </Text>
         <PromptButton
-          title="Reload"
+          title="重新载入"
           primary
           onPress={() => {
             patchPage(tabId, { crashed: null });
@@ -92,18 +92,18 @@ export function SadTab({ tabId }: { tabId: string }) {
         shadowOffset={[0, 8]}
         style={{ width: 320, padding: 18, gap: 6 }}
       >
-        <Text style={{ fontSize: 14, fontWeight: "600", color: theme.textPrimary }}>Page Unresponsive</Text>
-        <Text style={{ fontSize: 12, color: theme.textSecondary, marginBottom: 10 }}>You can wait for it to become responsive or exit the page.</Text>
+        <Text style={{ fontSize: 14, fontWeight: "600", color: theme.textPrimary }}>页面未响应</Text>
+        <Text style={{ fontSize: 12, color: theme.textSecondary, marginBottom: 10 }}>你可以等待页面恢复响应，或离开页面。</Text>
         <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 8 }}>
           <PromptButton
-            title="Exit Page"
+            title="离开页面"
             onPress={() => {
               patchPage(tabId, { unresponsive: false });
               void webviews.get(tabId)?.resolveUnresponsive(true);
             }}
           />
           <PromptButton
-            title="Wait"
+            title="等待"
             primary
             onPress={() => {
               patchPage(tabId, { unresponsive: false });

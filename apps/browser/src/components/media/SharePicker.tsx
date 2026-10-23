@@ -135,13 +135,13 @@ export function SharePicker({ tabId, paneWidth }: { tabId: string; paneWidth: nu
               <Symbol name="rectangle.inset.filled.and.person.filled" size={15} color={theme.icon} style={{ width: 22, height: 22 }} />
             </View>
           }
-          title={`Share your screen with ${hostOf(request.origin)}`}
+          title={`与 ${hostOf(request.origin)} 共享屏幕`}
           subtitle={
             !request.audio
-              ? "The site will see what you choose."
+              ? "网站将看到你选择的内容。"
               : isTab(selected)
-                ? "The site will see and hear the tab you choose."
-                : "The site will see what you choose. Only tabs share their audio."
+                ? "网站将看到并听到你选择的标签页内容。"
+                : "网站将看到你选择的内容。只有标签页会共享音频。"
           }
           subtitleLines={2}
         />
@@ -157,7 +157,7 @@ export function SharePicker({ tabId, paneWidth }: { tabId: string; paneWidth: nu
         >
           {tabs.length ? (
             <>
-              <SectionTitle title="Tabs" />
+              <SectionTitle title="标签页" />
               {tabs.map((t) => (
                 <TabRow
                   key={t.id}
@@ -173,7 +173,7 @@ export function SharePicker({ tabId, paneWidth }: { tabId: string; paneWidth: nu
           ) : null}
           {screens.length ? (
             <>
-              <SectionTitle title={screens.length === 1 ? "Screen" : "Screens"} />
+              <SectionTitle title={screens.length === 1 ? "屏幕" : "屏幕"} />
               <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
                 {screens.map((s) => (
                   <ScreenTile key={s.id} source={s} width={(width - 2 * PANEL.rowInset - 8) / 2} selected={s.id === selected} onSelect={() => setSelected(s.id)} onShare={() => share(s.id)} />
@@ -183,19 +183,19 @@ export function SharePicker({ tabId, paneWidth }: { tabId: string; paneWidth: nu
           ) : null}
           {windows.length ? (
             <>
-              <SectionTitle title="Windows" />
+              <SectionTitle title="窗口" />
               {windows.map((s) => (
                 <WindowRow key={s.id} source={s} icon={s.pid !== undefined ? icons[s.pid] : null} selected={s.id === selected} onSelect={() => setSelected(s.id)} onShare={() => share(s.id)} />
               ))}
             </>
           ) : null}
-          {!sources.length && !tabs.length ? <Text style={{ fontSize: 12, color: theme.textSecondary, padding: 12, textAlign: "center" }}>Nothing can be shared right now.</Text> : null}
+          {!sources.length && !tabs.length ? <Text style={{ fontSize: 12, color: theme.textSecondary, padding: 12, textAlign: "center" }}>当前没有可共享的内容。</Text> : null}
         </ScrollView>
 
         <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 8, paddingHorizontal: PANEL.inset, marginTop: 12 }}>
-          <PromptButton title="Cancel" onPress={cancel} />
+          <PromptButton title="取消" onPress={cancel} />
           <View pointerEvents={valid ? "auto" : "none"} style={{ opacity: valid ? 1 : 0.4 }}>
-            <PromptButton title="Share" primary onPress={() => share()} />
+            <PromptButton title="分享" primary onPress={() => share()} />
           </View>
         </View>
       </View>
@@ -276,7 +276,7 @@ function TabRow({ title, url, current, selected, onSelect, onShare }: { title: s
 function WindowRow({ source, icon, selected, onSelect, onShare }: { source: DisplayMediaSource; icon: string | null | undefined; selected: boolean; onSelect(): void; onShare(): void }) {
   const theme = useTheme();
   const { hovered, hoverProps } = useHover();
-  const title = source.name || source.app || "Window";
+  const title = source.name || source.app || "窗口";
   const app = source.app && source.app !== title ? source.app : null;
   return (
     <View {...hoverProps} onDoubleClick={onShare}>

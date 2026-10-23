@@ -336,7 +336,7 @@ async function addBookmarkToFolder(windowId: string, folder: string) {
   const profileId = bookmarkProfileId(s, s.windows[windowId]);
   let parentId = folder;
   if (folder === "new") {
-    const title = await prompt({ title: "New Folder", placeholder: "Folder name", confirmTitle: "Create", windowId });
+    const title = await prompt({ title: "新建文件夹", placeholder: "文件夹名称", confirmTitle: "创建", windowId });
     if (!title) return;
     parentId = useBrowser.getState().addBookmarkFolder({ profileId, title });
   }

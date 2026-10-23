@@ -40,9 +40,9 @@ export async function openFolder(folderId: string, windowId: string | null | und
   if (!links.length) return;
   if (links.length > 15) {
     const { confirmed } = await confirm({
-      title: `Open ${links.length} tabs?`,
-      message: "This folder has a lot of bookmarks.",
-      confirmTitle: "Open All",
+      title: `打开 ${links.length} 个标签页？`,
+      message: "此文件夹包含很多书签。",
+      confirmTitle: "全部打开",
       windowId: resolveWindowId(s, windowId),
     });
     if (!confirmed) return;

@@ -6,7 +6,7 @@ type PinnableSite = { id: string; title: string; url: string };
 
 export const PINNABLE_SITES: PinnableSite[] = [
   { id: "gmail", title: "Gmail", url: "https://mail.google.com/" },
-  { id: "calendar", title: "Calendar", url: "https://calendar.google.com/" },
+  { id: "calendar", title: "日历", url: "https://calendar.google.com/" },
   { id: "slack", title: "Slack", url: "https://app.slack.com/" },
   { id: "notion", title: "Notion", url: "https://www.notion.so/" },
   { id: "figma", title: "Figma", url: "https://www.figma.com/" },

@@ -11,12 +11,12 @@ import type { BatterySaverWhen } from "../../../store/settings";
 import { Button, Group, PopUp, Row, SectionHeader, Toggle, useFormColors } from "../controls";
 
 const REPOSITORY = "https://github.com/mantrakp04/ardia";
-const SOURCE_NOTICE = "Ardia is open source under the Apache License 2.0.";
+const SOURCE_NOTICE = "Ardia 使用 Apache License 2.0 开源许可协议。";
 
 const BATTERY_SAVER_DESCRIPTIONS: Record<BatterySaverWhen, string> = {
-  lowBattery: "At 20% battery or less, or in Low Power Mode, busy background tabs pause and animations slow down.",
-  unplugged: "On battery or in Low Power Mode, busy background tabs pause and animations slow down.",
-  never: "Background tabs and animations run at full speed on battery.",
+  lowBattery: "电量不超过 20% 或启用低电量模式时，暂停繁忙的后台标签页并降低动画速度。",
+  unplugged: "使用电池或低电量模式时，暂停繁忙的后台标签页并降低动画速度。",
+  never: "使用电池时，后台标签页和动画仍以全速运行。",
 };
 
 export function AdvancedPane() {
@@ -35,28 +35,28 @@ export function AdvancedPane() {
 
   return (
     <View>
-      <SectionHeader title="Browsing" />
+      <SectionHeader title="浏览" />
       <Group>
-        <Row title="Show full URL in the address bar" description="Instead of the site alone.">
+        <Row title="在地址栏显示完整网址" description="显示完整网址，而非仅显示网站名称。">
           <Toggle value={settings.showFullUrl} onChange={(v) => update({ showFullUrl: v })} />
         </Row>
-        <Row title="Warn before moving tabs between profiles" description="Some site data doesn't come along.">
+        <Row title="在个人资料间移动标签页前提醒" description="部分网站数据不会随之转移。">
           <Toggle value={settings.warnBeforeMovingTabsToProfile} onChange={(v) => update({ warnBeforeMovingTabsToProfile: v })} />
         </Row>
-        <Row title="Show the Import bookmarks button" description="On an empty bookmarks bar.">
+        <Row title="显示“导入书签”按钮" description="在空白书签栏上显示。">
           <Toggle value={!settings.hideBookmarksBarImport} onChange={(v) => update({ hideBookmarksBarImport: !v })} />
         </Row>
       </Group>
 
-      <SectionHeader title="Performance" />
+      <SectionHeader title="性能" />
       <Group>
-        <Row title="Battery Saver" description={BATTERY_SAVER_DESCRIPTIONS[settings.batterySaverWhen]}>
+        <Row title="节能模式" description={BATTERY_SAVER_DESCRIPTIONS[settings.batterySaverWhen]}>
           <PopUp
             value={settings.batterySaverWhen}
             options={[
-              { value: "lowBattery", title: "When battery is low" },
-              { value: "unplugged", title: "When unplugged" },
-              { value: "never", title: "Never" },
+              { value: "lowBattery", title: "电量低时" },
+              { value: "unplugged", title: "未接通电源时" },
+              { value: "never", title: "从不" },
             ]}
             onChange={(v) => update({ batterySaverWhen: v })}
             minWidth={190}
@@ -64,19 +64,19 @@ export function AdvancedPane() {
         </Row>
       </Group>
 
-      <SectionHeader title="Data" />
+      <SectionHeader title="数据" />
       <Group>
-        <Row title="History" description="Every page you visited, by day.">
-          <Button title="Show History" onPress={() => openInternalPage("history")} />
+        <Row title="历史记录" description="按日期查看您访问过的所有页面。">
+          <Button title="显示历史记录" onPress={() => openInternalPage("history")} />
         </Row>
-        <Row title="Downloads" description="Files you downloaded, with where they're saved.">
-          <Button title="Show Downloads" onPress={() => openInternalPage("downloads")} />
+        <Row title="下载" description="您下载的文件及其保存位置。">
+          <Button title="显示下载" onPress={() => openInternalPage("downloads")} />
         </Row>
       </Group>
 
       <CommandLineSection />
 
-      <SectionHeader title="Web engine" />
+      <SectionHeader title="浏览器引擎" />
       <Group>
         <Row title="Chromium" description={info ? "ArdiaCore" : undefined}>
           <Text selectable style={{ fontSize: 13, color: theme.textSecondary }}>
@@ -84,24 +84,24 @@ export function AdvancedPane() {
           </Text>
         </Row>
         <Row
-          title="Widevine (protected video)"
+          title="Widevine（受保护的视频）"
           description={
             widevine === undefined
-              ? "Checking…"
+              ? "正在检查…"
               : widevineVersion
-                ? `Version ${widevineVersion}`
-                : "Not available in this build: video that needs it, like Netflix or Disney+, won't play."
+                ? `版本 ${widevineVersion}`
+                : "此构建版本不支持：Netflix、Disney+ 等需要此组件的视频将无法播放。"
           }
         />
       </Group>
 
-      <SectionHeader title="Source and licenses" />
+      <SectionHeader title="源代码与许可协议" />
       <Group>
-        <Row title="Source code" description={SOURCE_NOTICE}>
-          <Button title="Show on GitHub" onPress={() => openUrls([`${REPOSITORY}/tree/v${systemInfo().appVersion}`])} />
+        <Row title="源代码" description={SOURCE_NOTICE}>
+          <Button title="在 GitHub 上查看" onPress={() => openUrls([`${REPOSITORY}/tree/v${systemInfo().appVersion}`])} />
         </Row>
-        <Row title="Licenses" description="Every open-source part of the engine, with its copyright and license.">
-          <Button title="Show Licenses" onPress={() => openUrls(["chrome://credits"])} />
+        <Row title="许可协议" description="引擎中各开源组件的版权和许可协议。">
+          <Button title="显示许可协议" onPress={() => openUrls(["chrome://credits"])} />
         </Row>
       </Group>
     </View>
@@ -117,23 +117,23 @@ function CommandLineSection() {
   const server = cli.server;
   const serverNote =
     server?.state === "external"
-      ? "This instance already has a DevTools port from the command line, so the setting leaves it alone."
+      ? "此实例已通过命令行指定 DevTools 端口，因此此设置不会更改它。"
       : server?.reason
         ? server.reason
         : on && server?.state === "on"
           ? server.connections
-            ? `Connected now: ${server.connections === 1 ? "1 session" : `${server.connections} sessions`}.`
-            : "On. Nothing is connected."
-          : "While it's on, the command can open, read and act in every page you're signed in to, and it stays on after you quit.";
+            ? `当前已连接：${server.connections} 个会话。`
+            : "已开启。当前没有连接。"
+          : "开启后，命令可打开、读取并操作您已登录的所有页面；退出后仍保持开启。";
   return (
     <>
-      <SectionHeader title="Command line" />
+      <SectionHeader title="命令行" />
       <Group>
-        <Row title="Let the ardia command control Ardia" description={serverNote}>
+        <Row title="允许 ardia 命令控制 Ardia" description={serverNote}>
           <Toggle value={on} onChange={(v) => update({ cliControl: v })} />
         </Row>
         <Row
-          title="The ardia command"
+          title="ardia 命令"
           description={
             <Text selectable style={{ fontSize: 11.5, marginTop: 2, lineHeight: 15, color: cli.error && !cli.installing ? colors.destructive : theme.textSecondary }}>
               {describeCliInstall(cli)}
@@ -141,7 +141,7 @@ function CommandLineSection() {
           }
         >
           <Button
-            title={cli.installing ? "Installing…" : cli.installedVersion ? "Reinstall" : "Install"}
+            title={cli.installing ? "正在安装…" : cli.installedVersion ? "重新安装" : "安装"}
             disabled={!!cli.installing}
             onPress={() => void installCliInBackground("settings")}
           />

@@ -68,12 +68,12 @@ function CreateProfileSheet({ windowId, preset, onDone }: { windowId: string | n
 
   return (
     <Sheet width={420} onClose={() => onDone(null)}>
-      <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>Create a Profile</Text>
+      <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>创建个人资料</Text>
       <Text style={{ fontSize: 12.5, lineHeight: 17, marginTop: 6, color: theme.textSecondary }}>
         Profiles separate your logins, cookies, passwords, extensions, history and bookmarks.
       </Text>
 
-      <TextField value={name} onChangeText={setName} placeholder="Profile name" autoFocus onSubmit={submit} onEscape={() => onDone(null)} style={{ marginTop: 16 }} />
+      <TextField value={name} onChangeText={setName} placeholder="个人资料名称" autoFocus onSubmit={submit} onEscape={() => onDone(null)} style={{ marginTop: 16 }} />
 
       <View style={{ flexDirection: "row", gap: 7, marginTop: 12 }}>
         {(Object.keys(PROFILE_COLORS) as ProfileColor[]).map((c) => (
@@ -87,14 +87,14 @@ function CreateProfileSheet({ windowId, preset, onDone }: { windowId: string | n
 
       <View style={{ marginTop: 16, borderRadius: 10, backgroundColor: colors.group, borderWidth: 1, borderColor: colors.groupBorder, padding: 12 }}>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-          <Text style={{ flex: 1, fontSize: 13, color: theme.textPrimary }}>{single ? "Share data with current profile" : "Share data with another profile"}</Text>
+          <Text style={{ flex: 1, fontSize: 13, color: theme.textPrimary }}>{single ? "与当前个人资料共享数据" : "与其他个人资料共享数据"}</Text>
           <Toggle value={share} onChange={setShare} />
         </View>
         {share && (
           <Text style={{ fontSize: 11.5, lineHeight: 15, marginTop: 6, color: theme.textSecondary }}>
             {single
-              ? "This profile will share your cookies, logins, passwords, extensions, bookmarks and history with your current profile. Tabs stay separate."
-              : "This profile will share your cookies, logins, passwords, extensions, bookmarks and history with another profile you choose. Tabs stay separate."}
+              ? "此个人资料将与当前个人资料共享 Cookie、登录信息、密码、扩展程序、书签和历史记录。标签页保持独立。"
+              : "此个人资料将与所选的其他个人资料共享 Cookie、登录信息、密码、扩展程序、书签和历史记录。标签页保持独立。"}
           </Text>
         )}
         {share && !single && (
@@ -115,8 +115,8 @@ function CreateProfileSheet({ windowId, preset, onDone }: { windowId: string | n
       </View>
 
       <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 8, marginTop: 18 }}>
-        <Button title="Cancel" onPress={() => onDone(null)} />
-        <Button title="Create Profile" kind="primary" onPress={submit} />
+        <Button title="取消" onPress={() => onDone(null)} />
+        <Button title="创建个人资料" kind="primary" onPress={submit} />
       </View>
     </Sheet>
   );

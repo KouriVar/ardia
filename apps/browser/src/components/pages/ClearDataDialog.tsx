@@ -10,11 +10,11 @@ import { engineProfile, isIncognitoProfile, profileFor } from "../../store/model
 import { Button, Checkbox, PopUp } from "../settings/controls";
 
 const RANGES = [
-  { value: "hour", title: "Last hour", ms: 3_600_000 },
-  { value: "day", title: "Last 24 hours", ms: 86_400_000 },
-  { value: "week", title: "Last 7 days", ms: 7 * 86_400_000 },
-  { value: "month", title: "Last 4 weeks", ms: 28 * 86_400_000 },
-  { value: "all", title: "All time", ms: Infinity },
+  { value: "hour", title: "最近一小时", ms: 3_600_000 },
+  { value: "day", title: "最近 24 小时", ms: 86_400_000 },
+  { value: "week", title: "最近 7 天", ms: 7 * 86_400_000 },
+  { value: "month", title: "最近 4 周", ms: 28 * 86_400_000 },
+  { value: "all", title: "全部时间", ms: Infinity },
 ] as const;
 type Range = (typeof RANGES)[number]["value"];
 
@@ -60,24 +60,24 @@ export function ClearDataDialog({ profileId, onClose }: { profileId: string; onC
         shadowOffset={[0, 12]}
         style={{ width: 440, padding: 20 }}
       >
-        <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>Clear Browsing Data</Text>
-        {multipleProfiles && <Text style={{ fontSize: 12, marginTop: 4, color: theme.textSecondary }}>{`From your ${profileName} profile`}</Text>}
+        <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>清除浏览数据</Text>
+        {multipleProfiles && <Text style={{ fontSize: 12, marginTop: 4, color: theme.textSecondary }}>{`来自 ${profileName} 个人资料`}</Text>}
         <View style={{ flexDirection: "row", alignItems: "center", marginTop: 16, gap: 10 }}>
-          <Text style={{ fontSize: 13, color: theme.textPrimary }}>Time range</Text>
+          <Text style={{ fontSize: 13, color: theme.textPrimary }}>时间范围</Text>
           <PopUp value={range} options={RANGES.map(({ value, title }) => ({ value, title }))} onChange={setRange} minWidth={150} />
         </View>
         <View style={{ marginTop: 16, gap: 12 }}>
-          <Option value={history} onChange={setHistory} title="Browsing history" subtitle="Clears the pages you visited from History and the command bar." />
+          <Option value={history} onChange={setHistory} title="浏览历史记录" subtitle="清除历史记录和命令栏中的已访问页面。" />
           <Option
             value={siteData}
             onChange={setSiteData}
-            title="Cookies, site data and cached files"
-            subtitle="Signs you out of most sites."
+            title="Cookie、网站数据和缓存文件"
+            subtitle="会退出大多数网站的登录。"
           />
         </View>
         <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 8, marginTop: 22 }}>
-          <Button title="Cancel" onPress={onClose} />
-          <Button title="Clear Data" kind="primary" disabled={busy || (!history && !siteData)} onPress={() => void clear()} />
+          <Button title="取消" onPress={onClose} />
+          <Button title="清除数据" kind="primary" disabled={busy || (!history && !siteData)} onPress={() => void clear()} />
         </View>
       </Surface>
     </View>

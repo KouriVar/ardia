@@ -54,7 +54,7 @@ export function SidebarHeaderTools({ width }: { width: number }) {
           icon="sidebar.left"
           size={GLYPH}
           onPress={() => useBrowser.getState().toggleSidebar(windowId)}
-          tooltip="Auto-Hide Tabs (⌘S)"
+          tooltip="自动隐藏标签页 (⌘S)"
         />
       )}
       {tab ? <NavigationButtons tab={tab} palette={palette} buttons={shown} slots={at.slice(toggle ? 1 : 0).map(place)} /> : null}
@@ -168,7 +168,7 @@ function EmptyField({ windowId }: { windowId: string }) {
           }}
         >
           {liquidGlass ? <GlassFill radius={SIDEBAR_FIELD.radius} border={StyleSheet.hairlineWidth * 2} fill={hovered ? theme.tabHover : theme.pinnedResting} /> : null}
-          <FadeLabel text="Search or enter address" fontSize={13} color={theme.placeholder} fadeWidth={14} style={{ height: 18, marginLeft: -2 }} />
+          <FadeLabel text="搜索或输入网址" fontSize={13} color={theme.placeholder} fadeWidth={14} style={{ height: 18, marginLeft: -2 }} />
         </View>
       </Pressable>
     </View>

@@ -177,7 +177,7 @@ export function PopoverValue({ title, onPress, chevron = "chevron.up.chevron.dow
 }
 const VALUE_PAD = 6;
 
-export function PanelCloseButton({ onPress, tooltip = "Dismiss" }: { onPress: () => void; tooltip?: string }) {
+export function PanelCloseButton({ onPress, tooltip = "关闭" }: { onPress: () => void; tooltip?: string }) {
   const theme = useTheme();
   const { hovered, hoverProps } = useHover();
   const offset = PANEL.inset - (CLOSE_BOX - CLOSE_GLYPH) / 2;

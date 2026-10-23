@@ -1,6 +1,6 @@
 import { confirm, onWindowEvent } from "@ardia/shell";
 import { useBrowser } from "../store/browser";
-import { inPinnedContainer, plural, profileFor } from "../store/model";
+import { inPinnedContainer, profileFor } from "../store/model";
 
 const MIN_TABS = 2;
 
@@ -19,7 +19,7 @@ async function requestClose(windowId: string) {
   if (!w) return;
   const count = closingTabs(windowId).length;
   if (s.settings.warnBeforeClosingWindow && count >= MIN_TABS) {
-    const { confirmed, suppressed } = await confirm({ ...closeWindowDialog(windowId), suppression: "Don’t ask me again", windowId });
+    const { confirmed, suppressed } = await confirm({ ...closeWindowDialog(windowId), suppression: "不再询问", windowId });
     if (suppressed) useBrowser.getState().updateSettings({ warnBeforeClosingWindow: false });
     if (!confirmed) return;
   }
@@ -34,7 +34,7 @@ const closingTabs = (windowId: string) => {
 export function closeWindowDialog(windowId: string) {
   const s = useBrowser.getState();
   const w = s.windows[windowId]!;
-  const tabs = (n: number) => plural(n, "tab");
+  const tabs = (n: number) => `${n} 个标签页`;
   const byProfile = new Map<string, number>();
   const closing = closingTabs(windowId);
   for (const id of closing) {
@@ -44,11 +44,11 @@ export function closeWindowDialog(windowId: string) {
   const count = closing.length;
   const message =
     byProfile.size > 1
-      ? ["Closing this window closes all tabs open across profiles:", ...[...byProfile].map(([id, n]) => `  • ${tabs(n)} in ${profileFor(s, id).name}`)].join("\n")
-      : `This window has ${tabs(count)} open in your ${profileFor(s, w.profileId).name} profile.`;
+      ? ["关闭此窗口会关闭以下个人资料中打开的所有标签页：", ...[...byProfile].map(([id, n]) => `  • ${profileFor(s, id).name}：${tabs(n)}`)].join("\n")
+      : `此窗口在“${profileFor(s, w.profileId).name}”个人资料中打开了 ${tabs(count)}。`;
   return {
-    title: count === 1 ? "Close 1 tab?" : `Close ${count} tabs?`,
+    title: count === 1 ? "关闭 1 个标签页？" : `关闭 ${count} 个标签页？`,
     message,
-    confirmTitle: count === 1 ? "Close Tab" : "Close All Tabs",
+    confirmTitle: count === 1 ? "关闭标签页" : "关闭所有标签页",
   };
 }

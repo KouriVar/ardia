@@ -17,7 +17,7 @@ export function FrozenPage({ windowId, tabId, top }: { windowId: string; tabId: 
   if (!frozen && !pass) return null;
   return (
     <Pressable
-      accessibilityLabel="Bring this tab to this window"
+      accessibilityLabel="将此标签页移到当前窗口"
       onPress={() => {
         if (frozen && tabId) useBrowser.getState().activate(tabId);
       }}

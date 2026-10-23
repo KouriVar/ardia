@@ -75,14 +75,14 @@ function AlertCard({ event, windowId, windowWidth }: { event: CalendarEvent; win
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
           <View style={{ width: 8, height: 8, borderRadius: 2.5, backgroundColor: event.color }} />
           <Text numberOfLines={1} style={{ flex: 1, fontSize: 11.5, fontWeight: "500", color: running ? colors.now : theme.textSecondary }}>
-            {running ? "Now" : relativeTime(event.start, now)}
+            {running ? "现在" : relativeTime(event.start, now)}
             {calendarName ? <Text style={{ fontWeight: "400", color: theme.textSecondary }}> · {calendarName}</Text> : null}
           </Text>
-          <IconButton icon="xmark" size={9} weight="semibold" box={20} radius={6} onPress={() => dismiss(event)} tooltip="Ignore" style={{ marginRight: -4, marginTop: -2 }} />
+          <IconButton icon="xmark" size={9} weight="semibold" box={20} radius={6} onPress={() => dismiss(event)} tooltip="忽略" style={{ marginRight: -4, marginTop: -2 }} />
         </View>
         <View style={{ gap: 2 }}>
           <Text numberOfLines={2} style={{ fontSize: 14, lineHeight: 18, fontWeight: "600", color: theme.textPrimary }}>
-            {event.title || "Untitled event"}
+            {event.title || "未命名日程"}
           </Text>
           <Text style={{ fontSize: 12, color: theme.textSecondary }}>{timeRange(event)}</Text>
         </View>
@@ -99,7 +99,7 @@ function AlertCard({ event, windowId, windowWidth }: { event: CalendarEvent; win
             <SmallButton title={joinTitle(link.provider)} icon="video.fill" primary height={30} onPress={() => joinEvent(event, false, windowId)} />
           ) : calendarTab ? (
             <SmallButton
-              title="View Event"
+              title="查看日程"
               icon="calendar"
               height={30}
               onPress={() => {
@@ -109,8 +109,8 @@ function AlertCard({ event, windowId, windowWidth }: { event: CalendarEvent; win
             />
           ) : null}
           {link && related.length ? (
-            <View tooltip={`Opens ${related.length === 1 ? "1 link" : `${related.length} links`} from the invitation, then joins`}>
-              <SmallButton title="Open All and Join" icon="square.stack" height={30} onPress={() => joinEvent(event, true, windowId)} />
+            <View tooltip={`打开邀请中的 ${related.length} 个链接，然后加入会议`}>
+              <SmallButton title="全部打开并加入" icon="square.stack" height={30} onPress={() => joinEvent(event, true, windowId)} />
             </View>
           ) : null}
         </View>

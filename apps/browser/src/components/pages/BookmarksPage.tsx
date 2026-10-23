@@ -1,3 +1,4 @@
+import { bookmarkTitle } from "../../lib/bookmarkTitle";
 import { cleanUrl } from "@ardia/core";
 import { ContextMenuArea, copyText, MouseArea, showMenu, Symbol, type MenuItem } from "@ardia/shell";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -40,7 +41,7 @@ export function BookmarksPage({ tabId, profileId }: { tabId: string; profileId: 
   }, [folderExists, roots]);
   useEffect(() => setSelected([]), [folderId, query]);
 
-  const folderTitle = useBrowser((s) => (folderId ? (s.bookmarks.nodes[folderId]?.title ?? "") : ""));
+  const folderTitle = useBrowser((s) => (folderId ? (s.bookmarks.nodes[folderId] ? bookmarkTitle(s.bookmarks, s.bookmarks.nodes[folderId]!) : "") : ""));
   const listKey = useBrowser((s) => {
     if (query.trim() && roots) {
       const all = [...folderLinksAndFolders(s.bookmarks, roots.bar), ...folderLinksAndFolders(s.bookmarks, roots.other)];
@@ -113,10 +114,10 @@ export function BookmarksPage({ tabId, profileId }: { tabId: string; profileId: 
 
   const addMenu = async () => {
     const choice = await showMenu([
-      { id: "bookmark", title: "Add New Bookmark…" },
-      { id: "folder", title: "Add New Folder…" },
+      { id: "bookmark", title: "添加新书签…" },
+      { id: "folder", title: "添加新文件夹…" },
       { separator: true },
-      { id: "import", title: "Import Bookmarks…" },
+      { id: "import", title: "导入书签…" },
     ]);
     const parentId = folderId ?? undefined;
     if (choice === "bookmark") editBookmark(null, windowId, { profileId, parentId });
@@ -127,18 +128,18 @@ export function BookmarksPage({ tabId, profileId }: { tabId: string; profileId: 
   const actions =
     selected.length > 0 ? (
       <>
-        <Text style={{ fontSize: 12, color: theme.textSecondary }}>{`${selected.length} selected`}</Text>
-        <Button title="Delete" kind="primary" onPress={() => remove(selected)} />
+        <Text style={{ fontSize: 12, color: theme.textSecondary }}>{`已选择 ${selected.length} 项`}</Text>
+        <Button title="删除" kind="primary" onPress={() => remove(selected)} />
       </>
     ) : (
-      <IconButton icon="ellipsis.circle" size={15} box={30} radius={7} onPress={() => void addMenu()} tooltip="Organize" />
+      <IconButton icon="ellipsis.circle" size={15} box={30} radius={7} onPress={() => void addMenu()} tooltip="整理" />
     );
 
   const indicator = drop && "index" in drop ? drop.index : null;
 
   return (
     <View style={{ flex: 1 }}>
-      <PageHeader title="Bookmarks" query={query} onQuery={setQuery} placeholder="Search bookmarks" actions={actions} />
+      <PageHeader title="书签" query={query} onQuery={setQuery} placeholder="搜索书签" actions={actions} />
       <View style={{ flex: 1, flexDirection: "row", paddingHorizontal: 16, paddingBottom: 16, gap: 16 }}>
         <ScrollView style={{ width: 230, flexGrow: 0 }} contentContainerStyle={{ paddingVertical: 4 }}>
           <FolderTree
@@ -171,17 +172,17 @@ export function BookmarksPage({ tabId, profileId }: { tabId: string; profileId: 
         >
           <View style={{ height: 40, flexDirection: "row", alignItems: "center", paddingHorizontal: 14, gap: 8 }}>
             <Text numberOfLines={1} style={{ flex: 1, fontSize: 13, fontWeight: "600", color: theme.textPrimary }}>
-              {searching ? `Results for “${query.trim()}”` : folderTitle}
+              {searching ? `“${query.trim()}”的搜索结果` : folderTitle}
             </Text>
             {!searching && folderId && (
-              <Button title="Open All" onPress={() => void openFolder(folderId, windowId)} disabled={!ids.length} />
+              <Button title="全部打开" onPress={() => void openFolder(folderId, windowId)} disabled={!ids.length} />
             )}
           </View>
           <View style={{ height: StyleSheet.hairlineWidth * 2, backgroundColor: colors.separator }} />
           {ids.length === 0 ? (
             <EmptyState
               icon={<Symbol name={searching ? "magnifyingglass" : "bookmark"} size={26} color={theme.textTertiary} style={{ width: 36, height: 36 }} />}
-              title={searching ? "No search results found" : "This folder is empty"}
+              title={searching ? "没有搜索结果" : "此文件夹为空"}
             />
           ) : (
             <ScrollView
@@ -225,7 +226,7 @@ export function BookmarksPage({ tabId, profileId }: { tabId: string; profileId: 
       </View>
       {undo && (
         <UndoToast
-          message={`${plural(undo.count, "item")} deleted`}
+          message={`已删除 ${undo.count} 项`}
           onUndo={() => {
             useBrowser.getState().restoreBookmarks(undo.removed);
             setUndo(null);
@@ -276,7 +277,7 @@ function BookmarkRow({
   const theme = useTheme();
   const colors = useFormColors();
   const node = useBrowser((s) => s.bookmarks.nodes[id]);
-  const path = useBrowser((s) => (showPath ? bookmarkAncestors(s.bookmarks, id).map((a) => a.title).reverse().join(" › ") : ""));
+  const path = useBrowser((s) => (showPath ? bookmarkAncestors(s.bookmarks, id).map((a) => bookmarkTitle(s.bookmarks, a)).reverse().join(" › ") : ""));
   const { hovered, hoverProps } = useHover();
   const dy = useRef(new Animated.Value(0)).current;
   const [dragging, setDragging] = useState(false);
@@ -315,22 +316,22 @@ function BookmarkRow({
     const items: MenuItem[] =
       node.kind === "url"
         ? [
-            { id: "tab", title: "Open in New Tab" },
-            { id: "window", title: "Open in New Window" },
-            { id: "incognito", title: "Open in Incognito Window" },
-            { id: "split", title: "Open in Split View" },
+            { id: "tab", title: "在新标签页中打开" },
+            { id: "window", title: "在新窗口中打开" },
+            { id: "incognito", title: "在无痕窗口中打开" },
+            { id: "split", title: "在分屏视图中打开" },
             { separator: true },
-            { id: "edit", title: "Edit…" },
-            { id: "copy", title: "Copy Link" },
+            { id: "edit", title: "编辑…" },
+            { id: "copy", title: "复制链接" },
           ]
         : [
-            { id: "openAll", title: `Open All (${folderLinks(useBrowser.getState().bookmarks, node.id).length})` },
-            { id: "openAllWindow", title: "Open All in New Window" },
+            { id: "openAll", title: `全部打开 (${folderLinks(useBrowser.getState().bookmarks, node.id).length})` },
+            { id: "openAllWindow", title: "在新窗口中全部打开" },
             { separator: true },
-            { id: "edit", title: "Rename…" },
+            { id: "edit", title: "重命名…" },
           ];
-    if (showPath) items.push({ id: "show", title: "Show in Folder" });
-    items.push({ separator: true }, { id: "delete", title: "Delete" });
+    if (showPath) items.push({ id: "show", title: "在文件夹中显示" });
+    items.push({ separator: true }, { id: "delete", title: "删除" });
     const choice = await showMenu(items);
     if (choice === "tab") open("foreground");
     if (choice === "window") open("window");
@@ -372,13 +373,13 @@ function BookmarkRow({
                 <Symbol name="folder" size={14} color={theme.icon} style={{ width: 16, height: 16 }} />
               )}
               <Text numberOfLines={1} style={{ flexShrink: 1, fontSize: 13, color: theme.textPrimary }}>
-                {node.title || (node.kind === "url" ? node.url : "")}
+                {bookmarkTitle(useBrowser.getState().bookmarks, node) || (node.kind === "url" ? node.url : "")}
               </Text>
               <Text numberOfLines={1} style={{ flex: 1, fontSize: 12, color: theme.textTertiary }}>
-                {showPath ? path : node.kind === "url" ? hostLabel(node.url) : plural(node.children.length, "item")}
+                {showPath ? path : node.kind === "url" ? hostLabel(node.url) : `${node.children.length} 项`}
               </Text>
               <View style={{ opacity: hovered ? 1 : 0 }}>
-                <IconButton icon="ellipsis" size={13} box={24} radius={6} onPress={() => void menu()} tooltip="More actions" />
+                <IconButton icon="ellipsis" size={13} box={24} radius={6} onPress={() => void menu()} tooltip="更多操作" />
               </View>
             </View>
           </Pressable>
@@ -406,7 +407,7 @@ function UndoToast({ message, onUndo }: { message: string; onUndo: () => void })
       >
         <Text style={{ fontSize: 13, color: "#FFFFFF" }}>{message}</Text>
         <Pressable onPress={onUndo} style={{ paddingHorizontal: 10, height: 26, borderRadius: 6, justifyContent: "center" }}>
-          <Text style={{ fontSize: 13, fontWeight: "600", color: "#64A8FF" }}>Undo</Text>
+          <Text style={{ fontSize: 13, fontWeight: "600", color: "#64A8FF" }}>撤销</Text>
         </Pressable>
       </View>
     </View>

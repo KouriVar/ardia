@@ -10,7 +10,7 @@ const listSpots = new Map<string, ListSpot>();
 let spotOrder = 0;
 const store = () => useBrowser.getState();
 
-export const movePinnedTitle = (tab: Tab | undefined) => (tab?.pinned ? "Move out of Pinned" : "Move to Pinned");
+export const movePinnedTitle = (tab: Tab | undefined) => (tab?.pinned ? "移出固定区域" : "移到固定区域");
 
 const listTabIds = (s: BrowserState, windowId: string, profileId: string, except: Set<string>) =>
   (s.windows[windowId]?.tabIds ?? []).filter((id) => {

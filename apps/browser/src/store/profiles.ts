@@ -19,7 +19,7 @@ export type ProfilesSlice = {
   profileDataDeleted(engineId: string): void;
 };
 
-export const DEFAULT_PROFILE: Profile = { id: DEFAULT_PROFILE_ID, name: "Personal", color: "plum", icon: null, createdAt: 0 };
+export const DEFAULT_PROFILE: Profile = { id: DEFAULT_PROFILE_ID, name: "个人", color: "plum", icon: null, createdAt: 0 };
 
 const COLORS: ProfileColor[] = ["blue", "green", "orange", "purple", "red", "yellow", "pink"];
 

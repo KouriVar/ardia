@@ -172,7 +172,7 @@ function GroupHeader({ groupId, windowId, collapsed, open }: { groupId: string; 
               <HoverSlot
                 hovered={hovered && !renaming}
                 width={22}
-                hover={<IconButton icon="xmark" size={10} weight="semibold" box={22} radius={6} onPress={() => useBrowser.getState().closeGroup(groupId)} tooltip="Close Group" />}
+                hover={<IconButton icon="xmark" size={10} weight="semibold" box={22} radius={6} onPress={() => useBrowser.getState().closeGroup(groupId)} tooltip="关闭分组" />}
               >
                 {countdown.label && !renaming ? <MeetingTimeLabel label={countdown.label} urgent={countdown.urgent} /> : null}
               </HoverSlot>

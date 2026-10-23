@@ -114,16 +114,16 @@ export function ShareBar({ tabId }: { tabId: string }) {
           <Symbol name="rectangle.inset.filled" size={9} weight="bold" color="#FFFFFF" style={{ width: 14, height: 14 }} />
         </View>
         <Text numberOfLines={1} style={{ flex: 1, fontSize: 13, color: theme.textSecondary }}>
-          {"Sharing "}
-          <Text style={{ fontWeight: "600", color: theme.textPrimary }}>{isShared ? "this tab" : "another tab"}</Text>
+          {"正在共享"}
+          <Text style={{ fontWeight: "600", color: theme.textPrimary }}>{isShared ? "此标签页" : "另一个标签页"}</Text>
           {` with ${host}`}
         </Text>
         {isShared ? (
-          <PromptButton title="Stop Sharing" onPress={() => void stopCapture(browserIdOf(capturer))} />
+          <PromptButton title="停止共享" onPress={() => void stopCapture(browserIdOf(capturer))} />
         ) : (
-          <PromptButton title="Share This Tab Instead" primary onPress={() => void shareInstead(capturer, tabId)} />
+          <PromptButton title="改为共享此标签页" primary onPress={() => void shareInstead(capturer, tabId)} />
         )}
-        <PromptButton title="Dismiss" onPress={() => dismiss(capturer, tabId)} />
+        <PromptButton title="关闭" onPress={() => dismiss(capturer, tabId)} />
       </View>
     </Animated.View>
   );

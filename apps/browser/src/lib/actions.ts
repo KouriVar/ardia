@@ -35,7 +35,7 @@ export async function closeTab(tabId: string) {
   if (!tab || !w) return;
   const last = closesWindow(s, tabId) && !leavesEmptyWindow(s, tabId);
   if (last && s.settings.warnBeforeClosingLastTab && !w.incognito) {
-    const { confirmed, suppressed } = await confirm({ ...closeWindowDialog(w.id), suppression: "Don’t ask me again", windowId: w.id });
+    const { confirmed, suppressed } = await confirm({ ...closeWindowDialog(w.id), suppression: "不再询问", windowId: w.id });
     if (suppressed) store().updateSettings({ warnBeforeClosingLastTab: false });
     if (!confirmed) return;
     applyHeldReports();
@@ -60,11 +60,11 @@ export async function deleteProfile(profileId: string, windowId?: string) {
   if (!profile || s.profileOrder.length <= 1) return;
   const sharing = sharingProfiles(s, profileId).map((id) => s.profiles[id]!.name);
   const { confirmed } = await confirm({
-    title: `Delete “${profile.name}”?`,
+    title: `删除“${profile.name}”？`,
     message: sharing.length
-      ? `Its tabs will be closed. Its cookies, passwords, extensions, bookmarks and history stay with ${profileNames(sharing)}, which share them.`
-      : `All data associated with this Profile will be removed. This action cannot be undone.${engineIdOf(profile) === "" ? await keptExtensionsNote() : ""}`,
-    confirmTitle: "Delete Profile",
+      ? `将关闭其中的标签页。Cookie、密码、扩展、书签和历史记录会保留在共享这些数据的 ${profileNames(sharing)} 中。`
+      : `将删除此个人资料的所有相关数据。此操作无法撤销。${engineIdOf(profile) === "" ? await keptExtensionsNote() : ""}`,
+    confirmTitle: "删除个人资料",
     destructive: true,
     windowId,
   });
@@ -78,7 +78,7 @@ async function keptExtensionsNote(): Promise<string> {
     () => null,
   );
   if (names && !names.length) return "";
-  return names ? ` Its extensions (${profileNames(names)}) stay installed on this Mac, turned off.` : " Its extensions stay installed on this Mac, turned off.";
+  return names ? ` 其中的扩展（${profileNames(names)}）会保留在这台 Mac 上，但会被停用。` : " 其中的扩展会保留在这台 Mac 上，但会被停用。";
 }
 
 export async function moveTabToProfile(tabId: string, target: string) {
@@ -89,10 +89,10 @@ export async function moveTabToProfile(tabId: string, target: string) {
   const shared = engineProfile(profileId) === engineProfile(tab.profileId);
   if (store().settings.warnBeforeMovingTabsToProfile && !shared) {
     const { confirmed, suppressed } = await confirm({
-      title: "Move Tab to Profile?",
-      message: "Moving tabs between profiles could result in some data being lost.",
-      confirmTitle: "Move Tab",
-      suppression: "Don't warn me again",
+      title: "将标签页移至其他个人资料？",
+      message: "在个人资料之间移动标签页可能导致部分数据丢失。",
+      confirmTitle: "移动标签页",
+      suppression: "不再提醒",
       windowId: tab.windowId,
     });
     if (suppressed) store().updateSettings({ warnBeforeMovingTabsToProfile: false });

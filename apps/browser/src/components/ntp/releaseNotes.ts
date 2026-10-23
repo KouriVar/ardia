@@ -12,16 +12,16 @@ export type ReleaseNotes = {
 const RELEASE_NOTES: ReleaseNotes[] = [
   {
     version: "1.0",
-    date: "September 2026",
-    title: "Hello, Ardia",
-    summary: "The first release: a calm, fast browser that keeps your tabs, your pages and your focus in one place.",
+    date: "2026 年 9 月",
+    title: "你好，Ardia",
+    summary: "首个版本：安静、快速的浏览器，让标签页、网页和注意力各归其位。",
     items: [
-      { title: "A command bar for everything", body: "Search, type an address or jump to an open tab from the New Tab page, or from any page with ⌘L." },
-      { title: "Split view", body: "Drag a tab onto the page to see two or three side by side, stacked or in columns." },
-      { title: "Tab groups and pinned tabs", body: "Group related tabs, pin the ones you live in, and let Clean Up Tabs tidy the rest." },
-      { title: "Picture in Picture that stays out of the way", body: "Stash a video at the edge of the screen; click its site name to jump back to the tab." },
-      { title: "Bring everything with you", body: "Import bookmarks, history, passwords and open tabs from Chrome, Safari, Arc and more." },
-      { title: "Profiles with their own colour", body: "Keep work and personal apart, each with its own theme on the New Tab page." },
+      { title: "一个命令栏，处理所有操作", body: "在新标签页中搜索、输入网址或跳转到已打开的标签页，也可在任何页面按 ⌘L 打开命令栏。" },
+      { title: "分屏视图", body: "将标签页拖到页面上，即可将两到三个页面并排、上下或分列显示。" },
+      { title: "标签页分组和固定标签页", body: "将相关标签页分组，固定常用页面，再用“清理标签页”整理其余页面。" },
+      { title: "不挡视线的画中画", body: "将视频放在屏幕边缘；点击网站名称即可返回标签页。" },
+      { title: "带上你的一切", body: "从 Chrome、Safari、Arc 等浏览器导入书签、历史记录、密码和已打开的标签页。" },
+      { title: "各具主题颜色的个人资料", body: "将工作和个人生活分开，每个个人资料都可在新标签页中设置独立主题。" },
     ],
   },
 ];
@@ -44,7 +44,7 @@ function save(saved: Omit<Saved, "version">) {
   try {
     writeDocument(DOC, JSON.stringify({ version: 1, ...saved } satisfies Saved));
   } catch (error) {
-    console.warn("Couldn't save release notes state", error);
+    console.warn("无法保存更新说明状态", error);
   }
 }
 

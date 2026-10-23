@@ -102,13 +102,13 @@ function PanelCard({ windowId, panel }: { windowId: string; panel: SidePanel }) 
         <IconButton
           icon="ellipsis"
           size={13}
-          tooltip="More"
+          tooltip="更多"
           onPress={() => {
             const found = findExtension(profile, extensionId);
             if (found) void showExtensionMenu(windowId, found);
           }}
         />
-        <IconButton icon="xmark" size={12} weight="medium" tooltip="Close Side Panel" onPress={() => closeSidePanel(windowId)} />
+        <IconButton icon="xmark" size={12} weight="medium" tooltip="关闭侧边面板" onPress={() => closeSidePanel(windowId)} />
       </View>
       <View style={{ height: StyleSheet.hairlineWidth, backgroundColor: theme.dark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)" }} />
       <View style={{ flex: 1, backgroundColor: "#FFFFFF" }}>

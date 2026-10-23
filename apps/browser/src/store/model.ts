@@ -38,7 +38,7 @@ export const engineProfile = (profileId: string): string => {
 export const privateSession = (profileId: string): string | null =>
   isIncognitoProfile(profileId) ? engineProfile(incognitoOriginal(profileId)) : null;
 
-const INCOGNITO_PROFILE: Profile = { id: "incognito", name: "Incognito", color: "neutral", icon: null, createdAt: 0 };
+const INCOGNITO_PROFILE: Profile = { id: "incognito", name: "无痕浏览", color: "neutral", icon: null, createdAt: 0 };
 
 export const IDLE_LIVE: TabLive = {
   isLoading: false,
@@ -171,7 +171,7 @@ export function without<T>(map: Record<string, T>, ids: Iterable<string>): Recor
 
 export function tabLabel(t: Pick<Tab, "url" | "title" | "customTitle">): string {
   if (t.customTitle) return t.customTitle;
-  if (!t.url) return "New Tab";
+  if (!t.url) return "新标签页";
   const app = appUrlOrigin(t.url);
   if (app) return app;
   try {
@@ -197,6 +197,6 @@ export function windowTitle(s: BrowserState, windowId: string): string {
   if (!w) return "";
   const tab = activeTab(s, windowId);
   const others = viewTabIds(s, windowId).length - 1;
-  const label = tab ? tabLabel(tab) : "New Tab";
-  return `${profileFor(s, w.profileId).name} — ${label}${others > 0 ? ` & ${plural(others, "Tab")}` : ""}`;
+  const label = tab ? tabLabel(tab) : "新标签页";
+  return `${profileFor(s, w.profileId).name} — ${label}${others > 0 ? `及另外 ${others} 个标签页` : ""}`;
 }

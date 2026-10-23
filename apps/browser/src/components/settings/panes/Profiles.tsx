@@ -6,7 +6,6 @@ import { createProfile, deleteProfile } from "../../../lib/actions";
 import { hex, profileAccent, useTheme } from "../../../lib/theme";
 import { useBrowser } from "../../../store/browser";
 import { useProfiles } from "../../../store/hooks";
-import { plural } from "../../../store/model";
 import { sharingProfiles } from "../../../store/profiles";
 import type { Profile, ProfileColor } from "../../../store/types";
 import { ClearDataDialog } from "../../pages/ClearDataDialog";
@@ -18,7 +17,7 @@ import { closeSettingsSheet, showSettingsSheet } from "../sheet";
 import { ThemeSection } from "../ThemeEditor";
 import { useSettingsNav } from "../windows";
 
-const listOf = (names: string[]) => (names.length <= 2 ? names.join(" and ") : `${names.slice(0, -1).join(", ")}, and ${names.at(-1)}`);
+const listOf = (names: string[]) => (names.length <= 2 ? names.join("、") : names.join("、"));
 
 function useSharedWith(profileId: string): string[] {
   const order = useBrowser((s) => s.profileOrder);
@@ -37,13 +36,12 @@ export function ProfilesPane() {
   return (
     <View>
       <Text style={{ marginTop: 20, fontSize: 12.5, lineHeight: 17, color: theme.textSecondary }}>
-        Profiles keep your browsing organized — keep history, logins, cookies, and extensions separate per profile, or share them across selected
-        profiles with a toggle.
+        使用个人资料整理浏览活动：每份个人资料的历史记录、登录信息、Cookie 和扩展可独立保存，也可通过开关在选定的个人资料之间共享。
       </Text>
 
-      <SectionHeader title="New windows open with" />
+      <SectionHeader title="新窗口使用" />
       <Group>
-        <Row title="Default profile" description="Used for new windows. Links from other apps open in the profile you used last.">
+        <Row title="默认个人资料" description="用于新窗口。其他应用的链接会在上次使用的个人资料中打开。">
           <PopUp
             value={defaultId}
             options={profiles.map((p) => ({ value: p.id, title: p.name }))}
@@ -54,9 +52,9 @@ export function ProfilesPane() {
       </Group>
 
       <SectionHeader
-        title="Profiles"
-        description="Drag to reorder. ⌃1–⌃9 switch to the first nine."
-        action={<Button title="Create Profile" icon="plus" onPress={() => void createProfile()} />}
+        title="个人资料"
+        description="拖动以调整顺序。⌃1–⌃9 可切换到前九份个人资料。"
+        action={<Button title="创建个人资料" icon="plus" onPress={() => void createProfile()} />}
       />
       <ProfileList />
     </View>
@@ -164,14 +162,14 @@ function ProfileRow({
   ).current;
   if (!profile) return null;
 
-  const description = [isDefault ? "Default" : null, names.length ? `Shares data with ${listOf(names)}` : null].filter(Boolean).join(" · ");
+  const description = [isDefault ? "默认" : null, names.length ? `与 ${listOf(names)} 共享数据` : null].filter(Boolean).join(" · ");
   const openMenu = async () => {
     const s = useBrowser.getState();
     const choice = await showMenu([
-      { id: "details", title: "Show Profile Details" },
-      { id: "default", title: "Make Default Profile", enabled: !isDefault },
+      { id: "details", title: "显示个人资料详情" },
+      { id: "default", title: "设为默认个人资料", enabled: !isDefault },
       { separator: true },
-      { id: "delete", title: "Delete Profile…", enabled: s.profileOrder.length > 1 },
+      { id: "delete", title: "删除个人资料…", enabled: s.profileOrder.length > 1 },
     ]);
     if (choice === "details") go("profiles", profileId);
     else if (choice === "default") s.setDefaultProfile(profileId);
@@ -205,7 +203,7 @@ function ProfileRow({
                 backgroundColor: hovered && !lifted ? colors.selected : undefined,
               }}
             >
-              <View tooltip="Drag to reorder">
+              <View tooltip="拖动以调整顺序">
                 <Symbol name="line.3.horizontal" size={11} color={theme.textTertiary} style={{ width: 14, height: 14 }} />
               </View>
               <ProfileBadge profile={profile} />
@@ -224,8 +222,8 @@ function ProfileRow({
 
 function iconTitle(icon: string | null): string {
   const symbol = profileSymbol(icon);
-  if (symbol) return PROFILE_SYMBOLS.find((s) => s.name === symbol)?.title ?? "Symbol";
-  return icon ?? "Initial";
+  if (symbol) return PROFILE_SYMBOLS.find((s) => s.name === symbol)?.title ?? "符号";
+  return icon ?? "首字母";
 }
 
 export function ProfileDetailsPane({ profileId }: { profileId: string }) {
@@ -245,7 +243,7 @@ export function ProfileDetailsPane({ profileId }: { profileId: string }) {
       if (n?.kind === "folder") n.children.forEach(walk);
     };
     if (roots) [roots.bar, roots.other].forEach(walk);
-    return `${plural((s.history[profileId] ?? []).length, "page")} in history · ${plural(bookmarks, "bookmark")}`;
+    return `${(s.history[profileId] ?? []).length} 条历史记录 · ${bookmarks} 个书签`;
   });
   const [name, setName] = useState(profile?.name ?? "");
   if (!profile) return null;
@@ -261,48 +259,48 @@ export function ProfileDetailsPane({ profileId }: { profileId: string }) {
   return (
     <View>
       <View style={{ alignItems: "center", marginTop: 24, gap: 10 }}>
-        <Pressable onPress={() => void pickIcon()} tooltip="Change Icon">
+        <Pressable onPress={() => void pickIcon()} tooltip="更改图标">
           <ProfileBadge profile={profile} size={64} />
         </Pressable>
         <Text style={{ fontSize: 12, color: theme.textSecondary }}>{stats}</Text>
       </View>
 
-      <SectionHeader title="Profile" />
+      <SectionHeader title="个人资料" />
       <Group>
-        <Row title="Name">
+        <Row title="名称">
           <TextField value={name} onChangeText={setName} onSubmit={commitName} onBlur={commitName} style={{ width: 220 }} />
         </Row>
-        <Row title="Icon" description={iconTitle(profile.icon)}>
-          <Button title="Change…" onPress={() => void pickIcon()} />
+        <Row title="图标" description={iconTitle(profile.icon)}>
+          <Button title="更改…" onPress={() => void pickIcon()} />
         </Row>
       </Group>
 
       <ThemeSection profileId={profileId} />
 
-      <SectionHeader title="Data" />
+      <SectionHeader title="数据" />
       <Group>
         {sharing ? (
           <Row
             icon={<ColorStack colors={sharedColors} size={14} />}
-            title="Shared data"
-            description={`${listOf(sharedNames)} share Cookies, Passwords, Extensions, Bookmarks, and History. Each keeps its own tabs.`}
+            title="共享数据"
+            description={`${listOf(sharedNames)} 共享 Cookie、密码、扩展、书签和历史记录。各自保留独立的标签页。`}
           />
         ) : null}
-        <Row title="Make Default Profile" description={isDefault ? "New windows already open with this profile." : "Open new windows with this profile."}>
-          <Button title="Make Default" disabled={isDefault} onPress={() => useBrowser.getState().setDefaultProfile(profileId)} />
+        <Row title="设为默认个人资料" description={isDefault ? "新窗口已使用此个人资料打开。" : "使用此个人资料打开新窗口。"}>
+          <Button title="设为默认" disabled={isDefault} onPress={() => useBrowser.getState().setDefaultProfile(profileId)} />
         </Row>
         <Row
-          title="Clear Browsing Data"
-          description={sharing ? "History, cookies, site data and cached files, for every profile that shares them." : "History, cookies, site data and cached files for this profile."}
+          title="清除浏览数据"
+          description={sharing ? "清除所有共享此数据的个人资料中的历史记录、Cookie、网站数据和缓存文件。" : "此个人资料中的历史记录、Cookie、网站数据和缓存文件。"}
         >
-          <Button title="Clear…" onPress={() => showSettingsSheet(<ClearDataDialog profileId={profileId} onClose={closeSettingsSheet} />)} />
+          <Button title="清除…" onPress={() => showSettingsSheet(<ClearDataDialog profileId={profileId} onClose={closeSettingsSheet} />)} />
         </Row>
         <Row
-          title="Delete Selected Profile"
-          description={only ? "You can't delete your only profile." : sharing ? "Removes its tabs. The data it shares stays." : "Removes its tabs, history, bookmarks and site data."}
+          title="删除选中的个人资料"
+          description={only ? "无法删除唯一的个人资料。" : sharing ? "移除其中的标签页。共享的数据会保留。" : "移除其中的标签页、历史记录、书签和网站数据。"}
         >
           <Button
-            title="Delete…"
+            title="删除…"
             kind="destructive"
             disabled={only}
             onPress={() =>

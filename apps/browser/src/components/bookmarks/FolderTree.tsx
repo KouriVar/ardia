@@ -1,3 +1,4 @@
+import { bookmarkTitle } from "../../lib/bookmarkTitle";
 import { Symbol } from "@ardia/shell";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Pressable, Text, View } from "react-native";
@@ -18,7 +19,7 @@ function useFolderRows(profileId: string, expanded: Set<string>): FolderRow[] {
       const node = s.bookmarks.nodes[id];
       if (node?.kind !== "folder") return;
       const sub = folderChildren(s.bookmarks, id).filter((c) => c.kind === "folder");
-      lines.push(JSON.stringify([id, node.title, depth, sub.length > 0]));
+      lines.push(JSON.stringify([id, bookmarkTitle(s.bookmarks, node), depth, sub.length > 0]));
       if (expanded.has(id)) sub.forEach((c) => walk(c.id, depth + 1));
     };
     walk(roots.bar, 0);

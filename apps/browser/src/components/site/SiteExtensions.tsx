@@ -9,13 +9,13 @@ export function SiteExtensions({ windowId, columns, onClose }: { windowId: strin
   const extensions = useWindowExtensions(windowId);
   return (
     <>
-      <SectionTitle title="Extensions" />
+      <SectionTitle title="扩展程序" />
       <TileGrid columns={columns}>
         {extensions.map((ext) => (
           <ExtensionGridTile key={ext.id} ext={ext} windowId={windowId} onClose={onClose} />
         ))}
         <ExtensionTile
-          name="Add Extension"
+          name="添加扩展程序"
           icon={null}
           symbol="plus"
           onPress={() => {
@@ -53,9 +53,9 @@ function ExtensionGridTile({ ext, windowId, onClose }: { ext: InstalledExtension
 
 async function addMenu(windowId: string, onClose: () => void) {
   const choice = await showMenu([
-    { id: "add", title: "Add Extension…", symbol: "plus" },
-    { id: "pin", title: "Pin Extensions…", symbol: "pin" },
-    { id: "manage", title: "Manage Extensions…", symbol: "puzzlepiece.extension" },
+    { id: "add", title: "添加扩展程序…", symbol: "plus" },
+    { id: "pin", title: "固定扩展程序…", symbol: "pin" },
+    { id: "manage", title: "管理扩展程序…", symbol: "puzzlepiece.extension" },
   ]);
   if (!choice) return;
   onClose();

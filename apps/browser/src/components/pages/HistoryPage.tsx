@@ -133,9 +133,9 @@ export function HistoryPage({ tabId, profileId, initialQuery }: { tabId: string;
 
   const deleteSelected = async () => {
     const { confirmed } = await confirm({
-      title: "Remove selected items?",
-      message: "Are you sure you want to delete these pages from your history?",
-      confirmTitle: "Remove",
+      title: "移除所选项目？",
+      message: "确定要从历史记录中删除这些页面吗？",
+      confirmTitle: "移除",
       destructive: true,
       windowId,
     });
@@ -148,20 +148,20 @@ export function HistoryPage({ tabId, profileId, initialQuery }: { tabId: string;
     selected.size > 0 ? (
       <>
         <Text style={{ fontSize: 12, color: theme.textSecondary }}>{`${selected.size} selected`}</Text>
-        <Button title="Cancel" onPress={() => setSelected(new Set())} />
-        <Button title="Delete" kind="primary" onPress={() => void deleteSelected()} />
+        <Button title="取消" onPress={() => setSelected(new Set())} />
+        <Button title="删除" kind="primary" onPress={() => void deleteSelected()} />
       </>
     ) : (
-      <Button title="Clear Browsing Data…" onPress={() => setClearOpen(true)} />
+      <Button title="清除浏览数据…" onPress={() => setClearOpen(true)} />
     );
 
   return (
     <View style={{ flex: 1 }}>
-      <PageHeader title="History" query={query} onQuery={setQuery} placeholder="Search history" actions={actions} />
+      <PageHeader title="历史记录" query={query} onQuery={setQuery} placeholder="搜索历史记录" actions={actions} />
       {layout.rows.length === 0 ? (
         <EmptyState
           icon={<Symbol name="clock" size={30} color={theme.textTertiary} style={{ width: 40, height: 40 }} />}
-          title={query ? "No search results found" : "Your browsing history appears here"}
+          title={query ? "没有搜索结果" : "浏览历史记录会显示在这里"}
         />
       ) : (
         <HistoryList
@@ -334,14 +334,14 @@ const HistoryRow = memo(function HistoryRow({
   const showControls = restingUrl === entry.url || focusedUrl === entry.url;
   const menu = async () => {
     const choice = await showMenu([
-      { id: "tab", title: "Open in New Tab" },
-      { id: "window", title: "Open in New Window" },
-      { id: "incognito", title: "Open in Incognito Window" },
+      { id: "tab", title: "在新标签页中打开" },
+      { id: "window", title: "在新窗口中打开" },
+      { id: "incognito", title: "在无痕窗口中打开" },
       { separator: true },
-      { id: "copy", title: "Copy Link" },
-      { id: "more", title: "More from This Site" },
+      { id: "copy", title: "复制链接" },
+      { id: "more", title: "此网站的更多记录" },
       { separator: true },
-      { id: "remove", title: "Remove from History" },
+      { id: "remove", title: "从历史记录中移除" },
     ]);
     if (choice === "tab") openUrl(entry.url, windowId, "foreground");
     if (choice === "window") openUrl(entry.url, windowId, "window");
@@ -378,8 +378,8 @@ const HistoryRow = memo(function HistoryRow({
                 openUrl(entry.url, windowId, openModeFor(ev));
               }}
               accessibilityActions={[
-                { name: "select", label: selected ? "Deselect" : "Select" },
-                { name: "menu", label: "More Actions" },
+                { name: "select", label: selected ? "取消选择" : "选择" },
+                { name: "menu", label: "更多操作" },
               ]}
               onAccessibilityAction={(e) => {
                 if (e.nativeEvent.actionName === "select") onToggle(entry.url, false);
@@ -396,7 +396,7 @@ const HistoryRow = memo(function HistoryRow({
               </Text>
             </Pressable>
           </MouseArea>
-          <HoverSlot hovered={showControls} width={26} hover={<IconButton icon="ellipsis" size={13} box={26} radius={6} onPress={() => void menu()} tooltip="More actions" />} />
+          <HoverSlot hovered={showControls} width={26} hover={<IconButton icon="ellipsis" size={13} box={26} radius={6} onPress={() => void menu()} tooltip="更多操作" />} />
         </View>
       </ContextMenuArea>
       {!last && <View style={{ position: "absolute", left: 16 + 12, right: 16 + 12, bottom: 0, height: StyleSheet.hairlineWidth * 2, backgroundColor: colors.separator }} />}

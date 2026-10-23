@@ -25,7 +25,7 @@ export function SuggestionIcon({ suggestion: s, color }: { suggestion: Suggestio
 function labels(s: Suggestion): [string, string | null] {
   switch (s.kind) {
     case "page":
-      if (s.tabId) return [s.title || displayUrl(s.url), "Switch to Tab"];
+      if (s.tabId) return [s.title || displayUrl(s.url), "切换到标签页"];
       return s.title ? [s.title, displayUrl(s.url)] : [displayUrl(s.url), null];
     case "search":
       return [s.query, null];
@@ -125,7 +125,7 @@ const SuggestionRow = memo(
             <View style={{ flex: 1 }} />
             {hint && !removable ? <Text style={{ fontSize: 12, color: theme.textTertiary }}>{hint}</Text> : null}
             {removable ? (
-              <IconButton icon="xmark" size={10} box={22} radius={6} color={theme.textSecondary} tooltip="Remove from History" onPress={onRemove} />
+              <IconButton icon="xmark" size={10} box={22} radius={6} color={theme.textSecondary} tooltip="从历史记录中移除" onPress={onRemove} />
             ) : null}
           </View>
         </Pressable>

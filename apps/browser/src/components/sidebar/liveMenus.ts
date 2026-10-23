@@ -15,11 +15,11 @@ const sep = { separator: true } as const;
 export function newLiveFolderMenuItem(): MenuItem {
   return {
     id: "live",
-    title: "New Live Folder",
+    title: "新建实时文件夹",
     symbol: "dot.radiowaves.left.and.right",
     children: [
-      { id: "live:pullRequests", title: "Pull Requests", symbol: "arrow.triangle.pull" },
-      { id: "live:documents", title: "Documents", symbol: "doc.text" },
+      { id: "live:pullRequests", title: "拉取请求", symbol: "arrow.triangle.pull" },
+      { id: "live:documents", title: "文档", symbol: "doc.text" },
     ],
   };
 }
@@ -45,18 +45,18 @@ export async function openLiveFolderMenu(windowId: string, folderId: string) {
   const status = s.status[folderId];
   const choice = await showMenu([
     { id: "status", title: statusText(folderId), enabled: false },
-    { id: "refresh", title: "Refresh", symbol: "arrow.clockwise", enabled: status?.state !== "updating" },
+    { id: "refresh", title: "刷新", symbol: "arrow.clockwise", enabled: status?.state !== "updating" },
     sep,
     ...(pr
       ? [
-          { id: "filter:authored", title: "Created by Me", checked: folder.filters.authored },
-          { id: "filter:reviewRequests", title: "Awaiting My Review", checked: folder.filters.reviewRequests },
+          { id: "filter:authored", title: "由我创建", checked: folder.filters.authored },
+          { id: "filter:reviewRequests", title: "等待我审阅", checked: folder.filters.reviewRequests },
           sep,
         ]
       : []),
     {
       id: "sources",
-      title: pr ? "Pull Requests" : "Documents",
+      title: pr ? "拉取请求" : "文档",
       symbol: pr ? "arrow.triangle.pull" : "doc.text",
       children: SOURCE_GROUPS[folder.kind].map((id) => ({
         id: `source:${id}`,
@@ -65,15 +65,15 @@ export async function openLiveFolderMenu(windowId: string, folderId: string) {
       })),
     },
     sep,
-    { id: "rename", title: "Rename…", symbol: "character.cursor.ibeam" },
-    { id: "icon", title: folder.icon ? "Change Icon…" : "Add Icon…", symbol: "face.smiling" },
-    { id: "read", title: "Mark All as Read", symbol: "circle", enabled: (s.unread[folderId]?.length ?? 0) > 0 },
-    { id: "collapse", title: folder.collapsed ? "Expand" : "Collapse", symbol: folder.collapsed ? "chevron.down" : "chevron.up" },
-    { id: "up", title: "Move Up", enabled: index > 0 },
-    { id: "down", title: "Move Down", enabled: index < s.folderOrder.length - 1 },
+    { id: "rename", title: "重命名…", symbol: "character.cursor.ibeam" },
+    { id: "icon", title: folder.icon ? "更改图标…" : "添加图标…", symbol: "face.smiling" },
+    { id: "read", title: "全部标为已读", symbol: "circle", enabled: (s.unread[folderId]?.length ?? 0) > 0 },
+    { id: "collapse", title: folder.collapsed ? "展开" : "折叠", symbol: folder.collapsed ? "chevron.down" : "chevron.up" },
+    { id: "up", title: "上移", enabled: index > 0 },
+    { id: "down", title: "下移", enabled: index < s.folderOrder.length - 1 },
     sep,
-    { id: "settings", title: "Live Folder Settings…", symbol: "gearshape" },
-    { id: "delete", title: "Delete Live Folder", symbol: "trash" },
+    { id: "settings", title: "实时文件夹设置…", symbol: "gearshape" },
+    { id: "delete", title: "删除实时文件夹", symbol: "trash" },
   ]);
   if (!choice) return;
   if (choice === "refresh") void refreshFolder(folderId);
@@ -88,7 +88,7 @@ export async function openLiveFolderMenu(windowId: string, folderId: string) {
     updateFolder(folderId, { sources: sources.length ? sources : folder.sources });
     void refreshFolder(folderId);
   } else if (choice === "rename") {
-    const name = await prompt({ title: "Rename Live Folder", value: folder.name, placeholder: "Live folder name", confirmTitle: "Rename", windowId });
+    const name = await prompt({ title: "重命名实时文件夹", value: folder.name, placeholder: "实时文件夹名称", confirmTitle: "重命名", windowId });
     if (name?.trim()) updateFolder(folderId, { name: name.trim() });
   } else if (choice === "icon") void openIconPicker(windowId, { kind: "live", id: `livefolder|${folderId}` });
   else if (choice === "read") markRead(folderId);
@@ -102,13 +102,13 @@ export async function openLiveFolderMenu(windowId: string, folderId: string) {
 export async function openLiveItemMenu(windowId: string, folderId: string, item: LiveItem, tabId: string | null) {
   const unread = !!live().unread[folderId]?.includes(item.id);
   const choice = await showMenu([
-    { id: "open", title: tabId ? "Show Tab" : "Open", symbol: "arrow.up.forward.square" },
-    { id: "background", title: "Open in Background", enabled: !tabId },
+    { id: "open", title: tabId ? "显示标签页" : "打开", symbol: "arrow.up.forward.square" },
+    { id: "background", title: "在后台打开", enabled: !tabId },
     sep,
-    { id: "copy", title: "Copy Link", symbol: "link", key: "c", modifiers: ["shift", "command"] },
-    { id: "copyMd", title: "Copy Link as Markdown", symbol: "text.badge.checkmark" },
-    { id: "unread", title: unread ? "Mark as Read" : "Mark as Unread", symbol: unread ? "circle" : "circle.fill" },
-    ...(tabId ? [sep, { id: "close", title: "Close Tab", symbol: "xmark", key: "w", modifiers: ["command" as const] }] : []),
+    { id: "copy", title: "复制链接", symbol: "link", key: "c", modifiers: ["shift", "command"] },
+    { id: "copyMd", title: "将链接复制为 Markdown", symbol: "text.badge.checkmark" },
+    { id: "unread", title: unread ? "标为已读" : "标为未读", symbol: unread ? "circle" : "circle.fill" },
+    ...(tabId ? [sep, { id: "close", title: "关闭标签页", symbol: "xmark", key: "w", modifiers: ["command" as const] }] : []),
   ]);
   if (choice === "open") openLiveItem(windowId, folderId, item);
   else if (choice === "background") openLiveItem(windowId, folderId, item, { background: true });
@@ -129,28 +129,28 @@ export function calendarMenuItem(): MenuItem {
   const calendarItems = (list: typeof calendars): MenuItem[] => list.map((c) => ({ id: `cal:toggle:${c.id}`, title: c.title, swatch: c.color, checked: !hidden.has(c.id) }));
   return {
     id: "cal",
-    title: "Calendar",
+    title: "日历",
     symbol: "calendar",
     children: [
-      ...(calendarConnected() ? [] : [{ id: "cal:connect", title: "Connect Calendar…", symbol: "calendar.badge.plus" }, sep]),
+      ...(calendarConnected() ? [] : [{ id: "cal:connect", title: "连接日历…", symbol: "calendar.badge.plus" }, sep]),
       {
         id: "cal:alerts",
-        title: "Show Next Meeting Alert",
+        title: "显示下次会议提醒",
         children: ALERT_LEADS.map((l) => ({ id: `cal:lead:${l.value}`, title: l.title, checked: settings.alertLead === l.value })),
       },
-      { id: "cal:preview", title: "Show Calendar Preview", checked: settings.showPreview },
-      { id: "cal:badge", title: "Show Time to Next Meeting", checked: settings.showTimeToNext },
+      { id: "cal:preview", title: "显示日历预览", checked: settings.showPreview },
+      { id: "cal:badge", title: "显示距下次会议的时间", checked: settings.showTimeToNext },
       {
         id: "cal:active",
-        title: "Active Calendars",
+        title: "启用的日历",
         enabled: calendars.length > 0,
         children: [
-          ...(owned.length ? [{ id: "cal:h1", title: "My Calendars", enabled: false }, ...calendarItems(owned)] : []),
-          ...(others.length ? [sep, { id: "cal:h2", title: "Other Calendars", enabled: false }, ...calendarItems(others)] : []),
+          ...(owned.length ? [{ id: "cal:h1", title: "我的日历", enabled: false }, ...calendarItems(owned)] : []),
+          ...(others.length ? [sep, { id: "cal:h2", title: "其他日历", enabled: false }, ...calendarItems(others)] : []),
         ],
       },
       sep,
-      { id: "cal:settings", title: "Calendar Settings…", symbol: "gearshape" },
+      { id: "cal:settings", title: "日历设置…", symbol: "gearshape" },
     ],
   };
 }

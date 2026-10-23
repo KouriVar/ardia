@@ -39,10 +39,10 @@ export function CalendarPreview({ tabId, windowId, anchor }: { tabId: string; wi
 
   let body: React.ReactNode;
   if (!connected) body = <SignIn denied={access === "denied" || access === "restricted"} />;
-  else if (!lastFetch && loading) body = <Empty text="Loading events" />;
-  else if (error && !lastFetch) body = <Empty text="Couldn't load events" />;
-  else if (!today.length) body = <Empty text="No events today" />;
-  else if (!upcoming.length) body = <Empty text="No more events today" />;
+  else if (!lastFetch && loading) body = <Empty text="正在加载日程" />;
+  else if (error && !lastFetch) body = <Empty text="无法加载日程" />;
+  else if (!today.length) body = <Empty text="今天没有日程" />;
+  else if (!upcoming.length) body = <Empty text="今天没有更多日程" />;
   else
     body = (
       <View style={{ gap: 2 }}>
@@ -58,7 +58,7 @@ export function CalendarPreview({ tabId, windowId, anchor }: { tabId: string; wi
   return (
     <HoverSurface anchor={anchor} width={300}>
       <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 8, marginTop: -2 }}>
-        <Text style={{ fontSize: 13, fontWeight: "600", color: theme.textPrimary }}>Today</Text>
+        <Text style={{ fontSize: 13, fontWeight: "600", color: theme.textPrimary }}>今天</Text>
         <Text style={{ marginLeft: 6, fontSize: 12, color: theme.textSecondary }}>{date}</Text>
         <View style={{ flex: 1 }} />
         {connected ? <Refresh spinning={loading} /> : null}
@@ -79,7 +79,7 @@ function Refresh({ spinning }: { spinning: boolean }) {
   }, [spinning]);
   return (
     <Animated.View style={{ marginRight: -6, marginVertical: -4, transform: [{ rotate: turn.interpolate({ inputRange: [0, 1], outputRange: ["0deg", "360deg"] }) }] }}>
-      <IconButton icon="arrow.clockwise" size={10} weight="semibold" box={22} radius={6} onPress={() => void refreshCalendar()} tooltip="Refresh" />
+      <IconButton icon="arrow.clockwise" size={10} weight="semibold" box={22} radius={6} onPress={() => void refreshCalendar()} tooltip="刷新" />
     </Animated.View>
   );
 }
@@ -116,8 +116,8 @@ function AllDayRow({ event }: { event: CalendarEvent }) {
   return (
     <View style={{ height: 22, flexDirection: "row", alignItems: "center", gap: 7, paddingHorizontal: 4 }}>
       <View style={{ width: 7, height: 7, borderRadius: 2, backgroundColor: event.color }} />
-      <FadeLabel text={event.title || "Untitled event"} fontSize={12} color={theme.textSecondary} style={{ flex: 1, height: 16 }} />
-      <Text style={{ fontSize: 11, color: theme.textTertiary }}>All day</Text>
+      <FadeLabel text={event.title || "未命名日程"} fontSize={12} color={theme.textSecondary} style={{ flex: 1, height: 16 }} />
+      <Text style={{ fontSize: 11, color: theme.textTertiary }}>全天</Text>
     </View>
   );
 }
@@ -142,16 +142,16 @@ function EventRow({ event, now, windowId, tabId }: { event: CalendarEvent; now: 
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8, paddingVertical: 6, paddingHorizontal: 4, borderRadius: 8, backgroundColor: hovered ? theme.rowHover : undefined, opacity: past ? 0.5 : 1 }}>
           <View style={{ width: 3, alignSelf: "stretch", borderRadius: 1.5, backgroundColor: event.color }} />
           <View style={{ flex: 1, gap: 2 }}>
-            <FadeLabel text={event.title || "Untitled event"} fontSize={13} weight="medium" color={theme.textPrimary} style={{ height: 17 }} />
+            <FadeLabel text={event.title || "未命名日程"} fontSize={13} weight="medium" color={theme.textPrimary} style={{ height: 17 }} />
             <Text numberOfLines={1} style={{ fontSize: 11.5, color: theme.textSecondary }}>
               {timeRange(event)}
-              <Text style={{ fontWeight: "500", color: running ? colors.now : theme.textSecondary }}> · {running ? "Now" : relativeTime(event.start, now)}</Text>
+              <Text style={{ fontWeight: "500", color: running ? colors.now : theme.textSecondary }}> · {running ? "现在" : relativeTime(event.start, now)}</Text>
             </Text>
           </View>
           {others.length && !joinable ? <OverlappingAvatars people={others} /> : null}
           {joinable ? (
             <View tooltip={joinTitle(link!.provider)}>
-              <SmallButton title="Join" icon="video.fill" primary onPress={() => (dismissHover(), joinEvent(event, false, windowId))} />
+              <SmallButton title="加入" icon="video.fill" primary onPress={() => (dismissHover(), joinEvent(event, false, windowId))} />
             </View>
           ) : null}
         </View>

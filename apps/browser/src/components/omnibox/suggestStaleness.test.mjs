@@ -83,17 +83,17 @@ test("the bar's actions and known hosts follow the store: bookmark, mute, pin, p
   const { w, work } = setup();
   const titles = () => currentBarActions(w).map((a) => a.title);
   const tab = S().windows[w].tabIds[0];
-  assert.ok(titles().includes("Bookmark This Page"));
+  assert.ok(titles().includes("将此页面加入书签"));
   S().toggleBookmark("default", { url: "https://start.example/", title: "Start", favicon: null });
-  assert.ok(titles().includes("Remove Bookmark"), "bookmarked");
+  assert.ok(titles().includes("移除书签"), "bookmarked");
   S().toggleBookmark("default", { url: "https://start.example/", title: "Start", favicon: null });
-  assert.ok(titles().includes("Bookmark This Page"), "unbookmarked");
+  assert.ok(titles().includes("将此页面加入书签"), "unbookmarked");
   S().updateTab(tab, { muted: true });
-  assert.ok(titles().includes("Unmute Site"), "muted");
+  assert.ok(titles().includes("取消网站静音"), "muted");
   S().togglePin(tab);
-  assert.ok(titles().includes("Unpin from Top Apps"), "pinned");
+  assert.ok(titles().includes("从顶部应用取消固定"), "pinned");
   S().updateProfile(work, { name: "Office" });
-  assert.ok(titles().includes("Switch to Office"), "a renamed profile");
+  assert.ok(titles().includes("切换到 Office"), "a renamed profile");
 
   assert.equal(scopeFor("newhost.example", w), null);
   const t = S().newTab(w, { url: "https://newhost.example/page", background: true });

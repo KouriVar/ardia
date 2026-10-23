@@ -15,7 +15,7 @@ export async function clipboardPasteAction(): Promise<PasteAction | null> {
 
 export function pasteMenuItem(action: PasteAction | null): MenuItem[] {
   if (!action) return [];
-  return [{ id: "pasteAndGo", title: action.kind === "go" ? "Paste and Go" : "Paste and Search", symbol: action.kind === "go" ? "arrow.right.circle" : "magnifyingglass" }];
+  return [{ id: "pasteAndGo", title: action.kind === "go" ? "粘贴并前往" : "粘贴并搜索", symbol: action.kind === "go" ? "arrow.right.circle" : "magnifyingglass" }];
 }
 
 export function pasteTarget(action: PasteAction): string {
@@ -28,7 +28,7 @@ export async function showUrlBarMenu(tab: Pick<Tab, "id" | "url">) {
   const choice = await showMenu([
     ...paste,
     ...(paste.length ? [{ separator: true as const }] : []),
-    { id: "copy", title: "Copy URL", symbol: "link" },
+    { id: "copy", title: "复制网址", symbol: "link" },
   ]);
   if (choice === "pasteAndGo" && action) useBrowser.getState().navigate(tab.id, pasteTarget(action));
   if (choice === "copy") copyText(cleanUrl(tab.url));

@@ -9,12 +9,12 @@ export function ShareDiagnosticsSection() {
   const sharing = useTelemetry((s) => s.sharing);
   return (
     <>
-      <SectionHeader title="Crash reports and usage" />
+      <SectionHeader title="崩溃报告与使用情况" />
       <Group>
         <Row title={SHARING_COPY.toggle} description={SHARING_COPY.summary}>
           <Toggle value={sharing} onChange={(on) => setSharing(on, "settings")} />
         </Row>
-        <Row title={SHARING_COPY.whatsSent} description="Every field, and what never leaves this Mac." onPress={() => showSettingsSheet(<WhatsSentSheet />)} />
+        <Row title={SHARING_COPY.whatsSent} description="查看所有数据字段，以及绝不会离开此 Mac 的内容。" onPress={() => showSettingsSheet(<WhatsSentSheet />)} />
       </Group>
     </>
   );
@@ -26,7 +26,7 @@ export function WhatsSentSheet() {
     <Sheet width={500} onClose={closeSettingsSheet}>
       <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>{SHARING_COPY.whatsSent}</Text>
       <Text style={{ fontSize: 12, marginTop: 4, color: theme.textSecondary, lineHeight: 16 }}>
-        Only while “{SHARING_COPY.toggle}” is on, except what’s under “Even with sharing off”.
+        仅在开启“{SHARING_COPY.toggle}”时发送，“即使关闭共享”所列内容除外。
       </Text>
       <ScrollView style={{ maxHeight: 420, marginTop: 4 }}>
         {WHATS_SENT.map((group) => (
@@ -42,7 +42,7 @@ export function WhatsSentSheet() {
       </ScrollView>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginTop: 16 }}>
         <Text style={{ flex: 1, fontSize: 11.5, lineHeight: 15, color: theme.textTertiary }}>{SHARING_COPY.footnote}</Text>
-        <Button title="Done" kind="primary" onPress={closeSettingsSheet} />
+        <Button title="完成" kind="primary" onPress={closeSettingsSheet} />
       </View>
     </Sheet>
   );

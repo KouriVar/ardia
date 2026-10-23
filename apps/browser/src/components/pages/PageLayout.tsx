@@ -42,8 +42,8 @@ export function EmptyState({ icon, title, subtitle }: { icon?: ReactNode; title:
   );
 }
 
-const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const DAYS = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+const MONTHS = ["1 月", "2 月", "3 月", "4 月", "5 月", "6 月", "7 月", "8 月", "9 月", "10 月", "11 月", "12 月"];
 
 export const dayStart = (ms: number) => {
   const d = new Date(ms);
@@ -54,8 +54,8 @@ export function dayLabel(start: number, now = Date.now()): string {
   const d = new Date(start);
   const full = `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
   const today = dayStart(now);
-  if (start === today) return `Today – ${full}`;
-  if (start === dayStart(today - 1)) return `Yesterday – ${full}`;
+  if (start === today) return `今天 – ${full}`;
+  if (start === dayStart(today - 1)) return `昨天 – ${full}`;
   return full;
 }
 

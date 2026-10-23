@@ -445,7 +445,7 @@ function DownloadsButton({ windowId }: { windowId: string }) {
       size={16}
       box={34}
       radius={10}
-      tooltip="Downloads (⇧⌘J)"
+      tooltip="下载内容 (⇧⌘J)"
       onPress={() => {
         const s = useBrowser.getState();
         s.setDownloadsOpen(windowId, !s.windowUi[windowId]?.downloadsOpen);
@@ -491,7 +491,7 @@ const NewTabRow = memo(function NewTabRow({ windowId, shift = null, clip = null 
             ]}
           >
             <Symbol name="plus" size={13} weight="medium" color={tokens.newTabIcon} style={{ width: 16, height: 16 }} />
-            <FadeLabel text="New Tab" fontSize={13} color={tokens.newTabLabel} style={{ flex: 1, height: 18, marginLeft: 5 }} />
+            <FadeLabel text="新建标签页" fontSize={13} color={tokens.newTabLabel} style={{ flex: 1, height: 18, marginLeft: 5 }} />
           </View>
         )}
       </Pressable>
@@ -504,7 +504,7 @@ const NewTabRow = memo(function NewTabRow({ windowId, shift = null, clip = null 
           box={22}
           radius={6}
           color={hovered ? theme.textSecondary : theme.textTertiary}
-          tooltip="Open and recently closed tabs"
+          tooltip="已打开和最近关闭的标签页"
           onPress={() => void openOverflowMenu(windowId)}
         />
       </View>
@@ -556,17 +556,17 @@ const CleanUpUpsell = memo(function CleanUpUpsell({ windowId, shift }: { windowI
         <Symbol name="wand.and.stars" size={12} color={theme.icon} style={{ width: 16, height: 16 }} />
         <Text style={{ flex: 1, fontSize: 12, fontWeight: "600", color: theme.textPrimary }}>{count} tabs haven’t been touched in a while</Text>
       </View>
-      <Text style={{ fontSize: 12, color: theme.textSecondary }}>Ardia can tidy up for you. You can always reopen closed tabs from the ⌄ menu.</Text>
+      <Text style={{ fontSize: 12, color: theme.textSecondary }}>Ardia 可以为你整理标签页。你随时可以从 ⌄ 菜单重新打开已关闭的标签页。</Text>
       <View style={{ gap: 6 }}>
-        {button("Clean Up Once", () => {
+        {button("清理一次", () => {
           useBrowser.getState().cleanUpTabs(windowId);
           dismiss();
         }, true)}
-        {button("Clean Up Daily", () => {
+        {button("每天清理", () => {
           useBrowser.getState().updateSettings({ cleanUpInactiveTabsAfterHours: 24 });
           useBrowser.getState().cleanUpTabs(windowId);
         })}
-        {button("Not Now", dismiss)}
+        {button("暂不", dismiss)}
       </View>
     </View>
   );

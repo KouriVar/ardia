@@ -6,16 +6,16 @@ export function syncedDevicesMenuItem(profileId: string): MenuItem | null {
   const devices = useSync.getState().remoteTabs[profileId] ?? [];
   if (!devices.length) return null;
   const tabs = (d: RemoteTabs): MenuItem[] => [
-    { id: "synced-header", title: "Recent Tabs", enabled: false },
+    { id: "synced-header", title: "最近的标签页", enabled: false },
     ...d.tabs.map((t, i) => ({ id: `synced:${d.deviceId}:${i}`, title: t.title || t.url })),
   ];
   if (devices.length === 1) {
     const d = devices[0]!;
-    return { id: "synced", title: `Your ${deviceKind(d.name)} Tabs`, symbol: "macbook.and.iphone", children: tabs(d) };
+    return { id: "synced", title: `${deviceKind(d.name)} 上的标签页`, symbol: "macbook.and.iphone", children: tabs(d) };
   }
   return {
     id: "synced",
-    title: "Your Devices",
+    title: "你的设备",
     symbol: "macbook.and.iphone",
     children: devices.map((d) => ({ id: `device:${d.deviceId}`, title: d.name, symbol: "laptopcomputer", children: tabs(d) })),
   };

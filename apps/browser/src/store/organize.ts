@@ -143,7 +143,7 @@ export function groupLabel(s: Pick<BrowserState, "tabs">, g: TabGroup): string {
     return cached.label;
   }
   const members = g.tabIds.map((id) => s.tabs[id]);
-  const label = autoGroupName(members.filter((t): t is Tab => !!t?.url)) || "New Group";
+  const label = autoGroupName(members.filter((t): t is Tab => !!t?.url)) || "新分组";
   autoLabels.set(g, { tabs: s.tabs, members, label });
   return label;
 }

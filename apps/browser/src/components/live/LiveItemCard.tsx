@@ -85,7 +85,7 @@ function PullRequestPreview({ item, folderId, windowId }: { item: LiveItem; fold
         <Text numberOfLines={1} style={{ flex: 1, fontSize: 12, color: theme.textSecondary }}>
           <Text style={{ fontWeight: "600", color: theme.textPrimary }}>{pr.author}</Text> · {pr.repo} #{pr.number}
         </Text>
-        {pr.draft ? <Chip text="Draft" color={colors.draft} /> : null}
+        {pr.draft ? <Chip text="草稿" color={colors.draft} /> : null}
       </View>
       <Text numberOfLines={3} style={{ fontSize: 13.5, lineHeight: 18, fontWeight: "600", color: theme.textPrimary }}>
         {item.title}
@@ -102,16 +102,16 @@ function PullRequestPreview({ item, folderId, windowId }: { item: LiveItem; fold
           {(showAll ? failing : failing.slice(0, 3)).map((c) => (
             <FailingCheckRow key={c.name} check={c} colors={colors} onPress={() => c.url && open(windowId, c.url)} />
           ))}
-          {failing.length > 3 && !showAll ? <LinkText text={`Show all ${failing.length} failures`} onPress={() => setShowAll(true)} /> : null}
+          {failing.length > 3 && !showAll ? <LinkText text={`显示全部 ${failing.length} 项失败`} onPress={() => setShowAll(true)} /> : null}
         </View>
       ) : null}
 
       {pr.mergeable === "conflicting" ? (
         <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
           <View style={{ flex: 1 }}>
-            <StatusLine symbol="exclamationmark.triangle.fill" color={colors.conflict} text="This branch has conflicts" />
+            <StatusLine symbol="exclamationmark.triangle.fill" color={colors.conflict} text="此分支存在冲突" />
           </View>
-          <SmallButton title="Resolve Conflicts" onPress={() => open(windowId, `${item.url}/conflicts`)} />
+          <SmallButton title="解决冲突" onPress={() => open(windowId, `${item.url}/conflicts`)} />
         </View>
       ) : null}
 
@@ -119,7 +119,7 @@ function PullRequestPreview({ item, folderId, windowId }: { item: LiveItem; fold
         <StatusLine
           symbol={pr.review === "approved" ? "checkmark.seal.fill" : pr.review === "changesRequested" ? "arrow.uturn.backward.circle.fill" : "eye"}
           color={pr.review === "approved" ? colors.success : pr.review === "changesRequested" ? colors.failure : theme.textSecondary}
-          text={pr.review === "approved" ? "Approved" : pr.review === "changesRequested" ? "Changes Requested" : item.section === "authored" ? "Review required" : "Needs your review"}
+          text={pr.review === "approved" ? "已批准" : pr.review === "changesRequested" ? "已请求更改" : item.section === "authored" ? "需要审阅" : "等待你的审阅"}
         />
       ) : null}
 

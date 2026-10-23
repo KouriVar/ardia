@@ -71,7 +71,7 @@ export function addFromWebStore(windowId: string, urlOrId: string, profile = ext
   const id = webStoreExtensionId(urlOrId);
   if (!id) {
     const pkg = { name: "Extension", version: "", description: "", manifestVersion: 3, icon: null, permissions: [], optionalPermissions: [], hostPermissions: [], hasAction: false, popup: null, optionsPage: null, sidePanel: null, path: "" };
-    useExtensions.setState({ install: { windowId, profile, source: "webStore", status: "error", pkg, error: "That isn't a link to an extension in the Chrome Web Store." } });
+    useExtensions.setState({ install: { windowId, profile, source: "webStore", status: "error", pkg, error: "这不是 Chrome 应用商店中的扩展程序链接。" } });
     return;
   }
   const url = `https://chromewebstore.google.com/detail/${id}`;
@@ -143,9 +143,9 @@ export function cancelInstall() {
 
 export async function removeExtension(profile: string, ext: InstalledExtension, windowId?: string) {
   const { confirmed } = await confirm({
-    title: `Remove “${ext.name}”?`,
-    message: ext.fromWebStore ? "Its data and settings will be removed too." : "The extension's folder stays on your Mac.",
-    confirmTitle: "Remove",
+    title: `移除“${ext.name}”？`,
+    message: ext.fromWebStore ? "其数据和设置也将一并移除。" : "扩展程序的文件夹会保留在这台 Mac 上。",
+    confirmTitle: "移除",
     destructive: true,
     windowId,
   });
@@ -237,15 +237,15 @@ export async function showExtensionMenu(windowId: string, ext: InstalledExtensio
   const choice = await showMenu([
     { id: "name", title: ext.name, enabled: false },
     { separator: true },
-    { id: "options", title: "Options", enabled: !!ext.optionsUrl && ext.enabled },
+    { id: "options", title: "选项", enabled: !!ext.optionsUrl && ext.enabled },
     ...(ext.sidePanel && ext.enabled
-      ? [{ id: "sidePanel", title: useExtensions.getState().sidePanels[windowId]?.extensionId === ext.id ? "Close Side Panel" : "Open Side Panel" }]
+      ? [{ id: "sidePanel", title: useExtensions.getState().sidePanels[windowId]?.extensionId === ext.id ? "关闭侧边面板" : "打开侧边面板" }]
       : []),
-    { id: "pin", title: ext.pinned ? "Unpin from Toolbar" : "Pin to Toolbar", symbol: ext.pinned ? "pin.slash" : "pin" },
-    { id: "enable", title: ext.enabled ? "Turn Off" : "Turn On" },
+    { id: "pin", title: ext.pinned ? "从工具栏取消固定" : "固定到工具栏", symbol: ext.pinned ? "pin.slash" : "pin" },
+    { id: "enable", title: ext.enabled ? "关闭" : "开启" },
     { separator: true },
-    { id: "remove", title: "Remove Extension…", enabled: ext.mayModify },
-    { id: "manage", title: "Manage Extensions…" },
+    { id: "remove", title: "移除扩展程序…", enabled: ext.mayModify },
+    { id: "manage", title: "管理扩展程序…" },
   ]);
   if (choice === "options") openOptions(windowId, ext);
   if (choice === "pin") void setPinned(profile, ext.id, !ext.pinned);

@@ -28,8 +28,8 @@ function check() {
   const when = relativeTime(event.start, Date.now());
   void postNotification({
     id: `meeting:${event.occurrence}`,
-    title: event.title || "Untitled event",
-    body: `${when === "Now" ? "Starting now" : event.start < Date.now() ? `Started ${when}` : `Starts ${when}`}${link ? ` · ${joinTitle(link.provider)}` : ""}`,
+    title: event.title || "未命名日程",
+    body: `${when === "现在" ? "现在开始" : event.start < Date.now() ? `已于${when}开始` : `将于${when}开始`}${link ? ` · ${joinTitle(link.provider)}` : ""}`,
     data: { meeting: event.occurrence },
   });
 }

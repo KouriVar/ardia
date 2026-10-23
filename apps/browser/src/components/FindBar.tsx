@@ -61,8 +61,8 @@ function FindBarPanel({ tabId, find }: { tabId: string; find: FindState }) {
   const replace = async (all: boolean) => {
     if (!find.query) return;
     const { field, count } = await replaceInField(tabId, find.query, replacement, all);
-    if (!field) return setNote({ text: "Not in a text field", error: true });
-    if (all || !count) setNote({ text: count ? `${count} replaced` : "No matches", error: !count });
+    if (!field) return setNote({ text: "当前不在文本输入框中", error: true });
+    if (all || !count) setNote({ text: count ? `${count} replaced` : "没有匹配项", error: !count });
     run(false, find.query, false);
   };
   const none = find.count === 0 && !!find.query;
@@ -100,7 +100,7 @@ function FindBarPanel({ tabId, find }: { tabId: string; find: FindState }) {
               setFind({ query });
               run(false, query, false);
             }}
-            placeholder="Find on Page"
+            placeholder="在页面中查找"
             placeholderTextColor={theme.placeholder}
             selectionColor={theme.selection}
             enableFocusRing={false}
@@ -114,7 +114,7 @@ function FindBarPanel({ tabId, find }: { tabId: string; find: FindState }) {
             style={{ flex: 1, fontSize: 14, color: theme.textPrimary, paddingVertical: 0 }}
           />
           {none ? (
-            <Text style={{ fontSize: 12, color: error, marginRight: 6 }}>No results</Text>
+            <Text style={{ fontSize: 12, color: error, marginRight: 6 }}>没有结果</Text>
           ) : find.count !== null && !!find.query ? (
             <View style={{ flexDirection: "row", alignItems: "center", gap: 6, marginRight: 6 }}>
               <Text style={{ fontSize: 12, color: theme.textPrimary, fontVariant: ["tabular-nums"] }}>{find.active}</Text>
@@ -122,10 +122,10 @@ function FindBarPanel({ tabId, find }: { tabId: string; find: FindState }) {
               <Text style={{ fontSize: 12, color: theme.textSecondary, fontVariant: ["tabular-nums"] }}>{find.count}</Text>
             </View>
           ) : null}
-          <IconButton icon="chevron.up" size={12} box={26} radius={6} disabled={!find.count} onPress={() => run(true)} tooltip="Previous (⇧⌘G)" />
-          <IconButton icon="chevron.down" size={12} box={26} radius={6} disabled={!find.count} onPress={() => run(false)} tooltip="Next (⌘G)" />
+          <IconButton icon="chevron.up" size={12} box={26} radius={6} disabled={!find.count} onPress={() => run(true)} tooltip="上一项 (⇧⌘G)" />
+          <IconButton icon="chevron.down" size={12} box={26} radius={6} disabled={!find.count} onPress={() => run(false)} tooltip="下一项 (⌘G)" />
           <View style={{ width: 1, height: 18, marginHorizontal: 3, backgroundColor: separator }} />
-          <IconButton icon="xmark" size={11} box={26} radius={6} onPress={close} tooltip="Done (Esc)" />
+          <IconButton icon="xmark" size={11} box={26} radius={6} onPress={close} tooltip="完成 (Esc)" />
         </View>
         {find.replace && <View style={{ height: StyleSheet.hairlineWidth * 2, backgroundColor: separator }} />}
         {find.replace && (
@@ -134,7 +134,7 @@ function FindBarPanel({ tabId, find }: { tabId: string; find: FindState }) {
             <TextInput
               value={replacement}
               onChangeText={setReplacement}
-              placeholder="Replace"
+              placeholder="替换"
               placeholderTextColor={theme.placeholder}
               selectionColor={theme.selection}
               enableFocusRing={false}
@@ -144,8 +144,8 @@ function FindBarPanel({ tabId, find }: { tabId: string; find: FindState }) {
               style={{ flex: 1, fontSize: 14, color: theme.textPrimary, paddingVertical: 0 }}
             />
             {note && <Text style={{ fontSize: 12, color: note.error ? error : theme.textSecondary, marginRight: 2 }}>{note.text}</Text>}
-            <TextButton title="Replace" disabled={!find.query} onPress={() => void replace(false)} />
-            <TextButton title="All" disabled={!find.query} onPress={() => void replace(true)} />
+            <TextButton title="替换" disabled={!find.query} onPress={() => void replace(false)} />
+            <TextButton title="全部" disabled={!find.query} onPress={() => void replace(true)} />
           </View>
         )}
       </Surface>

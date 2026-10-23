@@ -51,7 +51,7 @@ export function SidebarPlayer({ tabId }: { tabId: string }) {
     <View {...hoverProps} style={{ height: SIDEBAR_PLAYER_HEIGHT - 8 }}>
       <Surface fill={hex(tokens.groupFill)} cornerRadius={12} borderColor={hex(tokens.groupStroke)} borderWidth={0.5} style={{ flex: 1, paddingHorizontal: 7, paddingTop: 7 }}>
         <View style={{ flexDirection: "row", alignItems: "center", height: 32 }}>
-          <Pressable onPress={go} tooltip="Back to Tab">
+          <Pressable onPress={go} tooltip="返回标签页">
             <View style={{ width: 32, height: 32, borderRadius: 6, overflow: "hidden", backgroundColor: media.artPlaceholder, alignItems: "center", justifyContent: "center" }}>
               {artwork ? (
                 <Image source={{ uri: artwork }} resizeMode="cover" style={{ width: 32, height: 32 }} />
@@ -74,16 +74,16 @@ export function SidebarPlayer({ tabId }: { tabId: string }) {
             size={tracks ? 10 : 12}
             box={24}
             radius={6}
-            tooltip={tracks ? "Play Previous Track" : `Skip back ${SKIP_SECONDS} seconds`}
+            tooltip={tracks ? "上一曲" : `后退 ${SKIP_SECONDS} 秒`}
             onPress={() => (tracks ? mediaCommand(tabId, "previous") : skip(tabId, session, -SKIP_SECONDS))}
           />
-          <IconButton icon={playing ? "pause.fill" : "play.fill"} size={13} box={24} radius={6} tooltip={playing ? "Pause" : "Play"} onPress={() => mediaCommand(tabId, "toggle")} />
+          <IconButton icon={playing ? "pause.fill" : "play.fill"} size={13} box={24} radius={6} tooltip={playing ? "暂停" : "播放"} onPress={() => mediaCommand(tabId, "toggle")} />
           <IconButton
             icon={tracks ? "forward.fill" : `goforward.${SKIP_SECONDS}`}
             size={tracks ? 10 : 12}
             box={24}
             radius={6}
-            tooltip={tracks ? "Play Next Track" : `Skip ahead ${SKIP_SECONDS} seconds`}
+            tooltip={tracks ? "下一曲" : `快进 ${SKIP_SECONDS} 秒`}
             onPress={() => (tracks ? mediaCommand(tabId, "next") : skip(tabId, session, SKIP_SECONDS))}
           />
           {session.duration ? (
@@ -95,8 +95,8 @@ export function SidebarPlayer({ tabId }: { tabId: string }) {
       </Surface>
       {hovered ? (
         <View style={{ position: "absolute", top: -6, right: -6, flexDirection: "row", gap: 2 }}>
-          <CornerButton icon={tab.muted ? "speaker.wave.2.fill" : "speaker.slash.fill"} tooltip={tab.muted ? "Unmute Site" : "Mute Site"} onPress={() => toggleMute(tabId)} />
-          <CornerButton icon="xmark" tooltip="Close Player" onPress={() => useMedia.setState((m) => ({ dismissed: { ...m.dismissed, [tabId]: true } }))} />
+          <CornerButton icon={tab.muted ? "speaker.wave.2.fill" : "speaker.slash.fill"} tooltip={tab.muted ? "取消网站静音" : "将网站静音"} onPress={() => toggleMute(tabId)} />
+          <CornerButton icon="xmark" tooltip="关闭播放器" onPress={() => useMedia.setState((m) => ({ dismissed: { ...m.dismissed, [tabId]: true } }))} />
         </View>
       ) : null}
     </View>

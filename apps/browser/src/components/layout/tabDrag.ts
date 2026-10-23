@@ -147,7 +147,7 @@ function takePicture({ chip, grab }: Picture, windowId: string) {
     if (!shown || (onScreen && !tab?.url)) return;
     const last = lastPicture(shown);
     if (last) return dragPreview.page(last.data, last.frame);
-    if (tab) dragPreview.placeholder(tab.customTitle || tab.title || tab.url || "New Tab", tab.favicon);
+    if (tab) dragPreview.placeholder(tab.customTitle || tab.title || tab.url || "新建标签页", tab.favicon);
   });
 }
 

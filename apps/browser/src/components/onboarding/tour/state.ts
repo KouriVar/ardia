@@ -19,8 +19,8 @@ export type TourStop = {
 const TOUR_STOPS: TourStop[] = [
   {
     id: "commandBar",
-    title: "Search or go anywhere",
-    body: "Type a question, an address or the name of an open tab. ⌘L brings the command bar up from any page, and ⌘T opens a new tab.",
+    title: "搜索或前往任何地方",
+    body: "输入问题、网址或已打开标签页的名称。在任何页面按 ⌘L 打开命令栏，按 ⌘T 新建标签页。",
     anchor: "commandBar",
     placement: "below",
     radius: 20,
@@ -28,8 +28,8 @@ const TOUR_STOPS: TourStop[] = [
   },
   {
     id: "tabs",
-    title: "Your tabs live in the sidebar",
-    body: "New tabs land here. Drag them to reorder or group them; right-click one to pin it, so it's always a click away.",
+    title: "标签页都在侧边栏",
+    body: "新标签页会显示在这里。拖动可排序或分组；右键点击即可固定，随时一键访问。",
     anchor: "tabs",
     placement: "right",
     radius: 10,
@@ -37,8 +37,8 @@ const TOUR_STOPS: TourStop[] = [
   },
   {
     id: "sidebar",
-    title: "Room to focus",
-    body: "⌘S hides the sidebar. Move the pointer to the window's left edge to peek at your tabs while it's hidden.",
+    title: "专注浏览的空间",
+    body: "按 ⌘S 隐藏侧边栏。隐藏后，将指针移到窗口左边缘即可临时查看标签页。",
     anchor: "sidebarButton",
     placement: "below",
     radius: 9,
@@ -46,8 +46,8 @@ const TOUR_STOPS: TourStop[] = [
   },
   {
     id: "split",
-    title: "Two pages, side by side",
-    body: "Drag a tab onto the page to split the window, or press ⌃⇧=. ⌃⇧] and ⌃⇧[ move between the panes.",
+    title: "两个页面，并排浏览",
+    body: "将标签页拖到页面上或按 ⌃⇧= 即可分屏。按 ⌃⇧] 和 ⌃⇧[ 可在分屏之间切换。",
     anchor: "page",
     placement: "inside",
     radius: 10,
@@ -55,8 +55,8 @@ const TOUR_STOPS: TourStop[] = [
   },
   {
     id: "done",
-    title: "You're all set",
-    body: "Everything else is in the menu bar and in Settings (⌘,). You can take this tour again from the Help menu.",
+    title: "一切准备就绪",
+    body: "其他功能都在菜单栏和设置 (⌘,) 中。你也可以从帮助菜单重新查看导览。",
   },
 ];
 

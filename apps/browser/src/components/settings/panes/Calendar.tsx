@@ -20,41 +20,41 @@ export function CalendarPane() {
   return (
     <View>
       <SectionHeader
-        title="Live Calendar"
-        description="Pin Google Calendar, Outlook, iCloud or Notion Calendar to see your day when you hover it, a countdown to your next meeting, and alerts with a Join button before meetings start. Events come from the Calendar app's accounts."
+        title="动态日历"
+        description="固定 Google 日历、Outlook、iCloud 或 Notion Calendar 后，悬停可查看当日日程，并显示下一场会议倒计时及带有“加入”按钮的会前提醒。日程来自“日历”应用中的账户。"
       />
       <Group>
         <Row
-          title="Calendar access"
+          title="日历访问权限"
           description={
             access === "fixture"
-              ? "Development build: using calendar-fixture.json"
+              ? "开发构建：使用 calendar-fixture.json"
               : connected
-                ? `Connected · ${calendars.length === 1 ? "1 calendar" : `${calendars.length} calendars`}`
+                ? `已连接 · ${calendars.length} 个日历`
                 : denied
-                  ? "Ardia isn't allowed to read your calendars. Allow it in System Settings › Privacy & Security › Calendars."
-                  : "Not connected"
+                  ? "Ardia 无权读取您的日历。请前往“系统设置 › 隐私与安全性 › 日历”授予权限。"
+                  : "未连接"
           }
         >
           {denied ? (
-            <Button title="Open System Settings" onPress={() => void Linking.openURL("x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars")} />
+            <Button title="打开系统设置" onPress={() => void Linking.openURL("x-apple.systempreferences:com.apple.preference.security?Privacy_Calendars")} />
           ) : !connected ? (
-            <Button title="Connect Calendar…" kind="primary" onPress={() => void connectCalendar()} />
+            <Button title="连接日历…" kind="primary" onPress={() => void connectCalendar()} />
           ) : null}
         </Row>
       </Group>
 
-      <SectionHeader title="Meeting alerts" />
+      <SectionHeader title="会议提醒" />
       <Group>
-        <Row title="Show next meeting alert">
+        <Row title="显示下一场会议提醒">
           <PopUp value={settings.alertLead} options={ALERT_LEADS.map((l) => ({ value: l.value, title: l.title, separatorBefore: l.value === "start" }))} onChange={(v) => updateCalendarSettings({ alertLead: v })} minWidth={170} />
         </Row>
-        <Row title="Show alerts" description="With Always, alerts also appear in Notification Center while you're in another app.">
+        <Row title="显示提醒" description="选择“始终”后，在使用其他应用时也会在通知中心显示提醒。">
           <PopUp
             value={settings.alertCondition}
             options={[
-              { value: "always", title: "Always" },
-              { value: "activeOnly", title: "Only When Active" },
+              { value: "always", title: "始终" },
+              { value: "activeOnly", title: "仅在应用活跃时" },
             ]}
             disabled={settings.alertLead === "never"}
             onChange={(v) => updateCalendarSettings({ alertCondition: v })}
@@ -63,33 +63,33 @@ export function CalendarPane() {
         </Row>
       </Group>
 
-      <SectionHeader title="Pinned calendar" />
+      <SectionHeader title="固定的日历" />
       <Group>
-        <Row title="Show calendar preview" description="Hover a pinned calendar tab to see the rest of your day.">
+        <Row title="显示日历预览" description="悬停在固定的日历标签页上，可查看当天剩余日程。">
           <Toggle value={settings.showPreview} onChange={(v) => updateCalendarSettings({ showPreview: v })} />
         </Row>
-        <Row title="Show time to next meeting" description="A badge on the pinned calendar tab within the hour before a meeting.">
+        <Row title="显示距下次会议的时间" description="会议开始前一小时内，在固定日历标签页上显示标记。">
           <Toggle value={settings.showTimeToNext} onChange={(v) => updateCalendarSettings({ showTimeToNext: v })} />
         </Row>
       </Group>
 
-      <SectionHeader title="Meetings" />
+      <SectionHeader title="会议" />
       <Group>
-        <Row title="Automatically group tabs for meetings" description="Joining a call makes a tab group for it; links you open from the meeting join the group.">
+        <Row title="自动将会议标签页分组" description="加入通话时为其创建标签页分组；从会议中打开的链接会加入此分组。">
           <Toggle value={autoGroup} onChange={(v) => useBrowser.getState().updateSettings({ autoGroupMeetingTabs: v })} />
         </Row>
       </Group>
 
       {calendars.length ? (
         <>
-          <SectionHeader title="Active calendars" description="Meetings from unchecked calendars don't show or alert." />
+          <SectionHeader title="启用的日历" description="未勾选日历中的会议不会显示或提醒。" />
           <Group>
-            {owned.length ? <CalendarList title="My Calendars" calendars={owned} hidden={settings.hiddenCalendarIds} /> : null}
-            {others.length ? <CalendarList title="Other Calendars" calendars={others} hidden={settings.hiddenCalendarIds} /> : null}
+            {owned.length ? <CalendarList title="我的日历" calendars={owned} hidden={settings.hiddenCalendarIds} /> : null}
+            {others.length ? <CalendarList title="其他日历" calendars={others} hidden={settings.hiddenCalendarIds} /> : null}
           </Group>
         </>
       ) : connected ? (
-        <Text style={{ marginTop: 12, fontSize: 12, color: theme.textSecondary }}>No calendars found. Add accounts in the Calendar app.</Text>
+        <Text style={{ marginTop: 12, fontSize: 12, color: theme.textSecondary }}>未找到日历。请在“日历”应用中添加账户。</Text>
       ) : null}
     </View>
   );

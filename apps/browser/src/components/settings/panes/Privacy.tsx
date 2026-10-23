@@ -34,15 +34,15 @@ import { closeSettingsSheet, showSettingsSheet } from "../sheet";
 import { ShareDiagnosticsSection } from "./ShareDiagnostics";
 
 const CATEGORIES: { id: FilterListCategory; toggle: string; section: string }[] = [
-  { id: "ads", toggle: "Block ads", section: "Ad blockers" },
-  { id: "trackers", toggle: "Block trackers", section: "Trackers" },
-  { id: "cookies", toggle: "Block cookie banners", section: "Cookie banners" },
-  { id: "annoyances", toggle: "", section: "Annoyances" },
-  { id: "security", toggle: "", section: "Malware and scams" },
-  { id: "regional", toggle: "", section: "Regional blockers" },
+  { id: "ads", toggle: "拦截广告", section: "广告拦截" },
+  { id: "trackers", toggle: "拦截跟踪器", section: "跟踪器" },
+  { id: "cookies", toggle: "拦截 Cookie 横幅", section: "Cookie 横幅" },
+  { id: "annoyances", toggle: "", section: "干扰内容" },
+  { id: "security", toggle: "", section: "恶意软件与诈骗" },
+  { id: "regional", toggle: "", section: "地区拦截规则" },
 ];
 
-const filtersText = (n: number) => `${n.toLocaleString()} ${n === 1 ? "filter" : "filters"}`;
+const filtersText = (n: number) => `${n.toLocaleString()} 条过滤规则`;
 
 function useContentBlocker() {
   const [state, setState] = useState<ContentBlockerState | null>(null);
@@ -74,9 +74,9 @@ export function PrivacyPane() {
     if (!blocker) return;
     if (!on && c === "ads") {
       const { confirmed } = await confirm({
-        title: "Turn Off Ad Blocker?",
-        message: "Ardia's Ad Blocker hides ads so pages load faster and feel cleaner.",
-        confirmTitle: "Turn Off",
+        title: "关闭广告拦截？",
+        message: "Ardia 的广告拦截可隐藏广告，让页面加载更快、更清爽。",
+        confirmTitle: "关闭",
       });
       if (!confirmed) return;
     }
@@ -89,26 +89,26 @@ export function PrivacyPane() {
 
   return (
     <View>
-      <SectionHeader title="Content blocking" description="Built on EasyList and EasyPrivacy. Blocking happens on this Mac." />
+      <SectionHeader title="内容拦截" description="基于 EasyList 和 EasyPrivacy，拦截在此 Mac 上完成。" />
       <Group>
         {CATEGORIES.filter((c) => c.toggle).map((c) => (
           <Row key={c.id} title={c.toggle}>
             <Toggle value={!!blocker && categoryOn(blocker, c.id)} disabled={!blocker} onChange={(v) => void toggleCategory(c.id, v)} />
           </Row>
         ))}
-        <Row title="Advanced Settings" description="Block common components found across the web by using additional rules and filters.">
-          <Button title="Advanced…" disabled={!blocker} onPress={() => showSettingsSheet(<FilterListsSheet />)} />
+        <Row title="高级设置" description="使用额外规则和过滤器拦截各网站上的常见内容。">
+          <Button title="高级…" disabled={!blocker} onPress={() => showSettingsSheet(<FilterListsSheet />)} />
         </Row>
       </Group>
 
       {!!blocker?.allowedHosts.length && (
         <>
-          <SectionHeader title="Sites without blocking" description="Turned off from a site's controls. Blocking applies to subdomains too." />
+          <SectionHeader title="不拦截的网站" description="通过网站控制面板关闭拦截。设置也适用于子域名。" />
           <Group>
             {blocker.allowedHosts.map((host) => (
               <Row key={host} icon={<Favicon url={`https://${host}`} />} title={host}>
                 <Button
-                  title="Block Again"
+                  title="重新拦截"
                   onPress={() => void setContentBlockerAllowed(host, false).then(refresh)}
                 />
               </Row>
@@ -122,7 +122,7 @@ export function PrivacyPane() {
       <ZoomLevels />
       {blocker && (
         <Text style={{ marginTop: 14, fontSize: 11.5, color: theme.textTertiary }}>
-          {`${(blocker.stats.networkFilters ?? 0).toLocaleString()} network and ${(blocker.stats.cosmeticFilters ?? 0).toLocaleString()} cosmetic rules loaded.`}
+          {`已加载 ${(blocker.stats.networkFilters ?? 0).toLocaleString()} 条网络规则和 ${(blocker.stats.cosmeticFilters ?? 0).toLocaleString()} 条元素隐藏规则。`}
         </Text>
       )}
       <ShareDiagnosticsSection />
@@ -143,8 +143,8 @@ function FilterListsSheet() {
   };
   return (
     <Sheet width={500} onClose={closeSettingsSheet}>
-      <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>Advanced Ad Block Settings</Text>
-      <Text style={{ fontSize: 12, marginTop: 4, color: theme.textSecondary }}>Block common components found across the web by using additional rules and filters.</Text>
+      <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>广告拦截高级设置</Text>
+      <Text style={{ fontSize: 12, marginTop: 4, color: theme.textSecondary }}>使用额外规则和过滤器拦截各网站上的常见内容。</Text>
       <ScrollView style={{ maxHeight: 420, marginTop: 8 }}>
         {CATEGORIES.map((c) => {
           const lists = blocker?.lists.filter((l) => l.category === c.id) ?? [];
@@ -157,7 +157,7 @@ function FilterListsSheet() {
                   <Row
                     key={l.id}
                     title={<Checkbox value={l.enabled} onChange={(v) => void toggle(l, v)} label={l.title} />}
-                    description={l.defaultOn ? `${filtersText(l.filters)} · On by default` : filtersText(l.filters)}
+                    description={l.defaultOn ? `${filtersText(l.filters)} · 默认开启` : filtersText(l.filters)}
                   />
                 ))}
               </Group>
@@ -167,9 +167,9 @@ function FilterListsSheet() {
       </ScrollView>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10, marginTop: 16 }}>
         <Text style={{ flex: 1, fontSize: 11.5, color: theme.textTertiary }}>
-          {blocker?.version ? `Blocking by uBlock Origin ${blocker.version}, included with Ardia. Its lists update on their own.` : ""}
+          {blocker?.version ? `由 Ardia 内置的 uBlock Origin ${blocker.version} 提供拦截。规则列表会自动更新。` : ""}
         </Text>
-        <Button title="Done" kind="primary" onPress={closeSettingsSheet} />
+        <Button title="完成" kind="primary" onPress={closeSettingsSheet} />
       </View>
     </Sheet>
   );
@@ -187,7 +187,7 @@ function ZoomLevels() {
   return (
     <>
       <SectionHeader
-        title="Zoom levels"
+        title="缩放级别"
         action={
           profiles.length > 1 ? <PopUp value={selected} options={profiles.map((p) => ({ value: p.id, title: p.name }))} onChange={setSelected} /> : undefined
         }
@@ -195,7 +195,7 @@ function ZoomLevels() {
       <Group>
         {hosts.map((host) => (
           <Row key={host} icon={<Favicon url={`https://${host}`} />} title={host} description={`${Math.round(levels[host]! * 100)}%`}>
-            <Button title="Reset" onPress={() => void setZoom(engineProfile(selected), host, 1).then(load)} />
+            <Button title="重置" onPress={() => void setZoom(engineProfile(selected), host, 1).then(load)} />
           </Row>
         ))}
       </Group>
@@ -204,30 +204,30 @@ function ZoomLevels() {
 }
 
 const SETTING_LABELS: [SiteSettingType, string][] = [
-  ["popups", "Pop-ups and redirects"],
-  ["camera", "Camera"],
-  ["microphone", "Microphone"],
-  ["location", "Location"],
-  ["notifications", "Notifications"],
-  ["sound", "Sound"],
-  ["autoplay", "Autoplay"],
+  ["popups", "弹出式窗口和重定向"],
+  ["camera", "摄像头"],
+  ["microphone", "麦克风"],
+  ["location", "位置"],
+  ["notifications", "通知"],
+  ["sound", "声音"],
+  ["autoplay", "自动播放"],
   ["javascript", "JavaScript"],
-  ["images", "Images"],
-  ["clipboard", "Clipboard"],
-  ["automaticDownloads", "Automatic downloads"],
-  ["cookies", "Cookies"],
-  ["midi", "MIDI devices"],
-  ["windowManagement", "Window management"],
-  ["localFonts", "Fonts"],
-  ["storageAccess", "Embedded content"],
-  ["fileSystem", "File editing"],
+  ["images", "图片"],
+  ["clipboard", "剪贴板"],
+  ["automaticDownloads", "自动下载"],
+  ["cookies", "Cookie"],
+  ["midi", "MIDI 设备"],
+  ["windowManagement", "窗口管理"],
+  ["localFonts", "字体"],
+  ["storageAccess", "嵌入式内容"],
+  ["fileSystem", "文件编辑"],
 ];
 
 const VALUE_OPTIONS: { value: SiteSettingValue; title: string }[] = [
-  { value: "default", title: "Default" },
-  { value: "allow", title: "Allow" },
-  { value: "block", title: "Block" },
-  { value: "ask", title: "Ask" },
+  { value: "default", title: "默认" },
+  { value: "allow", title: "允许" },
+  { value: "block", title: "阻止" },
+  { value: "ask", title: "询问" },
 ];
 
 function SitePermissions() {
@@ -240,8 +240,8 @@ function SitePermissions() {
   return (
     <>
       <SectionHeader
-        title="Site permissions"
-        description="Pop-ups, camera, location and other permissions you've set for sites."
+        title="网站权限"
+        description="您为网站设置的弹出式窗口、摄像头、位置等权限。"
         action={
           profiles.length > 1 ? (
             <PopUp value={profileId} options={profiles.map((p) => ({ value: p.id, title: p.name }))} onChange={setProfileId} />
@@ -250,7 +250,7 @@ function SitePermissions() {
       />
       <Group>
         {origins === null ? null : origins.length === 0 ? (
-          <Row title="No sites yet" description="Sites appear here after you allow or block something for them." />
+          <Row title="暂无网站" description="允许或阻止某项权限后，相应网站会显示在这里。" />
         ) : (
           origins.map((origin) => (
             <Row
@@ -276,8 +276,8 @@ function AppLinks() {
   return (
     <>
       <SectionHeader
-        title="Apps allowed to open links"
-        description="Sites that open another app without asking first."
+        title="允许打开链接的应用"
+        description="无需询问即可打开其他应用的网站。"
         action={
           profiles.length > 1 ? (
             <PopUp value={profileId} options={profiles.map((p) => ({ value: p.id, title: p.name }))} onChange={setProfileId} />
@@ -286,17 +286,17 @@ function AppLinks() {
       />
       <Group>
         {allowed === null ? null : allowed.length === 0 ? (
-          <Row title="No apps yet" description="Check “Always allow” when a site opens an app, and it shows up here." />
+          <Row title="暂无应用" description="网站打开应用时勾选“始终允许”，该网站就会显示在这里。" />
         ) : (
           allowed.map((a) => (
             <Row
               key={`${a.origin}|${a.scheme}`}
               icon={a.icon ? <Image source={{ uri: a.icon }} style={{ width: 20, height: 20 }} /> : <Favicon url={a.origin} />}
               title={a.origin.replace(/^https?:\/\//, "")}
-              description={`Opens ${a.scheme}: links in ${a.app ?? "an app that's no longer installed"}`}
+              description={`使用 ${a.app ?? "已卸载的应用"} 打开 ${a.scheme}: 链接`}
             >
               <Button
-                title="Remove"
+                title="移除"
                 onPress={() => void removeExternalAppAllowance(engineProfile(profileId), a.origin, a.scheme).then(refresh)}
               />
             </Row>
@@ -328,7 +328,7 @@ function SiteSheet({ profileId, origin, onChanged }: { profileId: string; origin
       <ScrollView style={{ maxHeight: 380, marginTop: 12 }}>
         <Group>
           {SETTING_LABELS.filter(([type]) => settings?.[type]).map(([type, label]) => (
-            <Row key={type} title={label} description={settings![type].isDefault ? `Default (${settings![type].value})` : undefined}>
+            <Row key={type} title={label} description={settings![type].isDefault ? `默认（${({ allow: "允许", block: "阻止", ask: "询问" } as Record<string, string>)[settings![type].value] ?? settings![type].value}）` : undefined}>
               <PopUp
                 value={settings![type].isDefault ? "default" : settings![type].value}
                 options={VALUE_OPTIONS}
@@ -341,7 +341,7 @@ function SiteSheet({ profileId, origin, onChanged }: { profileId: string; origin
       </ScrollView>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8, marginTop: 16 }}>
         <Button
-          title="Reset Permissions"
+          title="重置权限"
           onPress={() =>
             void resetSiteSettings(profile, origin).then(() => {
               load();
@@ -350,15 +350,15 @@ function SiteSheet({ profileId, origin, onChanged }: { profileId: string; origin
           }
         />
         <Button
-          title="Clear Site Data"
+          title="清除网站数据"
           onPress={() =>
             void clearSiteData(profile, origin).then((r) =>
-              setStatus(r.cookies === false ? "Site data cleared." : `Cleared ${r.cookies} cookie${r.cookies === 1 ? "" : "s"} and site data.`),
+              setStatus(r.cookies === false ? "已清除网站数据。" : `已清除 ${r.cookies} 个 Cookie 和网站数据。`),
             )
           }
         />
         <Text style={{ flex: 1, fontSize: 12, color: theme.textSecondary }}>{status}</Text>
-        <Button title="Done" kind="primary" onPress={closeSettingsSheet} />
+        <Button title="完成" kind="primary" onPress={closeSettingsSheet} />
       </View>
     </Sheet>
   );

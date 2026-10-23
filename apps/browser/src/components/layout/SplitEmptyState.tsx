@@ -52,7 +52,7 @@ export function SplitEmptyState({ tabId, focused }: { tabId: string; focused: bo
               autoFocus
               value={text}
               onChangeText={setText}
-              placeholder="Search or Ask a Question"
+              placeholder="搜索或提问"
               placeholderTextColor={theme.placeholder}
               selectionColor={theme.selection}
               enableFocusRing={false}
@@ -68,7 +68,7 @@ export function SplitEmptyState({ tabId, focused }: { tabId: string; focused: bo
             />
           </View>
         ) : (
-          <Row icon={<Symbol name="magnifyingglass" size={13} color={theme.textSecondary} style={{ width: 16, height: 16 }} />} label="Search or Ask a Question" secondary onPress={() => setTyping(true)} />
+          <Row icon={<Symbol name="magnifyingglass" size={13} color={theme.textSecondary} style={{ width: 16, height: 16 }} />} label="搜索或提问" secondary onPress={() => setTyping(true)} />
         )}
         {suggestions.length > 0 && <View style={{ height: 6 }} />}
         {suggestions.map((id) => (

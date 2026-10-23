@@ -70,8 +70,8 @@ function LittleArdiaBar() {
         {tab ? <PageField tab={tab} windowId={windowId} hidden={panelOpen} /> : null}
       </View>
       <View style={{ position: "absolute", right: INSET, top: MID - BUTTON / 2, flexDirection: "row", gap: 2 }}>
-        <IconButton icon={copied ? "checkmark" : "link"} size={14} box={BUTTON} radius={7} disabled={!tab?.url} tooltip="Copy Link (⇧⌘C)" onPress={copy} />
-        <IconButton icon="arrow.up.left.and.arrow.down.right" size={13} box={BUTTON} radius={7} tooltip="Open in Ardia (⌘O)" onPress={() => openInMainWindow(windowId)} />
+        <IconButton icon={copied ? "checkmark" : "link"} size={14} box={BUTTON} radius={7} disabled={!tab?.url} tooltip="复制链接 (⇧⌘C)" onPress={copy} />
+        <IconButton icon="arrow.up.left.and.arrow.down.right" size={13} box={BUTTON} radius={7} tooltip="在 Ardia 中打开 (⌘O)" onPress={() => openInMainWindow(windowId)} />
       </View>
     </View>
   );
@@ -89,7 +89,7 @@ function PageField({ tab, windowId, hidden }: { tab: Tab; windowId: string; hidd
       if (width) setUrlAnchor(windowId, { left: x, top: y, width, sidebar: { height } });
     });
   const isFile = tab.url.startsWith("file:");
-  const host = !tab.url ? "" : isFile ? "File" : breadcrumb(tab.url).host;
+  const host = !tab.url ? "" : isFile ? "文件" : breadcrumb(tab.url).host;
   const title = tab.customTitle || tab.title;
 
   return (

@@ -57,7 +57,7 @@ function save(patch: Partial<Saved>) {
   try {
     writeDocument(DOC, JSON.stringify({ version: 1, completedAt: null, ...readSaved(), ...patch } satisfies Saved));
   } catch (error) {
-    console.warn("Couldn't save onboarding state", error);
+    console.warn("无法保存入门引导状态", error);
   }
 }
 

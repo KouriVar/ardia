@@ -32,7 +32,7 @@ function ShownCliControlBar({ visible, onHidden }: { visible: boolean; onHidden:
     <Animated.View style={{ height, overflow: "hidden" }}>
       <View
         accessibilityRole="alert"
-        accessibilityLabel="The ardia command is controlling Ardia"
+        accessibilityLabel="ardia 命令正在控制 Ardia"
         style={{
           height: BAR_HEIGHT,
           flexDirection: "row",
@@ -48,10 +48,10 @@ function ShownCliControlBar({ visible, onHidden }: { visible: boolean; onHidden:
           <Symbol name="terminal.fill" size={9} weight="bold" color={theme.dark ? "#000000" : "#FFFFFF"} style={{ width: 14, height: 14 }} />
         </View>
         <Text numberOfLines={1} style={{ flex: 1, fontSize: 13, color: theme.textSecondary }}>
-          <Text style={{ fontWeight: "600", color: theme.textPrimary }}>The ardia command</Text>
+          <Text style={{ fontWeight: "600", color: theme.textPrimary }}>ardia 命令</Text>
           {" is controlling Ardia"}
         </Text>
-        <PromptButton title="Stop" onPress={stopCliControl} />
+        <PromptButton title="停止" onPress={stopCliControl} />
       </View>
     </Animated.View>
   );
@@ -64,7 +64,7 @@ export function CliControlPill() {
     <View pointerEvents="box-none" style={{ position: "absolute", top: 12, left: 0, right: 0, alignItems: "center" }}>
       <View
         accessibilityRole="alert"
-        accessibilityLabel="The ardia command is controlling Ardia"
+        accessibilityLabel="ardia 命令正在控制 Ardia"
         style={{
           flexDirection: "row",
           alignItems: "center",
@@ -93,7 +93,7 @@ function StopPill() {
   const { hovered, hoverProps } = useHover();
   return (
     <View {...hoverProps}>
-      <Pressable onPress={stopCliControl} accessibilityRole="button" accessibilityLabel="Stop">
+      <Pressable onPress={stopCliControl} accessibilityRole="button" accessibilityLabel="停止">
         {({ pressed }) => (
           <View
             style={{
@@ -105,7 +105,7 @@ function StopPill() {
               transform: [{ scale: pressed ? 0.97 : 1 }],
             }}
           >
-            <Text style={{ fontSize: 12, fontWeight: "600", color: "#FFFFFF" }}>Stop</Text>
+            <Text style={{ fontSize: 12, fontWeight: "600", color: "#FFFFFF" }}>停止</Text>
           </View>
         )}
       </Pressable>

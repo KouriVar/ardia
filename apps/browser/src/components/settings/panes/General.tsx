@@ -34,36 +34,36 @@ export function GeneralPane() {
     <View>
       <DefaultBrowserBanner />
 
-      <SectionHeader title="General" />
+      <SectionHeader title="通用" />
       <Group>
         <Row
-          title={`Open ${APP} at login`}
-          description={loginStatus === "requiresApproval" ? "Allow it in System Settings › General › Login Items." : undefined}
+          title={`登录时打开 ${APP}`}
+          description={loginStatus === "requiresApproval" ? "在“系统设置 › 通用 › 登录项”中允许。" : undefined}
         >
           <Toggle
             value={loginStatus === "enabled" || loginStatus === "requiresApproval"}
             onChange={(on) => void setLaunchAtLogin(on).catch(() => {}).finally(refreshLogin)}
           />
         </Row>
-        <Row title="Warn before quitting" description={`Asks before ${APP} quits with ⌘Q.`}>
+        <Row title="退出前提醒" description={`使用 ⌘Q 退出 ${APP} 前询问。`}>
           <Toggle value={settings.warnBeforeQuitting} onChange={(v) => update({ warnBeforeQuitting: v })} />
         </Row>
-        <Row title="Warn before closing a window with multiple tabs" description="Asks before ⇧⌘W or the close button closes its tabs.">
+        <Row title="关闭包含多个标签页的窗口前提醒" description="通过 ⇧⌘W 或关闭按钮关闭标签页前询问。">
           <Toggle value={settings.warnBeforeClosingWindow} onChange={(v) => update({ warnBeforeClosingWindow: v })} />
         </Row>
         <Row
-          title="Open links from other apps in"
+          title="打开其他应用链接的位置"
           description={
             settings.openLinksInLittleArdia
-              ? `A link from Discord, Slack or Mail opens in Little Ardia, a small window of its own. ⌘O moves it into ${APP}; closing it throws it away.`
-              : `A link from Discord, Slack or Mail opens as a new tab in the ${APP} window you used last.`
+              ? `来自 Discord、Slack 或邮件的链接会在 Little Ardia 独立小窗口中打开。按 ⌘O 可移入 ${APP}；关闭即丢弃。`
+              : `来自 Discord、Slack 或邮件的链接会在您上次使用的 ${APP} 窗口中新建标签页。`
           }
         >
           <PopUp
             value={settings.openLinksInLittleArdia ? "small" : "tab"}
             options={[
               { value: "small", title: "Little Ardia" },
-              { value: "tab", title: "A new tab" },
+              { value: "tab", title: "新标签页" },
             ]}
             onChange={(v) => update({ openLinksInLittleArdia: v === "small" })}
             minWidth={190}
@@ -71,14 +71,14 @@ export function GeneralPane() {
         </Row>
       </Group>
 
-      <SectionHeader title={`When quitting ${APP}:`} />
+      <SectionHeader title={`退出 ${APP} 时：`} />
       <Group>
-        <Row title="Windows and tabs" description="What you see the next time you open it. Closed windows stay in History › Recently Closed.">
+        <Row title="窗口与标签页" description="下次启动时显示的内容。已关闭的窗口会保留在“历史记录 › 最近关闭”中。">
           <PopUp
             value={settings.restoreSession ? "keep" : "close"}
             options={[
-              { value: "keep", title: "Preserve tabs and windows" },
-              { value: "close", title: "Start fresh" },
+              { value: "keep", title: "保留标签页与窗口" },
+              { value: "close", title: "全新开始" },
             ]}
             onChange={(v) => update({ restoreSession: v === "keep" })}
             minWidth={190}
@@ -86,14 +86,14 @@ export function GeneralPane() {
         </Row>
       </Group>
 
-      <SectionHeader title="Command bar" description="What happens when what you type could be a website or a search." />
+      <SectionHeader title="命令栏" description="输入内容既可能是网址也可能是搜索词时的处理方式。" />
       <Group>
-        <Row title="When input looks like a website">
+        <Row title="输入内容看起来像网址时">
           <PopUp
             value={settings.commandBarPreference}
             options={[
-              { value: "website", title: "Use Website First" },
-              { value: "search", title: "Prefer Search Engine" },
+              { value: "website", title: "优先打开网站" },
+              { value: "search", title: "优先使用搜索引擎" },
             ]}
             onChange={(v) => update({ commandBarPreference: v })}
             minWidth={190}
@@ -103,10 +103,10 @@ export function GeneralPane() {
 
       <UpdatesSection />
 
-      <SectionHeader title="Import" />
+      <SectionHeader title="导入" />
       <Group>
-        <Row title="Import from another browser" description="Bookmarks, history, passwords, tabs and Arc spaces from Chrome, Arc, Safari, Firefox and more.">
-          <Button title="Import…" onPress={openImport} />
+        <Row title="从其他浏览器导入" description="从 Chrome、Arc、Safari、Firefox 等浏览器导入书签、历史记录、密码、标签页和 Arc 空间。">
+          <Button title="导入…" onPress={openImport} />
         </Row>
       </Group>
     </View>
@@ -130,16 +130,16 @@ function UpdatesSection() {
     if (patch.channel !== undefined) void setUpdateChannel(patch.channel).finally(refresh);
   };
   const lastCheck = state.lastCheck
-    ? `Last checked ${new Date(state.lastCheck).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}.`
-    : "Not checked yet.";
+    ? `上次检查：${new Date(state.lastCheck).toLocaleString("zh-CN", { dateStyle: "medium", timeStyle: "short" })}。`
+    : "尚未检查。";
   return (
     <>
-      <SectionHeader title="Updates" description={ready ? undefined : "Updates aren't set up for this build."} />
+      <SectionHeader title="更新" description={ready ? undefined : "此构建版本未配置更新。"} />
       <Group>
-        <Row title="Check for updates automatically" description={`${SHARING_COPY.updateChecks} ${SHARING_COPY.switchFile}`}>
+        <Row title="自动检查更新" description={`${SHARING_COPY.updateChecks} ${SHARING_COPY.switchFile}`}>
           <Toggle value={ready && state.automaticChecks} disabled={!ready} onChange={(v) => set({ automaticChecks: v })} />
         </Row>
-        <Row title={`Automatically update ${APP}`} description="Downloads updates in the background and installs them the next time it restarts.">
+        <Row title={`自动更新 ${APP}`} description="在后台下载更新，并在下次重启时安装。">
           <Toggle
             value={ready && state.automaticChecks && state.automaticDownloads}
             disabled={!ready || !state.automaticChecks}
@@ -147,12 +147,12 @@ function UpdatesSection() {
           />
         </Row>
         {state.channel && (
-          <Row title="Update channel" description="Nightly gets every fix first. Switching back to Stable never downgrades.">
+          <Row title="更新渠道" description="每夜构建版会最先获得各项修复。切回稳定版不会降级。">
             <PopUp
               value={state.channel}
               options={[
-                { value: "stable", title: "Stable" },
-                { value: "nightly", title: "Nightly" },
+                { value: "stable", title: "稳定版" },
+                { value: "nightly", title: "每夜构建版" },
               ]}
               disabled={!ready}
               onChange={(channel) => set({ channel })}
@@ -161,7 +161,7 @@ function UpdatesSection() {
           </Row>
         )}
         <Row title={`${APP} ${state.displayVersion ?? state.version}`} description={ready ? lastCheck : undefined}>
-          <Button title="Check Now" disabled={ready && (!state.canCheck || state.sessionInProgress)} onPress={() => void checkForUpdates().finally(refresh)} />
+          <Button title="立即检查" disabled={ready && (!state.canCheck || state.sessionInProgress)} onPress={() => void checkForUpdates().finally(refresh)} />
         </Row>
       </Group>
     </>
@@ -200,9 +200,9 @@ function DefaultBrowserBanner() {
         style={{ width: 28, height: 28 }}
       />
       <Text style={{ flex: 1, fontSize: 13, color: theme.textPrimary }}>
-        {isDefault ? `${APP} is your default browser` : `${APP} works best as your default browser`}
+        {isDefault ? `${APP} 是您的默认浏览器` : `将 ${APP} 设为默认浏览器，使用更便捷`}
       </Text>
-      {!isDefault && <Button title={`Set ${APP} as Default`} kind="primary" onPress={() => void setAsDefaultBrowser().then(setIsDefault)} />}
+      {!isDefault && <Button title={`将 ${APP} 设为默认浏览器`} kind="primary" onPress={() => void setAsDefaultBrowser().then(setIsDefault)} />}
     </View>
   );
 }

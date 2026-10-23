@@ -175,15 +175,15 @@ function InstallDialog({ request }: { request: InstallRequest }) {
   const name = pkg?.name ?? "Extension";
   const warnings = request.prompt ? request.prompt.permissions : pkg ? permissionWarnings(pkg) : [];
   const kind = request.prompt?.type;
-  const title = kind === "re-enable" ? `Turn “${name}” back on?` : kind === "permissions" ? `“${name}” needs new permissions` : `Add “${name}”?`;
-  const action = kind === "re-enable" ? "Turn On" : kind === "permissions" ? "Allow" : "Add Extension";
+  const title = kind === "re-enable" ? `重新启用“${name}”？` : kind === "permissions" ? `“${name}”需要新的权限` : `添加“${name}”？`;
+  const action = kind === "re-enable" ? "开启" : kind === "permissions" ? "允许" : "添加扩展程序";
   const busy = request.status === "installing";
 
   let body;
   if (request.status === "error") {
     body = (
       <>
-        <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>Couldn't add the extension</Text>
+        <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>无法添加扩展程序</Text>
         <Text style={{ fontSize: 13, color: theme.textSecondary, marginTop: 6 }}>{request.error}</Text>
       </>
     );
@@ -196,7 +196,7 @@ function InstallDialog({ request }: { request: InstallRequest }) {
         </View>
         {warnings.length ? (
           <>
-            <Text style={{ fontSize: 13, color: theme.textPrimary, marginTop: 14, marginBottom: 6 }}>It can:</Text>
+            <Text style={{ fontSize: 13, color: theme.textPrimary, marginTop: 14, marginBottom: 6 }}>它可以：</Text>
             <ScrollView style={{ maxHeight: 180 }}>
               {warnings.map((w) => (
                 <View key={w} style={{ flexDirection: "row", gap: 7, marginBottom: 4 }}>
@@ -207,11 +207,11 @@ function InstallDialog({ request }: { request: InstallRequest }) {
             </ScrollView>
           </>
         ) : (
-          <Text style={{ fontSize: 13, color: theme.textSecondary, marginTop: 14 }}>This extension requires no special permissions.</Text>
+          <Text style={{ fontSize: 13, color: theme.textSecondary, marginTop: 14 }}>此扩展程序不需要特殊权限。</Text>
         )}
         {request.source === "unpacked" ? (
           <Text numberOfLines={2} ellipsizeMode="middle" style={{ fontSize: 11, color: theme.textTertiary, marginTop: 10 }}>
-            {`Loaded from ${pkg?.path ?? ""}`}
+            {`加载自 ${pkg?.path ?? ""}`}
           </Text>
         ) : null}
       </>
@@ -223,10 +223,10 @@ function InstallDialog({ request }: { request: InstallRequest }) {
       {body}
       <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 8, marginTop: 18 }}>
         {request.status === "error" ? (
-          <PromptButton title="OK" primary onPress={cancelInstall} />
+          <PromptButton title="好" primary onPress={cancelInstall} />
         ) : (
           <>
-            <PromptButton title="Cancel" onPress={cancelInstall} />
+            <PromptButton title="取消" onPress={cancelInstall} />
             <PromptButton title={request.status === "installing" ? "Adding…" : action} primary onPress={() => void confirmInstall()} />
           </>
         )}
@@ -242,7 +242,7 @@ function PinDialog({ windowId }: { windowId: string }) {
   const close = () => useExtensions.setState({ pinDialog: null });
   return (
     <Dialog windowId={windowId} onDismiss={close} onSubmit={close}>
-      <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>Pin Extensions</Text>
+      <Text style={{ fontSize: 15, fontWeight: "600", color: theme.textPrimary }}>固定扩展程序</Text>
       <Text style={{ fontSize: 13, color: theme.textSecondary, marginTop: 4, marginBottom: 12 }}>
         Pinned extensions appear in the toolbar, next to the address.
       </Text>
@@ -253,10 +253,10 @@ function PinDialog({ windowId }: { windowId: string }) {
           ))}
         </ScrollView>
       ) : (
-        <Text style={{ fontSize: 13, color: theme.textTertiary }}>No extensions are turned on.</Text>
+        <Text style={{ fontSize: 13, color: theme.textTertiary }}>没有已启用的扩展程序。</Text>
       )}
       <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: 16 }}>
-        <PromptButton title="Done" primary onPress={close} />
+        <PromptButton title="完成" primary onPress={close} />
       </View>
     </Dialog>
   );

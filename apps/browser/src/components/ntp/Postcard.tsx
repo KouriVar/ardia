@@ -97,7 +97,7 @@ export function ReleaseNotesPostcard({ notes, size, onOpen, onDismiss }: { notes
             transform: [{ rotate: `${CARD.tilt}deg` }, { scale }],
           }}
         >
-          <Pressable onPress={onOpen} accessibilityRole="button" accessibilityLabel="What's new in Ardia" style={{ flex: 1 }}>
+          <Pressable onPress={onOpen} accessibilityRole="button" accessibilityLabel="Ardia 更新内容" style={{ flex: 1 }}>
             <Surface
               style={StyleSheet.absoluteFill}
               cornerRadius={CARD.radius}
@@ -114,7 +114,7 @@ export function ReleaseNotesPostcard({ notes, size, onOpen, onDismiss }: { notes
           pointerEvents={hovered ? "box-none" : "none"}
           style={{ position: "absolute", left: 0, right: 0, top: HOVER_SLOP + card.height + TOOLTIP.gap, alignItems: "center", opacity: tooltip }}
         >
-          <Tooltip text="Latest Release Notes" onOpen={onOpen} onClose={dismiss} />
+          <Tooltip text="最新更新说明" onOpen={onOpen} onClose={dismiss} />
         </Animated.View>
       </View>
     </Animated.View>
@@ -131,7 +131,7 @@ function Tooltip({ text, onOpen, onClose }: { text: string; onOpen: () => void; 
         <Text numberOfLines={1} style={{ fontSize: 12, fontWeight: "500", color: "rgba(255,255,255,0.85)", marginRight: 9 }}>
           {text}
         </Text>
-        <CloseButton onPress={onClose} label="Dismiss release notes" size={22} radius={8} />
+        <CloseButton onPress={onClose} label="关闭更新说明" size={22} radius={8} />
       </View>
     </Pressable>
   );
@@ -170,7 +170,7 @@ function Artwork({ notes, radius, titleSize, hidden }: { notes: ReleaseNotes; ra
       <WindowBackdrop colors={colors} angle={150} grainOpacity={0.1} style={StyleSheet.absoluteFill} />
       <View style={{ flex: 1, padding: pad, paddingTop: pad + (hidden?.top ?? 0), paddingRight: pad + (hidden?.right ?? 0), justifyContent: "space-between" }}>
         <Text style={{ fontSize: 11.5 * k, fontWeight: "700", letterSpacing: 1.4 * k, color: "#FFFFFFCC" }}>{`ARDIA ${notes.version}`}</Text>
-        <Text style={{ fontSize: titleSize, fontWeight: "300", fontStyle: "italic", letterSpacing: -1.1 * k, color: "#FFFFFF" }}>{"What's new"}</Text>
+        <Text style={{ fontSize: titleSize, fontWeight: "300", fontStyle: "italic", letterSpacing: -1.1 * k, color: "#FFFFFF" }}>{"更新内容"}</Text>
       </View>
     </View>
   );
@@ -200,7 +200,7 @@ export function ReleaseNotesPage({ notes, size, onClose }: { notes: ReleaseNotes
       <Animated.View style={[StyleSheet.absoluteFill, { opacity: t.interpolate({ inputRange: [0, 1], outputRange: [0, 1], extrapolate: "clamp" }) }]}>
         <VisualEffect material="hudWindow" blendingMode="withinWindow" style={StyleSheet.absoluteFill} />
         <View style={[StyleSheet.absoluteFill, { backgroundColor: theme.dark ? "rgba(10,10,10,0.35)" : "rgba(255,255,255,0.35)" }]} />
-        <Pressable style={StyleSheet.absoluteFill} onPress={close} accessibilityLabel="Close release notes" />
+        <Pressable style={StyleSheet.absoluteFill} onPress={close} accessibilityLabel="关闭更新说明" />
       </Animated.View>
       <View style={[StyleSheet.absoluteFill, { alignItems: "center", justifyContent: "center" }]} pointerEvents="box-none">
         <Animated.View
@@ -258,7 +258,7 @@ export function ReleaseNotesPage({ notes, size, onClose }: { notes: ReleaseNotes
 function PageCloseButton({ onPress }: { onPress: () => void }) {
   const theme = useTheme();
   const { hovered, hoverProps } = useHover();
-  const label = "Close release notes";
+  const label = "关闭更新说明";
   return (
     <View {...hoverProps} tooltip={label}>
       <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label}>
@@ -303,7 +303,7 @@ function Stamp() {
           transform: [{ rotate: "-14deg" }],
         }}
       >
-        <Text style={{ fontSize: 6.5, fontWeight: "700", letterSpacing: 0.6, color: `${INK}80` }}>{"WHAT'S NEW"}</Text>
+        <Text style={{ fontSize: 6.5, fontWeight: "700", letterSpacing: 0.6, color: `${INK}80` }}>{"更新内容"}</Text>
       </View>
     </View>
   );

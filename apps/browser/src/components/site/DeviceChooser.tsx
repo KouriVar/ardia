@@ -107,13 +107,13 @@ export function DeviceChooser({ tabId, left, top }: { tabId: string; left: numbe
     body = (
       <Notice
         icon="lock"
-        text="Ardia needs access to Bluetooth to find devices."
-        link="Open Bluetooth Settings"
+        text="Ardia 需要蓝牙访问权限才能发现设备。"
+        link="打开蓝牙设置"
         onLink={() => void openBluetoothSettings(chooser.id)}
       />
     );
   } else if (chooser.adapterOff) {
-    body = <Notice icon="antenna.radiowaves.left.and.right.slash" text="Bluetooth is turned off. Turn it on to find devices." />;
+    body = <Notice icon="antenna.radiowaves.left.and.right.slash" text="蓝牙已关闭。请打开蓝牙以发现设备。" />;
   } else if (scanning) {
     body = null;
   } else {
@@ -141,7 +141,7 @@ export function DeviceChooser({ tabId, left, top }: { tabId: string; left: numbe
           ) : (
             <>
               {!chooser.options.length ? <Text style={{ fontSize: 12, color: theme.textSecondary }}>{chooser.noOptionsText}</Text> : null}
-              {chooser.canRefresh ? <TextLink title="Scan Again" onPress={() => void refreshDeviceChooser(chooser.id)} /> : null}
+              {chooser.canRefresh ? <TextLink title="重新扫描" onPress={() => void refreshDeviceChooser(chooser.id)} /> : null}
             </>
           )}
         </View>
@@ -166,7 +166,7 @@ export function DeviceChooser({ tabId, left, top }: { tabId: string; left: numbe
         </View>
         {body}
         <View style={{ flexDirection: "row", justifyContent: "flex-end", gap: 8 }}>
-          <PromptButton title={chooser.cancelLabel || "Cancel"} onPress={cancel} />
+          <PromptButton title={chooser.cancelLabel || "取消"} onPress={cancel} />
           <View pointerEvents={valid && !blocked ? "auto" : "none"} style={{ opacity: valid && !blocked ? 1 : 0.4 }}>
             <PromptButton title={chooser.okLabel || "Connect"} primary onPress={() => choose()} />
           </View>

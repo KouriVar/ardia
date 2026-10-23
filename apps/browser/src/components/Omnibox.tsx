@@ -271,11 +271,11 @@ export function Omnibox({
     const choice = await showMenu([
       ...pasteMenuItem(paste),
       ...(paste ? [{ separator: true as const }] : []),
-      { id: "cut", title: "Cut", enabled: hasSelection },
-      { id: "copy", title: "Copy", enabled: hasSelection },
-      { id: "paste", title: "Paste", enabled: !!paste },
+      { id: "cut", title: "剪切", enabled: hasSelection },
+      { id: "copy", title: "复制", enabled: hasSelection },
+      { id: "paste", title: "粘贴", enabled: !!paste },
       { separator: true },
-      { id: "selectAll", title: "Select All", enabled: !!value },
+      { id: "selectAll", title: "全选", enabled: !!value },
     ]);
     if (choice === "pasteAndGo" && paste) return go(pasteTarget(paste));
     if (choice === "copy" || choice === "cut") copyText(value.slice(start, end));
@@ -380,7 +380,7 @@ export function Omnibox({
         }
       }}
       onChangeText={onChangeText}
-      placeholder={scope ? `Search ${scope.name}` : "Search or enter address"}
+      placeholder={scope ? `搜索 ${scope.name}` : "搜索或输入网址"}
       placeholderTextColor={theme.placeholder}
       selectionColor={theme.selection}
       enableFocusRing={false}
@@ -428,7 +428,7 @@ export function Omnibox({
     <SuggestionList
       items={items}
       selectedIndex={selectedIndex}
-      trailing={tabScope ? `Search ${tabScope.name}  ⇥` : null}
+      trailing={tabScope ? `搜索 ${tabScope.name}  ⇥` : null}
       dropdown={dropdown}
       actions={rowActions}
     />
@@ -447,7 +447,7 @@ export function Omnibox({
     >
       <AddChip tabId={tabId} onGo={barActions.go} />
       <View style={{ flex: 1 }} />
-      <IconButton icon="mic" size={14} color={theme.textTertiary} tooltip="Dictate" onPress={barActions.dictate} />
+      <IconButton icon="mic" size={14} color={theme.textTertiary} tooltip="语音输入" onPress={barActions.dictate} />
       <GoButton label={destinationLabel(current)} enabled={!hero || !!typed.trim()} onPress={barActions.choose} />
     </View>
   );
@@ -467,7 +467,7 @@ export function Omnibox({
                 box={26}
                 radius={13}
                 color={theme.textSecondary}
-                tooltip="Site Controls"
+                tooltip="网站设置"
                 onPress={barActions.siteControls}
               />
             ) : null}
@@ -504,8 +504,8 @@ export function Omnibox({
 
 function destinationLabel(s: Suggestion | undefined): string {
   if (s?.kind === "search") return s.engine;
-  if (s?.kind === "calc") return "Copy";
-  return "Go";
+  if (s?.kind === "calc") return "复制";
+  return "前往";
 }
 
 const AddChip = memo(function AddChip({ tabId, onGo }: { tabId: string; onGo(url: string): void }) {
@@ -522,7 +522,7 @@ const AddChip = memo(function AddChip({ tabId, onGo }: { tabId: string; onGo(url
     const choice = await showMenu([
       ...others.map((t) => ({ id: `tab:${t.id}`, title: t.title || displayUrl(t.url) })),
       ...(others.length ? [{ separator: true as const }] : []),
-      { id: "files", title: "Open File…", symbol: "doc" },
+      { id: "files", title: "打开文件…", symbol: "doc" },
     ]);
     if (choice?.startsWith("tab:")) switchFromBar(choice.slice(4), "", tabId, "current");
     if (choice === "files") {
@@ -548,7 +548,7 @@ const AddChip = memo(function AddChip({ tabId, onGo }: { tabId: string; onGo(url
         }}
       >
         <Symbol name="arrow.up.right" size={10} weight="medium" color={theme.chipText} style={{ width: 14, height: 14 }} />
-        <Text style={{ fontSize: 13, color: theme.chipText }}>Open a tab or file</Text>
+        <Text style={{ fontSize: 13, color: theme.chipText }}>打开标签页或文件</Text>
       </View>
     </Pressable>
     </View>

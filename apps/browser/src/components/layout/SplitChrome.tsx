@@ -227,7 +227,7 @@ function DropZone({ pane, side, shown, stage, pointerX, onHidden }: { pane: Rect
         }}
       />
       <Symbol name={side === "left" ? "rectangle.lefthalf.filled" : "rectangle.righthalf.filled"} size={18} color={active ? theme.accent : rest} style={{ width: 24, height: 20 }} />
-      <Text style={{ marginTop: 11, fontSize: 13, fontWeight: "600", color: active ? theme.accent : rest }}>{side === "left" ? "Add left split" : "Add right split"}</Text>
+      <Text style={{ marginTop: 11, fontSize: 13, fontWeight: "600", color: active ? theme.accent : rest }}>{side === "left" ? "在左侧添加分屏" : "在右侧添加分屏"}</Text>
     </Animated.View>
   );
 }

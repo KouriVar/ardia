@@ -262,7 +262,7 @@ export function SearchField({
         style={{ flex: 1, fontSize: 13, color: theme.textPrimary, paddingVertical: 0 }}
       />
       {value ? (
-        <View tooltip="Clear">
+        <View tooltip="清除">
           <Pressable onPress={() => onChangeText("")}>
             <Symbol name="xmark.circle.fill" size={12} color={theme.textTertiary} style={{ width: 16, height: 16 }} />
           </Pressable>

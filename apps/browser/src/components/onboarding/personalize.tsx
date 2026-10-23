@@ -7,9 +7,9 @@ import { useHover } from "../primitives";
 import { useOnboardingColors } from "./ui";
 
 export const PERSONALIZE_COPY = {
-  title: "Make it yours",
-  subtitle: "Pick the theme color and layout that feel right for you.",
-  layouts: "Choose how you would like to view your tabs:",
+  title: "打造你的专属浏览器",
+  subtitle: "选择适合你的主题颜色和布局。",
+  layouts: "选择标签页的显示方式：",
 } as const;
 
 const COLORS = Object.keys(PROFILE_COLORS) as ProfileColor[];
@@ -20,7 +20,7 @@ export function ThemeColorPicker({ windowId, size = 30 }: { windowId: string; si
   const incognito = useBrowser((s) => !!s.windows[windowId]?.incognito);
   if (!profileId || incognito) return null;
   return (
-    <View style={{ flexDirection: "row", flexWrap: "wrap", gap: size >= 30 ? 8 : 6 }} accessibilityRole="radiogroup" accessibilityLabel="Theme color">
+    <View style={{ flexDirection: "row", flexWrap: "wrap", gap: size >= 30 ? 8 : 6 }} accessibilityRole="radiogroup" accessibilityLabel="主题颜色">
       {COLORS.map((c) => (
         <ColorButton key={c} color={c} size={size} selected={current === c} onPress={() => useBrowser.getState().updateProfile(profileId, { color: c })} />
       ))}
@@ -73,9 +73,9 @@ export function TabLayoutPicker({ windowId }: { windowId: string }) {
     if (next !== layout) useBrowser.getState().toggleTabLayout(windowId);
   };
   return (
-    <View style={{ flexDirection: "row", gap: 10 }} accessibilityRole="radiogroup" accessibilityLabel="Tab layout">
-      <LayoutButton kind="sidebar" title="Sidebar" subtitle="Tabs down the side" selected={layout === "sidebar"} onPress={() => pick("sidebar")} />
-      <LayoutButton kind="top" title="Classic" subtitle="Tabs along the top" selected={layout === "top"} onPress={() => pick("top")} />
+    <View style={{ flexDirection: "row", gap: 10 }} accessibilityRole="radiogroup" accessibilityLabel="标签页布局">
+      <LayoutButton kind="sidebar" title="侧边栏" subtitle="标签页位于侧边" selected={layout === "sidebar"} onPress={() => pick("sidebar")} />
+      <LayoutButton kind="top" title="经典" subtitle="标签页位于顶部" selected={layout === "top"} onPress={() => pick("top")} />
     </View>
   );
 }

@@ -4,26 +4,26 @@ import { profileAccent } from "../../lib/theme";
 import type { Profile } from "../../store/types";
 
 export const PROFILE_SYMBOLS: { name: string; title: string }[] = [
-  { name: "house.fill", title: "Home" },
-  { name: "briefcase.fill", title: "Work" },
-  { name: "graduationcap.fill", title: "School" },
-  { name: "chevron.left.forwardslash.chevron.right", title: "Code" },
-  { name: "paintpalette.fill", title: "Art" },
-  { name: "hammer.fill", title: "Projects" },
-  { name: "book.closed.fill", title: "Reading" },
-  { name: "music.note", title: "Music" },
-  { name: "camera.fill", title: "Photos" },
-  { name: "gamecontroller.fill", title: "Games" },
-  { name: "cart.fill", title: "Shopping" },
-  { name: "banknote.fill", title: "Finance" },
-  { name: "airplane", title: "Travel" },
-  { name: "figure.run", title: "Fitness" },
-  { name: "cup.and.saucer.fill", title: "Café" },
-  { name: "leaf.fill", title: "Nature" },
-  { name: "pawprint.fill", title: "Pets" },
-  { name: "heart.fill", title: "Personal" },
-  { name: "star.fill", title: "Favorites" },
-  { name: "moon.stars.fill", title: "Evenings" },
+  { name: "house.fill", title: "家庭" },
+  { name: "briefcase.fill", title: "工作" },
+  { name: "graduationcap.fill", title: "学校" },
+  { name: "chevron.left.forwardslash.chevron.right", title: "代码" },
+  { name: "paintpalette.fill", title: "艺术" },
+  { name: "hammer.fill", title: "项目" },
+  { name: "book.closed.fill", title: "阅读" },
+  { name: "music.note", title: "音乐" },
+  { name: "camera.fill", title: "照片" },
+  { name: "gamecontroller.fill", title: "游戏" },
+  { name: "cart.fill", title: "购物" },
+  { name: "banknote.fill", title: "财务" },
+  { name: "airplane", title: "旅行" },
+  { name: "figure.run", title: "健身" },
+  { name: "cup.and.saucer.fill", title: "咖啡" },
+  { name: "leaf.fill", title: "自然" },
+  { name: "pawprint.fill", title: "宠物" },
+  { name: "heart.fill", title: "个人" },
+  { name: "star.fill", title: "收藏" },
+  { name: "moon.stars.fill", title: "夜晚" },
 ];
 
 const EMOJI = ["😀", "😎", "🤓", "🧑‍💻", "💼", "🏠", "🎓", "🎨", "🎮", "🎵", "📚", "✈️", "🌱", "🔥", "⭐️", "🚀", "🐶", "🐱", "🦊", "🍀"];
@@ -33,13 +33,13 @@ export const profileSymbol = (icon: string | null) => (icon?.startsWith(SYMBOL_P
 
 export function iconMenuItems(current: string | null): MenuItem[] {
   return [
-    { id: "icon:", title: "Initial", checked: !current },
+    { id: "icon:", title: "首字母", checked: !current },
     { separator: true },
     ...PROFILE_SYMBOLS.map((s) => ({ id: `icon:${SYMBOL_PREFIX}${s.name}`, title: s.title, symbol: s.name, checked: current === SYMBOL_PREFIX + s.name })),
     { separator: true },
     {
       id: "emoji",
-      title: "Emoji",
+      title: "表情符号",
       checked: !!current && !profileSymbol(current),
       children: EMOJI.map((e) => ({ id: `icon:${e}`, title: e, checked: current === e })),
     },

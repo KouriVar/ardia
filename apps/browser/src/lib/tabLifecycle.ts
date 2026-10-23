@@ -266,12 +266,12 @@ function updateBatterySaver(announce: boolean) {
   const windowId = store().ui.focusedWindowId;
   if (!announce || !windowId || !store().windows[windowId]) return;
   if (on) {
-    showToast(windowId, "Battery Saver Mode Activated", "Busy background tabs are paused.", {
+    showToast(windowId, "已开启节能模式", "已暂停繁忙的后台标签页。", {
       icon: "battery.25",
-      action: { title: "Settings", run: () => openSettings("advanced") },
+      action: { title: "设置", run: () => openSettings("advanced") },
     });
   } else {
-    showToast(windowId, "Battery Saver Mode Deactivated", undefined, { icon: "battery.100.bolt" });
+    showToast(windowId, "已关闭节能模式", undefined, { icon: "battery.100.bolt" });
   }
 }
 

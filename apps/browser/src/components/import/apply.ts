@@ -27,7 +27,7 @@ export function importBookmarks(profileId: string, root: ImportedNode | undefine
   const toolbar = root.children.filter((c) => c.role === "toolbar").flatMap((c) => c.children ?? []);
   const rest = root.children.filter((c) => c.role !== "toolbar");
   const other = rest.flatMap((c) => (c.role === "other" || !c.role ? (c.type === "folder" ? (c.children ?? []) : [c]) : [c]));
-  const title = `Imported from ${browserName}`;
+  const title = `从 ${browserName} 导入`;
   const place = (nodes: ImportedNode[], parentId: string) => {
     if (!nodes.length) return;
     const parent = useBrowser.getState().bookmarks.nodes[parentId];

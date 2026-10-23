@@ -39,11 +39,11 @@ function bookmarkFolderItems(windowId: string, prefix: string): MenuItem[] {
     ? [...folderChildren(s.bookmarks, roots.bar), ...folderChildren(s.bookmarks, roots.other)].filter((n) => n.kind === "folder")
     : [];
   return [
-    { id: `${prefix}bar`, title: "Bookmarks Bar", symbol: "menubar.rectangle" },
-    ...(roots ? [{ id: `${prefix}${roots.other}`, title: "Other Bookmarks", symbol: "folder" }] : []),
+    { id: `${prefix}bar`, title: "书签栏", symbol: "menubar.rectangle" },
+    ...(roots ? [{ id: `${prefix}${roots.other}`, title: "其他书签", symbol: "folder" }] : []),
     ...folders.map((f) => ({ id: `${prefix}${f.id}`, title: f.title, symbol: "folder" })),
     sep,
-    { id: `${prefix}new`, title: "New Folder…", symbol: "folder.badge.plus" },
+    { id: `${prefix}new`, title: "新建文件夹…", symbol: "folder.badge.plus" },
   ];
 }
 
@@ -53,7 +53,7 @@ function moveToWindowItems(windowId: string): MenuItem[] {
   return [
     ...others.map((id) => ({ id: `window:${id}`, title: windowTitle(s, id) })),
     ...(others.length ? [sep] : []),
-    { id: "window:new", title: "New Window" },
+    { id: "window:new", title: "新建窗口" },
   ];
 }
 
@@ -84,54 +84,54 @@ export async function openTabMenu(windowId: string, tab: Tab) {
   const moveToProfile: MenuItem[] = [
     ...s.profileOrder.map((id) => ({ id: `profile:${id}`, title: s.profiles[id]!.name, checked: id === tab.profileId, enabled: id !== tab.profileId })),
     sep,
-    { id: "profile:new", title: "New Profile…" },
+    { id: "profile:new", title: "新建个人资料…" },
   ];
   const groups = moveToGroupItems(windowId, group?.id);
 
   const choice = await showMenu([
     ...(tab.pinned
       ? [
-          { id: "backToPin", title: "Back to Pinned URL", symbol: "arrow.uturn.backward", enabled: away, ...hint("\r", "command") },
-          { id: "replacePin", title: "Replace Pin with Current Page", symbol: "pin", enabled: away },
-          { id: "editPin", title: "Edit Pinned Page…", symbol: "pencil" },
+          { id: "backToPin", title: "返回固定网址", symbol: "arrow.uturn.backward", enabled: away, ...hint("\r", "command") },
+          { id: "replacePin", title: "用当前页面替换固定页面", symbol: "pin", enabled: away },
+          { id: "editPin", title: "编辑固定页面…", symbol: "pencil" },
           ...(isCalendarUrl(tab.pinnedUrl ?? tab.url) ? [calendarMenuItem()] : []),
           sep,
         ]
       : []),
-    { id: "rename", title: "Rename…", symbol: "character.cursor.ibeam" },
-    ...(tab.customTitle ? [{ id: "resetName", title: "Reset Name", symbol: "arrow.counterclockwise" }] : []),
-    { id: "icon", title: "Change Icon…", symbol: "face.smiling" },
-    ...(tab.customIcon ? [{ id: "resetIcon", title: "Reset Icon", symbol: "arrow.counterclockwise" }] : []),
+    { id: "rename", title: "重命名…", symbol: "character.cursor.ibeam" },
+    ...(tab.customTitle ? [{ id: "resetName", title: "重置名称", symbol: "arrow.counterclockwise" }] : []),
+    { id: "icon", title: "更改图标…", symbol: "face.smiling" },
+    ...(tab.customIcon ? [{ id: "resetIcon", title: "重置图标", symbol: "arrow.counterclockwise" }] : []),
     sep,
-    { id: "pin", title: tab.pinned ? "Unpin" : "Pin", symbol: tab.pinned ? "pin.slash" : "pin" },
+    { id: "pin", title: tab.pinned ? "取消固定" : "固定", symbol: tab.pinned ? "pin.slash" : "pin" },
     isPinnedRow(tab)
-      ? { id: "pinTile", title: "Move to Top Apps", symbol: "app" }
-      : { id: "pinRow", title: "Move to Pinned Tabs", symbol: "list.bullet" },
-    { id: "duplicate", title: "Duplicate", symbol: "plus.square.on.square" },
+      ? { id: "pinTile", title: "移到顶部应用", symbol: "app" }
+      : { id: "pinRow", title: "移到固定标签页", symbol: "list.bullet" },
+    { id: "duplicate", title: "创建副本", symbol: "plus.square.on.square" },
     ...(tab.pinned
       ? []
       : [
           group
-            ? { id: "ungroupTab", title: "Remove from Group", symbol: "folder.badge.minus" }
-            : { id: "newGroup", title: "New Group with Tab", symbol: "plus.rectangle.on.rectangle", ...hint("n", "control", "command") },
-          ...(groups.length ? [{ id: "moveToGroup", title: "Move to Group", symbol: "rectangle.stack", children: groups }] : []),
+            ? { id: "ungroupTab", title: "从分组中移除", symbol: "folder.badge.minus" }
+            : { id: "newGroup", title: "将标签页加入新分组", symbol: "plus.rectangle.on.rectangle", ...hint("n", "control", "command") },
+          ...(groups.length ? [{ id: "moveToGroup", title: "移到分组", symbol: "rectangle.stack", children: groups }] : []),
         ]),
-    ...(split ? [{ id: "unsplit", title: "Remove from Split View", symbol: "rectangle.split.2x1.slash" }] : []),
+    ...(split ? [{ id: "unsplit", title: "从分屏中移除", symbol: "rectangle.split.2x1.slash" }] : []),
     sep,
-    { id: "mute", title: tab.muted ? "Unmute Site" : "Mute Site", symbol: tab.muted ? "speaker.wave.2" : "speaker.slash", enabled: !!tab.url },
-    { id: "copy", title: "Copy URL", symbol: "link", enabled: !!tab.url, ...hint("c", "shift", "command") },
-    { id: "copyMd", title: "Copy Link as Markdown", symbol: "text.badge.checkmark", enabled: !!tab.url, ...hint("c", "option", "shift", "command") },
-    { id: "share", title: "Share", symbol: "square.and.arrow.up", enabled: canShare(tab), share: true },
-    { id: "bookmark", title: "Add to Bookmarks…", symbol: "bookmark", enabled: !!tab.url, ...hint("d", "command") },
-    { id: "bookmarkTo", title: "Add Bookmark to Folder", symbol: "folder", enabled: !!tab.url, children: bookmarkFolderItems(windowId, "folder:") },
+    { id: "mute", title: tab.muted ? "取消网站静音" : "将网站静音", symbol: tab.muted ? "speaker.wave.2" : "speaker.slash", enabled: !!tab.url },
+    { id: "copy", title: "复制网址", symbol: "link", enabled: !!tab.url, ...hint("c", "shift", "command") },
+    { id: "copyMd", title: "将链接复制为 Markdown", symbol: "text.badge.checkmark", enabled: !!tab.url, ...hint("c", "option", "shift", "command") },
+    { id: "share", title: "分享", symbol: "square.and.arrow.up", enabled: canShare(tab), share: true },
+    { id: "bookmark", title: "添加到书签…", symbol: "bookmark", enabled: !!tab.url, ...hint("d", "command") },
+    { id: "bookmarkTo", title: "将书签添加到文件夹", symbol: "folder", enabled: !!tab.url, children: bookmarkFolderItems(windowId, "folder:") },
     sep,
-    { id: "moveToProfile", title: "Move to Profile", symbol: "person.crop.circle", enabled: !incognito, children: moveToProfile },
-    { id: "moveToWindow", title: "Move to Window", symbol: "macwindow", enabled: !incognito, children: moveToWindowItems(windowId) },
+    { id: "moveToProfile", title: "移到个人资料", symbol: "person.crop.circle", enabled: !incognito, children: moveToProfile },
+    { id: "moveToWindow", title: "移到窗口", symbol: "macwindow", enabled: !incognito, children: moveToWindowItems(windowId) },
     sep,
-    { id: "close", title: "Close Tab", symbol: "xmark", ...hint("w", "command") },
-    { id: "closeOthers", title: "Close Other Tabs", enabled: others.length > 0 },
-    { id: "closeAbove", title: across ? "Close Tabs to the Left" : "Close Tabs Above", enabled: above.length > 0 },
-    { id: "closeBelow", title: across ? "Close Tabs to the Right" : "Close Tabs Below", enabled: below.length > 0 },
+    { id: "close", title: "关闭标签页", symbol: "xmark", ...hint("w", "command") },
+    { id: "closeOthers", title: "关闭其他标签页", enabled: others.length > 0 },
+    { id: "closeAbove", title: across ? "关闭左侧标签页" : "关闭上方标签页", enabled: above.length > 0 },
+    { id: "closeBelow", title: across ? "关闭右侧标签页" : "关闭下方标签页", enabled: below.length > 0 },
   ]);
   if (!choice) return;
   const t = { kind: "tab" as const, id: tab.id };
@@ -173,21 +173,21 @@ async function openMultiMenu(windowId: string, ids: string[]) {
   const incognito = tabs.some((t) => isIncognitoProfile(t.profileId));
   const groups = moveToGroupItems(windowId, undefined);
   const choice = await showMenu([
-    { id: "pin", title: allPinned ? `Unpin ${n} Tabs` : `Pin ${n} Tabs`, symbol: allPinned ? "pin.slash" : "pin" },
-    ...(tabs.every(isPinnedRow) ? [] : [{ id: "pinRows", title: `Move ${n} Tabs to Pinned Tabs`, symbol: "list.bullet" }]),
-    { id: "duplicate", title: `Duplicate ${n} Tabs`, symbol: "plus.square.on.square" },
-    { id: "newGroup", title: `New Group with ${n} Tabs`, symbol: "plus.rectangle.on.rectangle", enabled: !allPinned, ...hint("n", "control", "command") },
-    ...(groups.length ? [{ id: "moveToGroup", title: "Move to Group", symbol: "rectangle.stack", children: groups }] : []),
-    ...(tabs.some((t) => groupOf(s, t.id)) ? [{ id: "ungroup", title: "Remove from Group", symbol: "folder.badge.minus" }] : []),
+    { id: "pin", title: allPinned ? `取消固定 ${n} 个标签页` : `固定 ${n} 个标签页`, symbol: allPinned ? "pin.slash" : "pin" },
+    ...(tabs.every(isPinnedRow) ? [] : [{ id: "pinRows", title: `将 ${n} 个标签页移到固定标签页`, symbol: "list.bullet" }]),
+    { id: "duplicate", title: `创建 ${n} 个标签页的副本`, symbol: "plus.square.on.square" },
+    { id: "newGroup", title: `将 ${n} 个标签页加入新分组`, symbol: "plus.rectangle.on.rectangle", enabled: !allPinned, ...hint("n", "control", "command") },
+    ...(groups.length ? [{ id: "moveToGroup", title: "移到分组", symbol: "rectangle.stack", children: groups }] : []),
+    ...(tabs.some((t) => groupOf(s, t.id)) ? [{ id: "ungroup", title: "从分组中移除", symbol: "folder.badge.minus" }] : []),
     sep,
-    { id: "copy", title: `Copy ${n} URLs`, symbol: "link", ...hint("c", "shift", "command") },
-    { id: "copyMd", title: `Copy ${n} URLs as Markdown`, symbol: "text.badge.checkmark", ...hint("c", "option", "shift", "command") },
-    { id: "bar", title: `Add ${n} Tabs to Bookmarks Bar`, symbol: "bookmark" },
-    { id: "bookmarkTo", title: `Add ${n} Tabs to Bookmarks Folder`, symbol: "folder", children: bookmarkFolderItems(windowId, "folder:") },
+    { id: "copy", title: `复制 ${n} 个网址`, symbol: "link", ...hint("c", "shift", "command") },
+    { id: "copyMd", title: `将 ${n} 个网址复制为 Markdown`, symbol: "text.badge.checkmark", ...hint("c", "option", "shift", "command") },
+    { id: "bar", title: `将 ${n} 个标签页添加到书签栏`, symbol: "bookmark" },
+    { id: "bookmarkTo", title: `将 ${n} 个标签页添加到书签文件夹`, symbol: "folder", children: bookmarkFolderItems(windowId, "folder:") },
     sep,
-    { id: "moveToWindow", title: "Move to Window", symbol: "macwindow", enabled: !incognito, children: moveToWindowItems(windowId) },
+    { id: "moveToWindow", title: "移到窗口", symbol: "macwindow", enabled: !incognito, children: moveToWindowItems(windowId) },
     sep,
-    { id: "close", title: `Close ${n} Tabs`, symbol: "xmark", ...hint("w", "command") },
+    { id: "close", title: `关闭 ${n} 个标签页`, symbol: "xmark", ...hint("w", "command") },
   ]);
   if (!choice) return;
   if (choice === "pin") s.pinTabs(ids, !allPinned);
@@ -215,32 +215,32 @@ export async function openGroupMenu(windowId: string, groupId: string) {
   const siteColor = g.tabIds.map((id) => s.live[id]?.themeColor).find(Boolean);
   const matched = siteColor ? nearestGroupColor(siteColor) : null;
   const choice = await showMenu([
-    { id: "rename", title: "Rename…", symbol: "character.cursor.ibeam" },
-    { id: "icon", title: g.icon ? "Change Icon…" : "Add Icon…", symbol: "face.smiling" },
+    { id: "rename", title: "重命名…", symbol: "character.cursor.ibeam" },
+    { id: "icon", title: g.icon ? "更改图标…" : "添加图标…", symbol: "face.smiling" },
     {
       id: "color",
-      title: "Color",
+      title: "颜色",
       symbol: "paintpalette",
       children: [
-        { id: "color:", title: "Neutral", swatch: NEUTRAL_GROUP_SWATCH.light, swatchDark: NEUTRAL_GROUP_SWATCH.dark, checked: !g.color },
-        { id: `color:${matched ?? ""}`, title: "Match Site Color", enabled: !!matched, swatch: matched ? GROUP_COLORS[matched].hex : undefined },
+        { id: "color:", title: "中性", swatch: NEUTRAL_GROUP_SWATCH.light, swatchDark: NEUTRAL_GROUP_SWATCH.dark, checked: !g.color },
+        { id: `color:${matched ?? ""}`, title: "匹配网站颜色", enabled: !!matched, swatch: matched ? GROUP_COLORS[matched].hex : undefined },
         sep,
         ...colors.map((c) => ({ id: `color:${c}`, title: GROUP_COLORS[c].name, swatch: GROUP_COLORS[c].hex, checked: g.color === c })),
       ],
     },
     sep,
-    { id: "newTab", title: "New Tab in Group", symbol: "plus", ...hint("t", "option", "command") },
-    { id: "pin", title: g.pinned ? "Unpin Group" : "Pin Group", symbol: g.pinned ? "pin.slash" : "pin" },
-    { id: "duplicate", title: "Duplicate Group", symbol: "plus.square.on.square" },
-    { id: "collapse", title: g.collapsed ? "Expand Group" : "Collapse Group", symbol: g.collapsed ? "chevron.down" : "chevron.up" },
+    { id: "newTab", title: "在分组中新建标签页", symbol: "plus", ...hint("t", "option", "command") },
+    { id: "pin", title: g.pinned ? "取消固定分组" : "固定分组", symbol: g.pinned ? "pin.slash" : "pin" },
+    { id: "duplicate", title: "创建分组副本", symbol: "plus.square.on.square" },
+    { id: "collapse", title: g.collapsed ? "展开分组" : "折叠分组", symbol: g.collapsed ? "chevron.down" : "chevron.up" },
     sep,
-    { id: "copy", title: "Copy All Links", symbol: "link" },
-    { id: "copyMd", title: "Copy All Links as Markdown", symbol: "text.badge.checkmark" },
+    { id: "copy", title: "复制所有链接", symbol: "link" },
+    { id: "copyMd", title: "将所有链接复制为 Markdown", symbol: "text.badge.checkmark" },
     sep,
-    { id: "ungroup", title: "Ungroup", symbol: "folder.badge.minus" },
-    { id: "bookmarkBar", title: "Move to Bookmark Bar", symbol: "bookmark" },
-    { id: "close", title: "Close Group", symbol: "xmark" },
-    { id: "delete", title: "Delete Group", symbol: "trash" },
+    { id: "ungroup", title: "取消分组", symbol: "folder.badge.minus" },
+    { id: "bookmarkBar", title: "移到书签栏", symbol: "bookmark" },
+    { id: "close", title: "关闭分组", symbol: "xmark" },
+    { id: "delete", title: "删除分组", symbol: "trash" },
   ]);
   if (!choice) return;
   const target = { kind: "group" as const, id: groupId };
@@ -267,12 +267,12 @@ export async function openSidebarMenu(windowId: string) {
   const s = store();
   const muted = allMuted(windowId);
   const choice = await showMenu([
-    { id: "newTab", title: "New Tab", symbol: "plus", ...hint("t", "command") },
-    { id: "search", title: "Search Tabs…", symbol: "magnifyingglass", ...hint("a", "shift", "command") },
+    { id: "newTab", title: "新建标签页", symbol: "plus", ...hint("t", "command") },
+    { id: "search", title: "搜索标签页…", symbol: "magnifyingglass", ...hint("a", "shift", "command") },
     sep,
-    { id: "clean", title: "Clean Up Tabs", symbol: "wand.and.stars", ...hint("k", "option", "command") },
-    { id: "mute", title: muted ? "Unmute All Tabs" : "Mute All Tabs", symbol: muted ? "speaker.wave.2" : "speaker.slash" },
-    { id: "closeAll", title: "Close All Tabs", symbol: "xmark", ...hint("k", "shift", "command") },
+    { id: "clean", title: "清理标签页", symbol: "wand.and.stars", ...hint("k", "option", "command") },
+    { id: "mute", title: muted ? "取消所有标签页静音" : "将所有标签页静音", symbol: muted ? "speaker.wave.2" : "speaker.slash" },
+    { id: "closeAll", title: "关闭所有标签页", symbol: "xmark", ...hint("k", "shift", "command") },
     sep,
     newLiveFolderMenuItem(),
   ]);
@@ -289,9 +289,9 @@ export async function openSidebarMenu(windowId: string) {
 export function closeAllTabs(windowId: string) {
   const cleared = store().clearUnpinnedTabs(windowId);
   if (!cleared?.entries.length) return;
-  showToast(windowId, `Cleared ${plural(cleared.entries.length, "Tab")}`, undefined, {
+  showToast(windowId, `已清理 ${cleared.entries.length} 个标签页`, undefined, {
     icon: "arrow.down",
-    action: { title: "Undo", run: () => store().undoClearTabs(cleared) },
+    action: { title: "撤销", run: () => store().undoClearTabs(cleared) },
   });
 }
 
@@ -305,7 +305,7 @@ export async function openOverflowMenu(windowId: string) {
     ...s.closedTabs
       .filter((c) => c.tab.profileId === w.profileId)
       .map((c) => ({ id: `restore:${c.id}`, title: c.tab.customTitle || c.tab.title || tabLabel(c.tab), symbol: "clock.arrow.circlepath", at: c.closedAt })),
-    ...s.closedGroups.map((c) => ({ id: `restore:${c.id}`, title: `${c.group.name} (${plural(c.tabs.length, "Tab")})`, symbol: "rectangle.stack", at: c.closedAt })),
+    ...s.closedGroups.map((c) => ({ id: `restore:${c.id}`, title: `${c.group.name} (${c.tabs.length} 个标签页)`, symbol: "rectangle.stack", at: c.closedAt })),
   ]
     .sort((a, b) => b.at - a.at)
     .slice(0, 15)
@@ -314,41 +314,41 @@ export async function openOverflowMenu(windowId: string) {
   const cleaned = [...allCleaned].reverse().slice(0, 20);
   const deleted = keptDeletedGroups(s.deletedGroups)
     .reverse()
-    .map((c) => ({ id: `restore:${c.id}`, title: `${c.group.name} (${plural(c.tabs.length, "Tab")})`, symbol: "trash" }));
+    .map((c) => ({ id: `restore:${c.id}`, title: `${c.group.name} (${c.tabs.length} 个标签页)`, symbol: "trash" }));
   const daily = s.settings.cleanUpInactiveTabsAfterHours !== null;
   const synced = syncedDevicesMenuItem(w.profileId);
   const choice = await showMenu([
-    { id: "search", title: "Search Tabs…", symbol: "magnifyingglass", ...hint("a", "shift", "command") },
+    { id: "search", title: "搜索标签页…", symbol: "magnifyingglass", ...hint("a", "shift", "command") },
     sep,
     {
       id: "open",
-      title: "Open Tabs",
+      title: "已打开的标签页",
       symbol: "square.stack",
       enabled: open.length > 0,
       children: open.map((t) => ({ id: `tab:${t.id}`, title: tabTitle(t), checked: w.activeTabIds[w.profileId] === t.id })),
     },
     ...(synced ? [synced] : []),
-    { id: "closed", title: "Recently Closed", symbol: "clock.arrow.circlepath", enabled: closed.length > 0, children: closed.length ? closed : [{ id: "none", title: "Empty", enabled: false }] },
+    { id: "closed", title: "最近关闭", symbol: "clock.arrow.circlepath", enabled: closed.length > 0, children: closed.length ? closed : [{ id: "none", title: "暂无内容", enabled: false }] },
     {
       id: "cleaned",
-      title: "Recently Cleaned",
+      title: "最近清理",
       symbol: "wand.and.stars",
       enabled: cleaned.length > 0,
       children: cleaned.length
         ? [
             ...cleaned.map((c) => ({ id: `cleaned:${c.id}`, title: c.tab.customTitle || c.tab.title || tabLabel(c.tab) })),
             sep,
-            { id: "restoreAll", title: `Restore ${plural(allCleaned.length, "Tab")}` },
+            { id: "restoreAll", title: `恢复 ${allCleaned.length} 个标签页` },
           ]
-        : [{ id: "none", title: "Empty", enabled: false }],
+        : [{ id: "none", title: "暂无内容", enabled: false }],
     },
-    ...(deleted.length ? [{ id: "deleted", title: "Recently Deleted Groups", symbol: "trash", children: deleted }] : []),
+    ...(deleted.length ? [{ id: "deleted", title: "最近删除的分组", symbol: "trash", children: deleted }] : []),
     sep,
-    { id: "clean", title: "Clean Up Tabs", symbol: "wand.and.stars", ...hint("k", "option", "command") },
-    { id: "daily", title: "Clean Up Daily", checked: daily },
+    { id: "clean", title: "清理标签页", symbol: "wand.and.stars", ...hint("k", "option", "command") },
+    { id: "daily", title: "每天清理", checked: daily },
     sep,
-    { id: "mute", title: muted ? "Unmute All Tabs" : "Mute All Tabs", symbol: muted ? "speaker.wave.2" : "speaker.slash" },
-    { id: "closeAll", title: "Close All Tabs", symbol: "xmark", ...hint("k", "shift", "command") },
+    { id: "mute", title: muted ? "取消所有标签页静音" : "将所有标签页静音", symbol: muted ? "speaker.wave.2" : "speaker.slash" },
+    { id: "closeAll", title: "关闭所有标签页", symbol: "xmark", ...hint("k", "shift", "command") },
   ]);
   if (!choice) return;
   if (choice === "search") setSidebarUi({ searchTabs: windowId });

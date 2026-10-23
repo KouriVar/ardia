@@ -131,7 +131,7 @@ export function searchEngines(settings: Settings): SearchEngine[] {
   const engines = allEngines(custom, extension);
   if (settings.customSearchUrl?.includes("%s")) {
     const at = engines.findIndex((e) => e.extension);
-    engines.splice(at < 0 ? engines.length : at, 0, { id: "custom", name: "Custom", keyword: "custom", url: settings.customSearchUrl, custom: true });
+    engines.splice(at < 0 ? engines.length : at, 0, { id: "custom", name: "自定义", keyword: "custom", url: settings.customSearchUrl, custom: true });
   }
   engineCache.set(custom, { legacyUrl: settings.customSearchUrl, extension, engines });
   return engines;

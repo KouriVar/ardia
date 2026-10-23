@@ -80,29 +80,29 @@ function describe(source: LiveSourceId, error: unknown) {
 
 export function statusText(folderId: string, now = Date.now()): string {
   const st = live().status[folderId];
-  if (!st || st.state === "initializing") return "Loading…";
-  if (st.state === "updating") return "Updating…";
+  if (!st || st.state === "initializing") return "正在加载…";
+  if (st.state === "updating") return "正在更新…";
   if (st.error) return errorText(st.error.kind, st.error.source);
-  if (!st.lastFetch) return "Not updated yet";
+  if (!st.lastFetch) return "尚未更新";
   const min = Math.floor((now - st.lastFetch) / 60_000);
-  return min < 1 ? "Updated just now" : min < 60 ? `Updated ${min} min ago` : `Updated ${Math.floor(min / 60)} hr ago`;
+  return min < 1 ? "刚刚更新" : min < 60 ? `${min} 分钟前更新` : `${Math.floor(min / 60)} 小时前更新`;
 }
 
 export function errorText(kind: LiveError["kind"], source: LiveSourceId): string {
   const name = SOURCES[source].name;
   switch (kind) {
     case "notConfigured":
-      return `Connect ${name} in Settings`;
+      return `在设置中连接 ${name}`;
     case "signedOut":
-      return `Sign back in to ${name}`;
+      return `重新登录 ${name}`;
     case "sso":
-      return `${name} needs Single Sign-On for this organization`;
+      return `${name} 需要通过此组织的单点登录验证`;
     case "rateLimited":
-      return `${name} rate limit exceeded. Try again in a few minutes.`;
+      return `${name} 的请求过于频繁，请几分钟后再试。`;
     case "network":
-      return `Couldn't connect to ${name}`;
+      return `无法连接 ${name}`;
     default:
-      return `We're having trouble connecting to ${name}`;
+      return `连接 ${name} 时遇到问题`;
   }
 }
 

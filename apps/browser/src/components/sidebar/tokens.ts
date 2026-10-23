@@ -56,15 +56,15 @@ export function useSidebarTokens(): SidebarTokens {
 }
 
 export const GROUP_COLORS: Record<GroupColor, { name: string; hex: string }> = {
-  grey: { name: "Grey", hex: "#8E8E93" },
-  blue: { name: "Blue", hex: "#4C8DF6" },
-  red: { name: "Red", hex: "#E5534B" },
-  yellow: { name: "Yellow", hex: "#E3B341" },
-  green: { name: "Green", hex: "#3FB06C" },
-  pink: { name: "Pink", hex: "#DB61A2" },
-  purple: { name: "Purple", hex: "#9B6CF0" },
-  cyan: { name: "Cyan", hex: "#35B8C6" },
-  orange: { name: "Orange", hex: "#EE8434" },
+  grey: { name: "灰色", hex: "#8E8E93" },
+  blue: { name: "蓝色", hex: "#4C8DF6" },
+  red: { name: "红色", hex: "#E5534B" },
+  yellow: { name: "黄色", hex: "#E3B341" },
+  green: { name: "绿色", hex: "#3FB06C" },
+  pink: { name: "粉色", hex: "#DB61A2" },
+  purple: { name: "紫色", hex: "#9B6CF0" },
+  cyan: { name: "青色", hex: "#35B8C6" },
+  orange: { name: "橙色", hex: "#EE8434" },
 };
 
 export const NEUTRAL_GROUP_SWATCH = { light: "#0000004D", dark: "#FFFFFF4D" };

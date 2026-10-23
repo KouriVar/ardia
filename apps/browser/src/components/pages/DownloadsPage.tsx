@@ -22,16 +22,16 @@ export function DownloadsPage({ tabId }: { tabId: string }) {
   return (
     <View style={{ flex: 1 }}>
       <PageHeader
-        title="Downloads"
+        title="下载内容"
         query={query}
         onQuery={setQuery}
-        placeholder="Search downloads"
-        actions={downloads.some((d) => d.state !== "downloading") ? <Button title="Clear All" onPress={() => useBrowser.getState().clearDownloads(windowId)} /> : null}
+        placeholder="搜索下载内容"
+        actions={downloads.some((d) => d.state !== "downloading") ? <Button title="全部清除" onPress={() => useBrowser.getState().clearDownloads(windowId)} /> : null}
       />
       {shown.length === 0 ? (
         <EmptyState
           icon={<Symbol name="arrow.down.circle" size={30} color={theme.textTertiary} style={{ width: 40, height: 40 }} />}
-          title={query ? "No search results found" : "Files you download appear here"}
+          title={query ? "没有搜索结果" : "下载的文件会显示在这里"}
         />
       ) : (
         <FlatList
@@ -76,7 +76,7 @@ function DownloadCard({ d, windowId }: { d: Download; windowId: string }) {
                 numberOfLines={1}
                 style={{ fontSize: 13.5, fontWeight: "500", color: exists ? theme.textPrimary : theme.textSecondary, textDecorationLine: exists ? "none" : "line-through" }}
               >
-                {d.filename || "Preparing…"}
+                {d.filename || "正在准备…"}
               </Text>
             </Pressable>
             <Pressable onPress={() => openUrl(d.url, windowId, "foreground")}>
@@ -95,15 +95,15 @@ function DownloadCard({ d, windowId }: { d: Download; windowId: string }) {
           </View>
           {d.state === "downloading" ? (
             <View style={{ flexDirection: "row", gap: 8 }}>
-              <Button title={d.paused ? "Resume" : "Pause"} onPress={() => void (d.paused ? resumeDownload(d.id) : pauseDownload(d.id))} />
-              <Button title="Cancel" onPress={() => void cancelDownload(d.id)} />
+              <Button title={d.paused ? "继续" : "暂停"} onPress={() => void (d.paused ? resumeDownload(d.id) : pauseDownload(d.id))} />
+              <Button title="取消" onPress={() => void cancelDownload(d.id)} />
             </View>
           ) : done ? (
-            <Button title="Show in Finder" onPress={() => void revealFile(d.path)} />
+            <Button title="在访达中显示" onPress={() => void revealFile(d.path)} />
           ) : null}
-          <IconButton icon="ellipsis" size={13} box={26} radius={6} onPress={() => void downloadMenu(d, windowId)} tooltip="More actions" />
+          <IconButton icon="ellipsis" size={13} box={26} radius={6} onPress={() => void downloadMenu(d, windowId)} tooltip="更多操作" />
           {d.state !== "downloading" && (
-            <IconButton icon="xmark" size={11} box={26} radius={6} onPress={() => useBrowser.getState().removeDownload(d.id)} tooltip="Remove from List" />
+            <IconButton icon="xmark" size={11} box={26} radius={6} onPress={() => useBrowser.getState().removeDownload(d.id)} tooltip="从列表中移除" />
           )}
         </View>
       </MouseArea>

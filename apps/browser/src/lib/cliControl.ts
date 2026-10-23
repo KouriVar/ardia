@@ -70,7 +70,7 @@ export function installCliInBackground(reason: CliInstallReason): Promise<CliIns
         save({ binPath: result.binPath ?? null, version: result.version ?? installedVersion, error: null });
         useCli.setState({ installing: null, step: null, installedVersion, binPath: result.binPath ?? null, error: null });
       } else {
-        const error = result.error ?? "The installer stopped.";
+        const error = result.error ?? "安装程序已停止。";
         save({ error });
         useCli.setState({ installing: null, step: null, installedVersion, error });
       }
@@ -80,10 +80,10 @@ export function installCliInBackground(reason: CliInstallReason): Promise<CliIns
 }
 
 export function describeCliInstall(state: Pick<CliState, "installing" | "step" | "installedVersion" | "binPath" | "error">): string {
-  if (state.installing) return state.step ? `Installing (${state.step})…` : "Installing…";
+  if (state.installing) return state.step ? `正在安装（${state.step}）…` : "正在安装…";
   if (state.error) return state.error;
-  if (state.installedVersion) return state.binPath ? `Installed at ${state.binPath}` : `Version ${state.installedVersion} is installed.`;
-  return "Not installed.";
+  if (state.installedVersion) return state.binPath ? `已安装到 ${state.binPath}` : `已安装版本 ${state.installedVersion}。`;
+  return "尚未安装。";
 }
 
 const chromeTabIds = new Map<string, number>();

@@ -86,8 +86,8 @@ function SearchButton({ tabId, text }: { tabId: string; text: string }) {
   const { hovered, hoverProps } = useHover();
   const quoted = text.length > 40 ? `${text.slice(0, 40).trimEnd()}…` : text;
   return (
-    <View {...hoverProps} tooltip={`Search ${engine} for “${quoted.replace(/\s+/g, " ")}”`}>
-      <Pressable accessibilityRole="button" accessibilityLabel={`Search ${engine}`} onPress={(e) => searchSelection(tabId, text, e.nativeEvent as unknown as ClickModifiers)}>
+    <View {...hoverProps} tooltip={`使用 ${engine} 搜索“${quoted.replace(/\s+/g, " ")}”`}>
+      <Pressable accessibilityRole="button" accessibilityLabel={`使用 ${engine} 搜索`} onPress={(e) => searchSelection(tabId, text, e.nativeEvent as unknown as ClickModifiers)}>
         {({ pressed }) => (
           <View
             style={{
@@ -102,7 +102,7 @@ function SearchButton({ tabId, text }: { tabId: string; text: string }) {
             }}
           >
             <Symbol name="magnifyingglass" size={12} weight="medium" color={theme.icon} style={{ width: 16, height: 16 }} />
-            <Text style={{ fontSize: 13, fontWeight: "500", color: theme.textPrimary }}>Search</Text>
+            <Text style={{ fontSize: 13, fontWeight: "500", color: theme.textPrimary }}>搜索</Text>
           </View>
         )}
       </Pressable>
