@@ -11,9 +11,11 @@ import { AwayTitleLabel } from "./AwayTitle";
 import { HOVER_CARD_HEADER } from "./hoverPlacement";
 import { TabIcon } from "./TabIcon";
 import { TAB_ROW } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 export function TabCardSummary({ tab }: { tab: Tab }) {
   const theme = useTheme();
+  const t = useTranslate();
   const sleeping = useIsSleeping(tab.id);
   const away = awayTitle(tab);
   return (
@@ -32,10 +34,10 @@ export function TabCardSummary({ tab }: { tab: Tab }) {
         </Text>
       ) : null}
       {sleeping ? (
-        <View accessible accessibilityLabel="Web content has been discarded" style={{ flexDirection: "row", alignItems: "center", gap: space.xs, marginTop: space.xs }}>
+        <View accessible accessibilityLabel={t("Web content has been discarded")} style={{ flexDirection: "row", alignItems: "center", gap: space.xs, marginTop: space.xs }}>
           <Symbol name="moon.zzz" size={10} color={theme.textTertiary} style={{ width: 14, height: 14 }} />
           <Text size="caption" tone="textTertiary">
-            This tab needs to reload
+            {t("This tab needs to reload")}
           </Text>
         </View>
       ) : null}

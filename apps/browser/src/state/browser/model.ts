@@ -3,6 +3,7 @@ import type { BrowserState } from "./store";
 import { DEFAULT_PROFILE_ID } from "../settings/settings";
 import type { BrowserWindow, Navigation, Profile, Tab, TabGroup, TabLive, TabPin, TabSnapshot } from "./types";
 import { pinnedGroupMembers } from "./structure";
+import { translateActive } from "../../lib/i18n/active";
 
 
 const launch = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
@@ -183,7 +184,7 @@ export function without<T>(map: Record<string, T>, ids: Iterable<string>): Recor
 
 export function tabLabel(t: Pick<Tab, "url" | "title" | "customTitle">): string {
   if (t.customTitle) return t.customTitle;
-  if (!t.url) return "New Tab";
+  if (!t.url) return translateActive("New Tab");
   const app = appUrlOrigin(t.url);
   if (app) return app;
   try {
@@ -196,7 +197,7 @@ export function tabLabel(t: Pick<Tab, "url" | "title" | "customTitle">): string 
 }
 
 const urlLabel = (url: string) => url.replace(/^[a-z][\w+.-]*:\/\//i, "").replace(/^www\./, "").replace(/\/$/, "");
-export const tabTitle = (t: Pick<Tab, "customTitle" | "title" | "url">) => t.customTitle || t.title || (t.url && urlLabel(t.url)) || "New Tab";
+export const tabTitle = (t: Pick<Tab, "customTitle" | "title" | "url">) => t.customTitle || t.title || (t.url && urlLabel(t.url)) || translateActive("New Tab");
 
 export const tabTooltip = (t: Pick<Tab, "customTitle" | "title" | "url">) => (t.url ? `${tabTitle(t)}\n${t.url}` : tabTitle(t));
 
@@ -214,6 +215,6 @@ export function windowTitle(s: BrowserState, windowId: string): string {
   if (!w) return "";
   const tab = activeTab(s, windowId);
   const others = viewTabIds(s, windowId).length - 1;
-  const label = tab ? tabLabel(tab) : "New Tab";
+  const label = tab ? tabLabel(tab) : translateActive("New Tab");
   return `${profileFor(s, w.profileId).name} — ${label}${others > 0 ? ` & ${plural(others, "Tab")}` : ""}`;
 }

@@ -13,8 +13,10 @@ import { downloadStatus } from "../../state/downloads/status";
 import { Box, Button, EmptyState, MouseArea, opacity, ProgressTrack, space, Text, useHover } from "../ui";
 import { hostLabel, matchesQuery, PAGE_WIDTH, PageHeader } from "./PageLayout";
 import { downloadCard, pageList, pageType } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 export function DownloadsPage({ tabId }: { tabId: string }) {
+  const t = useTranslate();
   const windowId = useTab(tabId, (t) => t?.windowId ?? "");
   const downloads = useDownloads(windowId, useShallow((list) => list));
   const [query, setQuery] = useState("");
@@ -23,7 +25,7 @@ export function DownloadsPage({ tabId }: { tabId: string }) {
   return (
     <View style={{ flex: 1 }}>
       <PageHeader
-        title="Downloads"
+        title={t("Downloads")}
         query={query}
         onQuery={setQuery}
         actions={downloads.some((d) => d.state !== "downloading") ? <Button title="Clear All" onPress={() => clearDownloads(windowId)} /> : null}
@@ -31,7 +33,7 @@ export function DownloadsPage({ tabId }: { tabId: string }) {
       {shown.length === 0 ? (
         <EmptyState
           symbol="arrow.down.circle"
-          title={query ? "No search results found" : "Files you download appear here"}
+          title={query ? t("No search results found") : t("Files you download appear here")}
         />
       ) : (
         <FlatList

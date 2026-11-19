@@ -25,6 +25,7 @@ const KEY_SYMBOLS = "⌘⌥⇧⌃";
 const WORD_CHAR = /[\p{L}\p{N}]/u;
 const MARKS = /\p{M}/gu;
 const APOSTROPHES = /['’‘]/;
+const HAN = /\p{Script=Han}/u;
 
 const isWordChar = (c: string) => WORD_CHAR.test(c) || KEY_SYMBOLS.includes(c);
 
@@ -209,6 +210,10 @@ type Field = { role: FieldRole; folded: Folded; weight: number };
 function matchField(field: Field, token: string, typos: boolean, shortQuery: boolean): TokenMatch | null {
   const { role, folded } = field;
   if (!folded.text) return null;
+  if (HAN.test(token)) {
+    const at = folded.text.indexOf(token);
+    return at < 0 ? null : { score: WHOLE, whole: true, kind: "word", ranges: [{ start: at, end: at + token.length }] };
+  }
   if (role === "title") {
     let m = wordStartMatch(folded, token, true);
     if (!m || m.kind === "mid") m = joinedMatch(folded, token) ?? acronymMatch(folded, token) ?? m;
@@ -223,7 +228,7 @@ function matchField(field: Field, token: string, typos: boolean, shortQuery: boo
   return m;
 }
 
-type Prepared<T extends Searchable> = { entry: T; fields: Field[]; titleLength: number; keywordPhrases: string[] };
+export type Prepared<T extends Searchable> = { entry: T; fields: Field[]; titleLength: number; keywordPhrases: string[] };
 
 export function prepare<T extends Searchable>(entries: T[]): Prepared<T>[] {
   return entries.map((entry) => {

@@ -14,6 +14,7 @@ import { closeSidePanel, findExtension, showExtensionMenu, takeSidePanelFocus, u
 import { curve, duration } from "../ui/motion";
 import { GLYPH } from "../toolbar/tokens";
 import { useResizeDrag } from "../sidebar/useResizeDrag";
+import { useTranslate } from "../ui/Translate";
 
 const MIN_WIDTH = 320;
 const MAX_WIDTH = 600;
@@ -67,6 +68,7 @@ export function ExtensionSidePanel() {
 function PanelCard({ windowId, panel }: { windowId: string; panel: SidePanel }) {
   const { extensionId, profile, pageProfile, url, opened } = panel;
   const theme = useTheme();
+  const t = useTranslate();
   const cardRadius = useCardFrame().radius;
   const web = useRef<WebViewHandle>(null);
   const [loaded, setLoaded] = useState(false);
@@ -75,7 +77,7 @@ function PanelCard({ windowId, panel }: { windowId: string; panel: SidePanel }) 
     if (loaded && takeSidePanelFocus(windowId, panel)) void web.current?.focus();
   }, [loaded, opened, lookingUp]);
   const ext = useExtensions((e) => e.lists[profile]?.find((x) => x.id === extensionId));
-  const title = ext?.actionTitle || ext?.name || "Extension";
+  const title = ext?.actionTitle || ext?.name || t("Extension");
   const icon = ext?.actionIcon || ext?.icon;
   return (
     <View style={{ flex: 1, borderRadius: cardRadius, overflow: "hidden", backgroundColor: theme.card }}>

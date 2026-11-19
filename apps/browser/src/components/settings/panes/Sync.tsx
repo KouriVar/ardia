@@ -1,5 +1,6 @@
 import { showMenu } from "../../../state/app/system";
 import { Box, Button, Dot, lineHeight, space, Symbol, Text, Toggle } from "../../ui";
+import { useT } from "../../../state/i18n";
 import { copyRecoveryPhrase, revealSyncFolder, type FolderInfo } from "../../../state/sync/recoveryKit";
 import { useEffect, useState } from "react";
 import { syncFolder } from "../../../state/settings/paneData";
@@ -25,6 +26,7 @@ import { addAllRemoteProfiles, folderLabel, lookingForProfiles, RemoteProfileRow
 import { ago } from "../../../lib/time";
 
 export function SyncPane() {
+  const t = useT();
   const enabled = useSync((s) => s.enabled);
   const status = useSync((s) => s.status);
   const folder = useSync((s) => s.folder);
@@ -35,14 +37,11 @@ export function SyncPane() {
   }, [enabled, status]);
 
   if (status === "unavailable") {
-    return <PaneIntro>Sync isn’t available in this build.</PaneIntro>;
+    return <PaneIntro>{t("Sync isn’t available in this build.")}</PaneIntro>;
   }
   return (
     <Box gap="xl">
-      <PaneIntro>
-        Sync your profiles, bookmarks, history, open tabs, pinned tabs, groups, passwords, extensions and settings across your Macs. It all goes through a folder
-        you choose, like one in iCloud Drive, and it’s end-to-end encrypted: only your devices can read it.
-      </PaneIntro>
+      <PaneIntro>{t("Sync your profiles, bookmarks, history, open tabs, pinned tabs, groups, passwords, extensions and settings across your Macs. It all goes through a folder you choose, like one in iCloud Drive, and it’s end-to-end encrypted: only your devices can read it.")}</PaneIntro>
       {enabled ? <SyncOn info={info} /> : <SyncOff info={info} />}
     </Box>
   );
@@ -58,6 +57,7 @@ function SyncIcon({ on }: { on: boolean }) {
 }
 
 function SyncOff({ info }: { info: FolderInfo | null }) {
+  const t = useT();
   const theme = useTheme();
   const status = useSync((s) => s.status);
   const error = useSync((s) => s.error);
@@ -130,8 +130,7 @@ function SyncOff({ info }: { info: FolderInfo | null }) {
         </Text>
       ) : null}
       <Text size="caption" tone="textTertiary" style={FOOTNOTE}>
-        No server and no account: your Macs meet in the sync folder. Your recovery phrase never leaves your devices, and without it the folder is
-        unreadable, file names included.
+        {t("No server and no account: your Macs meet in the sync folder. Your recovery phrase never leaves your devices, and without it the folder is unreadable, file names included.")}
       </Text>
     </View>
   );

@@ -11,6 +11,7 @@ import { extensionsFitting, ToolbarExtensions, useToolbarExtensionsWidth } from 
 import { useHistoryAvailability } from "../../state/tabs/navigation";
 import { toolbarPalette, type ToolbarPalette } from "../ui/toolbarColors";
 import { Button, type ButtonHit, FadeLabel, font, radius, space, ToolbarRowContext, useHover } from "../ui";
+import { useTranslate } from "../ui/Translate";
 import { TOOLBAR_ROWS } from "../../lib/toolbarRow";
 import { setUrlAnchor } from "../../state/windows/layout";
 import { SIDEBAR_FIELD } from "./geometry";
@@ -28,6 +29,7 @@ const PLATE = 32;
 const PLATE_RADIUS = radius.toolbar;
 
 export function SidebarHeaderTools({ width }: { width: number }) {
+  const t = useTranslate();
   const windowId = useWindowId();
   const tab = useToolbarTab(useActiveTabId());
   const palette = toolbarPalette(useTheme(), null);
@@ -54,7 +56,7 @@ export function SidebarHeaderTools({ width }: { width: number }) {
           icon={right ? "sidebar.right" : "sidebar.left"}
           glyph={GLYPH}
           onPress={() => toggleSidebar(windowId)}
-          tooltip={withShortcut("Hide Tabs", sidebarHint)}
+          tooltip={withShortcut(t("Hide Tabs"), sidebarHint)}
         />
       )}
       {tab ? <NavigationButtons tab={tab} palette={palette} buttons={shown} slots={at.slice(toggle ? 1 : 0).map(place)} /> : null}
@@ -151,6 +153,7 @@ function PageField({ tab, windowId, width }: { tab: NonNullable<ReturnType<typeo
 
 function EmptyField({ windowId }: { windowId: string }) {
   const theme = useTheme();
+  const t = useTranslate();
   const { hovered, hoverProps } = useHover();
   const open = () => openEmptySidebarField(windowId);
   return (
@@ -158,7 +161,7 @@ function EmptyField({ windowId }: { windowId: string }) {
       <Pressable onPress={open}>
         <View style={{ height: SIDEBAR_FIELD.height, justifyContent: "center", paddingLeft: space.l }}>
           <SidebarFieldFill hovered={hovered} />
-          <FadeLabel text="Search or enter address" fontSize={font.body.fontSize} color={theme.placeholder} fadeWidth={14} style={{ height: 18, marginLeft: -space.xxs }} />
+          <FadeLabel text={t("Search or enter address")} fontSize={font.body.fontSize} color={theme.placeholder} fadeWidth={14} style={{ height: 18, marginLeft: -space.xxs }} />
         </View>
       </Pressable>
     </View>

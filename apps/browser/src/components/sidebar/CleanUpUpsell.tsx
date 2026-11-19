@@ -11,6 +11,7 @@ import { cleanUpCandidateCount } from "../../state/sidebar/current";
 import { useShownTabId } from "../../state/sidebar/hooks";
 import { useShift } from "./EntryMotion";
 import { useSidebarTokens } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 const UPSELL_MIN = 10;
 const FILL = { flex: 1 } as const;
@@ -18,6 +19,7 @@ let upsellDeclined = false;
 
 export const CleanUpUpsell = memo(function CleanUpUpsell({ windowId, shift }: { windowId: string; shift: Animated.Value | null }) {
   const theme = useTheme();
+  const t = useTranslate();
   const tokens = useSidebarTokens();
   const [count, setCount] = useState(0);
   const [hidden, setHidden] = useState(upsellDeclined);
@@ -44,11 +46,11 @@ export const CleanUpUpsell = memo(function CleanUpUpsell({ windowId, shift }: { 
       <View style={{ flexDirection: "row", alignItems: "center", gap: space.s }}>
         <Symbol name="wand.and.stars" size={12} color={theme.icon} style={{ width: 16, height: 16 }} />
         <Text size="small" weight="semibold" style={FILL}>
-          {count} tabs haven’t been touched in a while
+          {t("{count} tabs haven’t been touched in a while", { count })}
         </Text>
       </View>
       <Text size="small" tone="textSecondary">
-        Ardia can tidy up for you. You can always reopen closed tabs from the ⌄ menu.
+        {t("Ardia can tidy up for you. You can always reopen closed tabs from the ⌄ menu.")}
       </Text>
       <View style={{ gap: space.s }}>
         {button("Clean Up Once", () => {

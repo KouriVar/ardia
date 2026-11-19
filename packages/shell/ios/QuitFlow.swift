@@ -22,12 +22,12 @@ final class QuitFlow {
   func confirm() {
     if MenuState.current.warnBeforeQuitting {
       let alert = NSAlert()
-      alert.messageText = "Are you sure you want to quit \(ProcessInfo.processInfo.processName)?"
-      alert.informativeText = "Your windows and tabs will be restored the next time you open it."
-      alert.addButton(withTitle: "Quit")
-      alert.addButton(withTitle: "Cancel")
+      alert.messageText = MenuTranslator.format("Are you sure you want to quit {name}?", ["name": ProcessInfo.processInfo.processName])
+      alert.informativeText = MenuTranslator.text("Your windows and tabs will be restored the next time you open it.")
+      alert.addButton(withTitle: MenuTranslator.text("Quit"))
+      alert.addButton(withTitle: MenuTranslator.text("Cancel"))
       alert.showsSuppressionButton = true
-      alert.suppressionButton?.title = "Don't ask again"
+      alert.suppressionButton?.title = MenuTranslator.text("Don't ask again")
       let response = alert.runModal()
       if alert.suppressionButton?.state == .on { ShellEvents.send(.app, ["type": "quitWarningSuppressed"]) }
       guard response == .alertFirstButtonReturn else { return }
@@ -58,16 +58,16 @@ final class QuitFlow {
 
   private func saveIsLate() {
     if isSaving { phase = .saving(wait: nil, lateAlert: nil) }
-    let message = "\(ProcessInfo.processInfo.processName) can't save your session right now."
+    let message = MenuTranslator.format("{name} can't save your session right now.", ["name": ProcessInfo.processInfo.processName])
     if LaunchConfig.shared.background {
       NSLog("[shell] quit alert: \(message) (Wait / Quit Without Saving): Wait")
       return waitForSave()
     }
     let alert = NSAlert()
     alert.messageText = message
-    alert.informativeText = "If you quit now, your windows and tabs open as they were when it last saved."
-    alert.addButton(withTitle: "Wait")
-    alert.addButton(withTitle: "Quit Without Saving")
+    alert.informativeText = MenuTranslator.text("If you quit now, your windows and tabs open as they were when it last saved.")
+    alert.addButton(withTitle: MenuTranslator.text("Wait"))
+    alert.addButton(withTitle: MenuTranslator.text("Quit Without Saving"))
     if isSaving { phase = .saving(wait: nil, lateAlert: alert) }
     let response = alert.runModal()
     if case .saving(let wait, let shown) = phase, shown === alert { phase = .saving(wait: wait, lateAlert: nil) }
@@ -85,12 +85,12 @@ final class QuitFlow {
     let count = MenuState.current.downloadsInProgress
     guard count > 0 else { return true }
     let alert = NSAlert()
-    alert.messageText = "Are you sure you want to quit \(ProcessInfo.processInfo.processName)?"
+    alert.messageText = MenuTranslator.format("Are you sure you want to quit {name}?", ["name": ProcessInfo.processInfo.processName])
     alert.informativeText = count == 1
-      ? "You have 1 download in progress. If you quit now, this download will be cancelled."
-      : "You have \(count) downloads in progress. If you quit now, these downloads will be cancelled."
-    alert.addButton(withTitle: "Quit")
-    alert.addButton(withTitle: "Cancel")
+      ? MenuTranslator.text("You have 1 download in progress. If you quit now, this download will be cancelled.")
+      : MenuTranslator.format("You have {count} downloads in progress. If you quit now, these downloads will be cancelled.", ["count": String(count)])
+    alert.addButton(withTitle: MenuTranslator.text("Quit"))
+    alert.addButton(withTitle: MenuTranslator.text("Cancel"))
     return alert.runModal() == .alertFirstButtonReturn
   }
 

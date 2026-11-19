@@ -79,14 +79,14 @@ final class MenuTarget: NSObject, NSMenuItemValidation {
     }
     if menuItem.action == Self.undoAction {
       let reopens = Self.undoReopensClosedTab
-      let title = reopens ? "Undo Close Tab" : (menuItem as? StandardItem)?.defaultTitle ?? menuItem.title
+      let title = reopens ? MenuTranslator.text("Undo Close Tab") : (menuItem as? StandardItem)?.defaultTitle ?? menuItem.title
       if menuItem.title != title { menuItem.title = title }
       return reopens || Self.validateForwarded(menuItem, Self.undoAction)
     }
     guard let item = menuItem as? CommandItem else { return true }
     let state = MenuState.current
     if item.tracksChecked { item.state = state.checked.contains(item.stateKey) ? .on : .off }
-    let title = state.titles[item.stateKey] ?? item.defaultTitle
+    let title = MenuTranslator.text(state.titles[item.stateKey] ?? item.defaultTitle)
     if item.title != title { item.title = title }
     if item.keyEquivalent == "\r", NSApp.keyWindow?.firstResponder is NSText { return false }
     if MainMenu.movesCaret(item), NSApp.currentEvent?.type == .keyDown, MainMenu.editsText(NSApp.keyWindow?.firstResponder) { return false }

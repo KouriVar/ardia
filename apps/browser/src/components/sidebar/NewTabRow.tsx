@@ -13,6 +13,7 @@ import { modifiersOf } from "../../lib/keys";
 import { useClipped, useShift, type ClipSource } from "./EntryMotion";
 import { TAB_ROW, useSidebarTokens } from "./tokens";
 import { SidebarRowLabel } from "./SidebarRow";
+import { useTranslate } from "../ui/Translate";
 
 const CLIPPED = { marginTop: -layout.rowGap, paddingTop: layout.rowGap, overflow: "hidden" } as const;
 const NEW_TAB_LABEL_X = 30;
@@ -25,6 +26,7 @@ const MEASURE_OFFSCREEN = { position: "absolute", width: 1000, height: 0, overfl
 
 export const NewTabRow = memo(function NewTabRow({ windowId, shift = null, clip = null }: { windowId: string; shift?: Animated.Value | null; clip?: ClipSource | null }) {
   const theme = useTheme();
+  const t = useTranslate();
   const tokens = useSidebarTokens();
   const cleaned = useCleanedCount(windowId);
   const { hovered, hoverProps } = useHover();
@@ -36,13 +38,13 @@ export const NewTabRow = memo(function NewTabRow({ windowId, shift = null, clip 
     const width = Math.ceil(e.nativeEvent.layout.width);
     setWidths((w) => (w[key] === width ? w : { ...w, [key]: width }));
   };
-  const hint = `${cleaned} cleaned`;
+  const hint = t("{count} cleaned", { count: cleaned });
   const hintFits = widths.hint > 0 && NEW_TAB_LABEL_X + widths.label + CLEANED_HINT_GAP + widths.hint <= widths.row - CLEANED_HINT_RIGHT;
   return (
     <View {...hoverProps} onLayout={measure("row")} style={[{ flexDirection: "row", alignItems: "center" }, clipped ? CLIPPED : null]}>
       <View pointerEvents="none" style={MEASURE_OFFSCREEN}>
         <Text lines={1} style={MEASURE_TEXT} onLayout={measure("label")}>
-          New Tab
+          {t("New Tab")}
         </Text>
         {cleaned > 0 ? (
           <Text lines={1} size="caption" style={MEASURE_TEXT} onLayout={measure("hint")}>
@@ -76,7 +78,7 @@ export const NewTabRow = memo(function NewTabRow({ windowId, shift = null, clip 
               ]}
             >
               <Symbol name="plus" size={13} weight="medium" color={tokens.newTabIcon} style={{ width: 16, height: 16 }} />
-              <SidebarRowLabel text="New Tab" color={tokens.newTabLabel} />
+              <SidebarRowLabel text={t("New Tab")} color={tokens.newTabLabel} />
             </View>
           )}
         </Pressable>

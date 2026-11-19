@@ -31,6 +31,7 @@ import { useSidebarWidth } from "../../state/sidebar/hooks";
 import { TabIcon } from "./TabIcon";
 import { HoverPlayer, useShowsMiniPlayer } from "../media/HoverPlayer";
 import { useMedia, usePictureInPicture } from "../../state/media/media";
+import { useTranslate } from "../ui/Translate";
 
 const WIDTH = 264;
 
@@ -78,6 +79,7 @@ function Card({ anchor, children }: { anchor: Anchor; children: React.ReactNode 
 }
 
 function TabCard({ tabId, windowId, anchor }: { tabId: string; windowId: string; anchor: Anchor }) {
+  const t = useTranslate();
   const tab = useTab(tabId);
   const isActive = useIsShownTab(windowId, tabId);
   const bookmarked = useIsBookmarked(tab?.url ?? "");
@@ -91,34 +93,34 @@ function TabCard({ tabId, windowId, anchor }: { tabId: string; windowId: string;
       <TabCardSummary tab={tab} />
       {away && tab.pinnedUrl ? (
         <Text lines={1} size="caption" tone="textTertiary" style={PINNED_LINE}>
-          Pinned: {displayUrl(tab.pinnedUrl)}
+          {t("Pinned:")} {displayUrl(tab.pinnedUrl)}
         </Text>
       ) : null}
       <View style={{ flexDirection: "row", gap: space.xs, marginTop: space.m }}>
-        <ActionTile caption icon={tab.pin ? "pin.slash" : "pin"} label={tab.pin ? "Unpin" : "Pin"} onPress={() => togglePin(tabId)} />
+        <ActionTile caption icon={tab.pin ? "pin.slash" : "pin"} label={t(tab.pin ? "Unpin" : "Pin")} onPress={() => togglePin(tabId)} />
         {tab.url && showBookmarks ? (
           <ActionTile caption
             icon={bookmarked ? "bookmark.fill" : "bookmark"}
             active={bookmarked}
-            label="Bookmark"
+            label={t("Bookmark")}
             onPress={() => toggleBookmarkInWindow(windowId, { url: tab.url, title: tabTitle(tab), favicon: tab.favicon })}
           />
         ) : null}
         {!isActive && !tab.pin ? (
           <ActionTile caption
             icon="rectangle.split.2x1"
-            label="Split"
+            label={t("Split")}
             onPress={() => {
               dismissHover();
               openInSplit(tabId);
             }}
           />
         ) : null}
-        {video ? <ActionTile caption icon={pip ? "pip.exit" : "pip.enter"} label={pip ? "Exit PiP" : "PiP"} onPress={togglePip} /> : null}
+        {video ? <ActionTile caption icon={pip ? "pip.exit" : "pip.enter"} label={t(pip ? "Exit PiP" : "PiP")} onPress={togglePip} /> : null}
         {away ? (
           <ActionTile caption
             icon="arrow.uturn.backward"
-            label="Reset"
+            label={t("Reset")}
             onPress={() => {
               dismissHover();
               returnToPinnedUrl(tabId);
@@ -136,6 +138,7 @@ const MORE_LINE = { marginTop: space.xs, marginLeft: space.xs } as const;
 const PEEK_ROWS = 8;
 
 function FolderPeek({ folderId, windowId, anchor }: { folderId: string; windowId: string; anchor: Anchor }) {
+  const t = useTranslate();
   const members = useTileFolderMembers(windowId, folderId);
   const label = useTileFolderLabel(windowId, folderId);
   const open = useFolderPanel((u) => u.open?.windowId === windowId && u.open.folderId === folderId);
@@ -149,7 +152,7 @@ function FolderPeek({ folderId, windowId, anchor }: { folderId: string; windowId
       ))}
       {more > 0 ? (
         <Text size="caption" tone="textTertiary" style={MORE_LINE}>
-          and {more} more
+          {t("and {count} more", { count: more })}
         </Text>
       ) : null}
     </Card>

@@ -13,6 +13,7 @@ import { useAddressBarInSidebar } from "../../state/windows/layout";
 import { useToolbarRow } from "../toolbar/useToolbarRow";
 import { SIDEBAR_HEADER_WITH_FIELD } from "../sidebar/geometry";
 import { useCardFrame } from "../window/cardFrame";
+import { useTranslate } from "../ui/Translate";
 
 export function BookmarkDialog() {
   const windowId = useWindowId();
@@ -22,6 +23,7 @@ export function BookmarkDialog() {
 }
 
 function DialogPanel({ state }: { state: BookmarkDialogState }) {
+  const t = useTranslate();
   const addressBar = useAddressBarInSidebar();
   const sidebarRight = useSidebarSide(state.windowId) === "right";
   const sidebarOpen = useSidebarOpen();
@@ -65,7 +67,7 @@ function DialogPanel({ state }: { state: BookmarkDialogState }) {
     setFolderId(id);
   };
 
-  const heading = state.kind === "allTabs" ? `Bookmark ${state.tabs.length} Tabs` : "Bookmark Added";
+  const heading = state.kind === "allTabs" ? t("Bookmark {count} Tabs", { count: state.tabs.length }) : t("Bookmark Added");
 
   return (
     <Dialog

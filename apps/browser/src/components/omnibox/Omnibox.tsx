@@ -27,6 +27,7 @@ import { AddChip } from "./AddChip";
 import { INCOGNITO_ICON } from "../ntp/IncognitoHeading";
 import { BarField } from "./BarField";
 import { destinationLabel } from "./GoButton";
+import { currentT } from "../../state/i18n";
 import { BottomRow, DropdownFrame, PanelFrame } from "./OmniboxFrame";
 import { ScopePulse } from "./ScopePulse";
 import { barKeyDown, barKeyDownEvents, type BarKeyEvent } from "./omniboxKeys";
@@ -336,7 +337,7 @@ export function Omnibox({
     <SuggestionList
       items={items}
       selectedIndex={selectedIndex}
-      trailing={tabScope ? `Search ${tabScope.name}  ⇥` : null}
+      trailing={tabScope ? `${currentT()("Search {name}", { name: tabScope.name })}  ⇥` : null}
       dropdown={dropdown}
       actions={rowActions}
     />

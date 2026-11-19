@@ -11,6 +11,7 @@ import { Box, Button, DialogActions, DialogTitle, Divider, Dot, Group, PROFILE_C
 import { profileColors, SHARE_ROW_HEIGHT } from "./tokens";
 import { ThemeSwatches } from "../settings/ThemeEditor";
 import { closeSettingsSheet, showSettingsSheet } from "../../state/settings/sheet";
+import { useTranslate } from "../ui/Translate";
 
 useCreateProfileRequest.subscribe((s, prev) => {
   if (!s.sheet || s.sheet === prev.sheet) return;
@@ -33,6 +34,7 @@ export function CreateProfileHost() {
 
 function CreateProfileSheet({ windowId, preset, onDone }: { windowId: string | null; preset: CreateProfilePreset; onDone: (id: string | null) => void }) {
   const theme = useTheme();
+  const t = useTranslate();
   const profiles = useProfileRecords();
   const profileOrder = useProfileOrder();
   const groups = useMemo(() => dataGroups({ profiles, profileOrder }), [profiles, profileOrder]);
@@ -59,12 +61,12 @@ function CreateProfileSheet({ windowId, preset, onDone }: { windowId: string | n
         </Box>
         <Group>
           <Row
-            title={single ? "Share data with current profile" : "Share data with another profile"}
+            title={t(single ? "Share data with current profile" : "Share data with another profile")}
             description={
               share
                 ? single
-                  ? "This profile will share your cookies, logins, passwords, extensions, bookmarks and history with your current profile. Tabs stay separate."
-                  : "This profile will share your cookies, logins, passwords, extensions, bookmarks and history with another profile you choose. Tabs stay separate."
+                  ? t("This profile will share your cookies, logins, passwords, extensions, bookmarks and history with your current profile. Tabs stay separate.")
+                  : t("This profile will share your cookies, logins, passwords, extensions, bookmarks and history with another profile you choose. Tabs stay separate.")
                 : undefined
             }
           >

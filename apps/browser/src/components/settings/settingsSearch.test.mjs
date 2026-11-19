@@ -1,11 +1,34 @@
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import { test } from "node:test";
-import { editDistance, search, snippetAround, splitByRanges } from "./searchMatch.ts";
-import { ADVANCED_PANES, SETTINGS, SETTINGS_INDEX } from "./settingsIndex.ts";
+import { editDistance, prepare, search, snippetAround, splitByRanges } from "./searchMatch.ts";
+import { ADVANCED_PANES, SETTINGS, SETTINGS_INDEX, localizedIndex } from "./settingsIndex.ts";
 
 const ids = (query) => search(SETTINGS_INDEX, query).map((h) => h.entry.id);
 const first = (query) => ids(query)[0];
+
+test("Chinese queries find localized settings and highlight the matching text", () => {
+  const index = localizedIndex("zh-Hans");
+  const found = (query) => search(index, query).map((hit) => hit.entry.id);
+  assert.ok(found("默认浏览器").includes("general.defaultBrowser"));
+  assert.ok(found("语言").includes("general.language"));
+  assert.ok(found("下载").includes("general.downloadsFolder"));
+  assert.ok(found("外观").some((id) => id.startsWith("appearance.")));
+  const hit = search(index, "浏览器").find((item) => item.entry.id === "general.defaultBrowser");
+  assert.ok(hit);
+  assert.ok(splitByRanges(hit.entry.title, hit.title).some((part) => part.highlighted && part.text === "浏览器"));
+});
+
+test("short Chinese substrings match inside titles and descriptions", () => {
+  const entry = { id: "fixture", pane: "general", paneTitle: "常规", section: "文件管理", title: "浏览器启动时", description: "下载完成后显示通知" };
+  const index = prepare([entry]);
+  const [title] = search(index, "启动");
+  assert.equal(title?.entry.id, entry.id);
+  assert.deepEqual(title.title, [{ start: 3, end: 5 }]);
+  const [description] = search(index, "通知");
+  assert.equal(description?.entry.id, entry.id);
+  assert.deepEqual(description.note, { text: entry.description, ranges: [{ start: 7, end: 9 }] });
+});
 
 const TOP = [
   ["cli", ["advanced.cliInstall"]],

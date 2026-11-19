@@ -32,6 +32,7 @@ import { useDownloads, useSidebarOpen, useSidebarSide, useWindowId, useWindowUi 
 import { clearDownloads, setDownloadsOpen } from "../../state/windows/actions";
 import { watchNewDownloads } from "../../state/windows/downloadWatch";
 import { useDownload } from "../../state/windows/hooks";
+import { useTranslate } from "../ui/Translate";
 import { useAddressBarInSidebar, useTabLayout, useToolbarLightsCenter } from "../../state/windows/layout";
 import { SIDEBAR_FOOTER_DOWNLOADS } from "../sidebar/geometry";
 import { PROFILE_DOTS_HEIGHT } from "../profiles/ProfileDots";
@@ -79,6 +80,7 @@ export function DownloadsPopover() {
 }
 
 function DownloadsPanel({ windowId, closing, onClosed }: { windowId: string; closing: boolean; onClosed: () => void }) {
+  const t = useTranslate();
   const liveIds = useDownloads(windowId, useShallow((list) => list.map((d) => d.id)));
   const liveClearable = useDownloads(windowId, (list) => list.some((d) => d.state !== "downloading"));
   const shownList = useRef({ ids: liveIds, clearable: liveClearable });
@@ -116,7 +118,7 @@ function DownloadsPanel({ windowId, closing, onClosed }: { windowId: string; clo
           <View style={{ marginTop: upward ? 0 : arrowRoom, marginBottom: upward ? arrowRoom : 0, paddingTop: L.padTop, paddingBottom: L.padBottom }}>
             <View style={{ flexDirection: "row", alignItems: "center", paddingLeft: PANEL.inset, paddingRight: PANEL.inset - L.textButtonPad, height: L.header }}>
               <Text size="caption" weight="semibold" tone="textSecondary" style={{ flex: 1, letterSpacing: L.headerTracking }}>
-                RECENT DOWNLOADS
+                {t("RECENT DOWNLOADS")}
               </Text>
               {clearable && (
                 <Button
@@ -132,7 +134,7 @@ function DownloadsPanel({ windowId, closing, onClosed }: { windowId: string; clo
             </View>
             {ids.length === 0 ? (
               <View style={{ height: PANEL.rowHeight, paddingHorizontal: PANEL.inset, justifyContent: "center" }}>
-                <Text tone="textSecondary">No downloads yet</Text>
+                <Text tone="textSecondary">{t("No downloads yet")}</Text>
               </View>
             ) : (
               <ScrollView style={{ maxHeight: listMax }} showsVerticalScrollIndicator={ids.length * L.row > listMax} contentContainerStyle={{ paddingHorizontal: PANEL.rowInset }}>

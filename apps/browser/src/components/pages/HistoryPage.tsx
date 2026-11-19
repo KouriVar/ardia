@@ -1,3 +1,4 @@
+import { useTranslate } from "../ui/Translate";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { View } from "react-native";
 import { useTab, useWindow } from "../../state/browser/hooks";
@@ -14,6 +15,7 @@ import { hostLabel, PageHeader } from "./PageLayout";
 
 
 export function HistoryPage({ tabId, profileId, initialQuery }: { tabId: string; profileId: string; initialQuery: string }) {
+  const t = useTranslate();
   const windowId = useTab(tabId, (t) => t?.windowId ?? "");
   const history = useProfileHistory(profileId);
   const [query, setQuery] = useState(initialQuery);
@@ -75,7 +77,7 @@ export function HistoryPage({ tabId, profileId, initialQuery }: { tabId: string;
   const actions =
     selected.size > 0 ? (
       <>
-        <Text size="small" tone="textSecondary">{`${selected.size} selected`}</Text>
+        <Text size="small" tone="textSecondary">{t("{count} selected", { count: selected.size })}</Text>
         <Button title="Cancel" onPress={() => setSelected(new Set())} />
         <Button title="Delete" kind="primary" onPress={() => void deleteSelected()} />
       </>
@@ -85,11 +87,11 @@ export function HistoryPage({ tabId, profileId, initialQuery }: { tabId: string;
 
   return (
     <View style={{ flex: 1 }}>
-      <PageHeader title="History" query={query} onQuery={setQuery} actions={actions} />
+      <PageHeader title={t("History")} query={query} onQuery={setQuery} actions={actions} />
       {layout.rows.length === 0 ? (
         <EmptyState
           symbol="clock"
-          title={query ? "No search results found" : "Your browsing history appears here"}
+          title={query ? t("No search results found") : t("Your browsing history appears here")}
         />
       ) : (
         <HistoryList

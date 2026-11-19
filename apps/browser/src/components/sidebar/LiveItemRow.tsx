@@ -23,10 +23,12 @@ import { TabIcon } from "./TabIcon";
 import { SIDEBAR_MOTION, sidebarTokens, TAB_ROW } from "./tokens";
 import { useSidebarRowLook } from "./rowLook";
 import { SidebarRowLabel, SidebarRowSurface } from "./SidebarRow";
+import { useTranslate } from "../ui/Translate";
 
 const liveRowKey = (folderId: string, itemId: string) => `live|${folderId}|${itemId}`;
 
 export function LiveItemRow({ folderId, item, windowId, inStack = false }: { folderId: string; item: LiveItem; windowId: string; inStack?: boolean }) {
+  const t = useTranslate();
   const indent = inStack ? STACK_INDENT : 0;
   const theme = useTheme();
   const { closeTabHint: closeHint, backToPinHint } = useSidebarRowLook();
@@ -75,9 +77,9 @@ export function LiveItemRow({ folderId, item, windowId, inStack = false }: { fol
                   {resettable ? (
                     <Pressable
                       onPress={() => tabId && returnLiveTab(tabId)}
-                      tooltip={withShortcut("Back to Pinned URL", backToPinHint)}
+                      tooltip={withShortcut(t("Back to Pinned URL"), backToPinHint)}
                       accessibilityRole="button"
-                      accessibilityLabel="Back to Pinned URL"
+                      accessibilityLabel={t("Back to Pinned URL")}
                     >
                       {resetting ? (
                         <Symbol name="arrow.uturn.backward" size={11} weight="semibold" color={active ? theme.rowSelectedText : theme.textTab} style={{ width: 16, height: 16 }} />
@@ -90,7 +92,7 @@ export function LiveItemRow({ folderId, item, windowId, inStack = false }: { fol
                   )}
                 </View>
                 <SidebarRowLabel
-                  text={resetting ? "Back to Pinned URL" : item.title}
+                  text={resetting ? t("Back to Pinned URL") : item.title}
                   weight={unread ? "medium" : undefined}
                   color={active ? theme.rowSelectedText : completion ? theme.textSecondary : theme.textTab}
                 />
@@ -98,7 +100,7 @@ export function LiveItemRow({ folderId, item, windowId, inStack = false }: { fol
                 <HoverSlot
                   hovered={hovered && !!tabId && !completion}
                   reserve={inStack && item.pr?.stack ? "always" : "hover"}
-                  hover={<Button variant="icon" icon="xmark" size="s" weight="semibold" onPress={() => tabId && void closeTab(tabId)} tooltip={withShortcut("Close Tab", closeHint)} />}
+                  hover={<Button variant="icon" icon="xmark" size="s" weight="semibold" onPress={() => tabId && void closeTab(tabId)} tooltip={withShortcut(t("Close Tab"), closeHint)} />}
                 >
                   <Trailing item={item} completion={completion} colors={colors} />
                 </HoverSlot>
@@ -164,10 +166,11 @@ const COMPLETION_LABEL = { marginRight: space.xs } as const;
 
 function Trailing({ item, completion, colors }: { item: LiveItem; completion: CompletedItem["state"] | null; colors: LiveColors }): ReactNode {
   const theme = useTheme();
+  const t = useTranslate();
   if (completion) {
     return (
       <Text size="caption" weight="medium" color={colors[COMPLETION_GLYPH[completion].color]} style={COMPLETION_LABEL}>
-        {completion === "merged" ? "Merged" : completion === "reviewed" ? "Reviewed" : "Closed"}
+        {t(completion === "merged" ? "Merged" : completion === "reviewed" ? "Reviewed" : "Closed")}
       </Text>
     );
   }
@@ -175,7 +178,7 @@ function Trailing({ item, completion, colors }: { item: LiveItem; completion: Co
   if (!badge) return null;
   const spec = BADGES[badge];
   return (
-    <View tooltip={spec.tip} style={{ width: TAB_ROW.closeSlot, height: TAB_ROW.closeSlot, alignItems: "center", justifyContent: "center" }}>
+    <View tooltip={t(spec.tip)} style={{ width: TAB_ROW.closeSlot, height: TAB_ROW.closeSlot, alignItems: "center", justifyContent: "center" }}>
       {spec.symbol ? (
         <Symbol name={spec.symbol} size={11} weight="semibold" color={colors[spec.color]} style={{ width: 16, height: 16 }} />
       ) : (

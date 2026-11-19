@@ -4,6 +4,7 @@ import { activeTab, isIncognitoProfile, viewTabIds } from "../browser/model";
 import { hiddenEmptyCard } from "../omnibox/newTabBarPolicy";
 import { isStacked, MAX_SPLIT_PANES, splitOf, splitTabIds, splitTabIdsOf } from "../splits/splits";
 import type { SplitView, Tab } from "../browser/types";
+import { currentT } from "../i18n";
 
 export type OrganizeContext = { s: BrowserState; windowId: string; tab: Tab; split: SplitView | undefined };
 
@@ -129,11 +130,12 @@ function contextFor(s: BrowserState, windowId: string): OrganizeContext | null {
 }
 
 export function organizeActions(s: BrowserState, windowId: string): CommandAction[] {
+  const t = currentT();
   const c = contextFor(s, windowId);
   if (!c) return [];
   const out: CommandAction[] = DEFS.filter((d) => d.shows(c)).map((d) => ({
     id: d.id,
-    title: typeof d.title === "string" ? d.title : d.title(c),
+    title: t(typeof d.title === "string" ? d.title : d.title(c)),
     icon: d.icon,
     keywords: d.keywords,
   }));
@@ -141,9 +143,9 @@ export function organizeActions(s: BrowserState, windowId: string): CommandActio
     for (const id of s.profileOrder) {
       if (id === c.tab.profileId) continue;
       const name = s.profiles[id]?.name ?? "";
-      out.push({ id: `moveTabToProfile:${id}`, title: `Move Tab to ${name}`, icon: "arrow.right.circle", keywords: [name, "move tab", "move to profile", "move to space"] });
+      out.push({ id: `moveTabToProfile:${id}`, title: t("Move Tab to {name}", { name }), icon: "arrow.right.circle", keywords: [name, "move tab", "move to profile", "move to space"] });
     }
-    out.push({ id: "moveTabToProfile:new", title: "Move Tab to New Profile", icon: "person.crop.circle.badge.plus", keywords: ["move tab", "new profile", "new space"] });
+    out.push({ id: "moveTabToProfile:new", title: t("Move Tab to New Profile"), icon: "person.crop.circle.badge.plus", keywords: ["move tab", "new profile", "new space"] });
   }
   return out;
 }

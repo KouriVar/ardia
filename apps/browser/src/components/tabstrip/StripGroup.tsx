@@ -9,6 +9,7 @@ import { moveInGroup, tuckGroup, useHasTuckTarget } from "../../state/tabs/topSt
 import { groupTint, useSidebarTokens } from "../sidebar/tokens";
 import { Button, ContextMenuArea, Divider, useHover } from "../ui";
 import { useTheme } from "../ui/theme";
+import { useTranslate } from "../ui/Translate";
 import { font, ink, weight, withAlpha } from "../ui/tokens";
 import { GroupMember, StripGroupIcon } from "./GroupMember";
 import { useOnto } from "./model";
@@ -40,6 +41,7 @@ export function StripGroup({
   folderMeasured: (groupId: string) => boolean;
 }) {
   const theme = useTheme();
+  const t = useTranslate();
   const tokens = useSidebarTokens();
   const windowId = useWindowId();
   const profileId = usePageProfileId();
@@ -148,7 +150,7 @@ export function StripGroup({
         {...hoverProps}
         {...drag.panHandlers}
         mouseDownCanMoveWindow={false}
-        tooltip={expanded ? "Collapse Group" : "Expand Group"}
+        tooltip={t(expanded ? "Collapse Group" : "Expand Group")}
         onLayout={(e) => onChipWidth(Math.ceil(e.nativeEvent.layout.width * 2) / 2)}
         style={{ position: "absolute", left: 0, top: ITEM_TOP, height: ITEM_HEIGHT }}
       >
@@ -159,7 +161,7 @@ export function StripGroup({
           >
             <StripGroupIcon icon={group.icon} tint={tint} />
             <Text numberOfLines={1} style={{ marginLeft: GROUP_TITLE_GAP, maxWidth: GROUP_TITLE_MAX, fontSize: font.small.fontSize, fontWeight: weight.semibold, color: tint ?? (shown >= 0 ? theme.textPrimary : theme.textTab) }}>
-              {group.name || `${group.tabIds.length} ${group.tabIds.length === 1 ? "Tab" : "Tabs"}`}
+              {group.name || t("{count} Tabs", { count: group.tabIds.length })}
             </Text>
           </Pressable>
         </ContextMenuArea>

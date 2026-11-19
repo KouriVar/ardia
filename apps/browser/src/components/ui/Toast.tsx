@@ -6,6 +6,7 @@ import { Symbol } from "./native";
 import { Panel } from "./Panel";
 import { Text } from "./Text";
 import { useTheme } from "./theme";
+import { useTranslate } from "./Translate";
 import { radius, shadow, space, toastLayout } from "./tokens";
 
 const DOCK = { position: "absolute", left: 0, right: 0, bottom: toastLayout.bottom, alignItems: "center" } as const;
@@ -31,6 +32,7 @@ export function Toast({
   onClosed?: () => void;
 }) {
   const theme = useTheme();
+  const t = useTranslate();
   const appear = useRef(new Animated.Value(0)).current;
   const closed = useRef(onClosed);
   closed.current = onClosed;
@@ -52,10 +54,10 @@ export function Toast({
         <Panel fill={theme.toastFill} border={theme.popoverBorder} radius={radius.panel} shadow={shadow.card} material="hudWindow" style={BODY}>
           {icon ? <Symbol name={icon} size={15} color={theme.icon} style={ICON} /> : null}
           <View style={TEXT}>
-            <Text weight="semibold">{title}</Text>
+            <Text weight="semibold">{t(title)}</Text>
             {message ? (
               <Text size="small" tone="textSecondary">
-                {message}
+                {t(message)}
               </Text>
             ) : null}
           </View>

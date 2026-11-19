@@ -1,5 +1,6 @@
 import type { Download } from "./actions";
 import { awaitsKeep } from "./downloadMenu";
+import { currentT } from "../i18n";
 
 function formatBytes(n: number) {
   if (n < 0) return "";
@@ -13,23 +14,26 @@ function formatBytes(n: number) {
 }
 
 function formatDuration(seconds: number) {
-  if (seconds < 60) return `${Math.max(1, Math.round(seconds))} sec left`;
-  if (seconds < 3600) return `${Math.round(seconds / 60)} min left`;
-  return `${Math.round(seconds / 3600)} hr left`;
+  const t = currentT();
+  if (seconds < 60) return t("{count} sec left", { count: Math.max(1, Math.round(seconds)) });
+  if (seconds < 3600) return t("{count} min left", { count: Math.round(seconds / 60) });
+  return t("{count} hr left", { count: Math.round(seconds / 3600) });
 }
 
 export function dangerWarning(d: Download, short = false) {
-  if (d.url.startsWith("http:")) return short ? "Blocked: not secure" : "Insecure download blocked";
-  return short ? "Blocked: unsafe file type" : "This type of file can harm your computer";
+  const t = currentT();
+  if (d.url.startsWith("http:")) return t(short ? "Blocked: not secure" : "Insecure download blocked");
+  return t(short ? "Blocked: unsafe file type" : "This type of file can harm your computer");
 }
 
 export function downloadStatus(d: Download, exists = true) {
-  if (d.state === "finished") return exists ? formatBytes(d.total > 0 ? d.total : d.received) : "Deleted";
-  if (d.state === "failed") return "Failed to Download";
-  if (d.state === "cancelled") return "Cancelled";
+  const t = currentT();
+  if (d.state === "finished") return exists ? formatBytes(d.total > 0 ? d.total : d.received) : t("Deleted");
+  if (d.state === "failed") return t("Failed to Download");
+  if (d.state === "cancelled") return t("Cancelled");
   if (awaitsKeep(d)) return dangerWarning(d);
   const progress = d.total > 0 ? `${formatBytes(d.received)} of ${formatBytes(d.total)}` : formatBytes(d.received);
-  if (d.paused) return `${progress} — Paused`;
-  if (d.speed > 0 && d.total > 0) return `${progress}, ${formatBytes(d.speed)}/s — ${formatDuration((d.total - d.received) / d.speed)}`;
+  if (d.paused) return t("{progress} — Paused", { progress });
+  if (d.speed > 0 && d.total > 0) return t("{progress}, {speed}/s — {time}", { progress, speed: formatBytes(d.speed), time: formatDuration((d.total - d.received) / d.speed) });
   return progress;
 }

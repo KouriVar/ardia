@@ -11,6 +11,7 @@ import { Fold, useFold } from "./Fold";
 import { COMPLETION_GLYPH } from "./LiveItemRow";
 import { SidebarListRow, SidebarRowLabel } from "./SidebarRow";
 import { TAB_ROW } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 const LABEL = { marginLeft: TAB_ROW.titleGap } as const;
 const DONE_ROW = { opacity: 0.75 } as const;
@@ -31,6 +32,7 @@ export function useCompletedShown(folderId: string): CompletedItem[] {
 
 export function CompletedFooter({ folderId, windowId }: { folderId: string; windowId: string }) {
   const theme = useTheme();
+  const t = useTranslate();
   const colors = useLiveColors();
   const shown = useCompletedShown(folderId);
   const [open, setOpen] = useState(false);
@@ -50,7 +52,7 @@ export function CompletedFooter({ folderId, windowId }: { folderId: string; wind
       <SidebarListRow height={24} fill={open ? theme.rowHover : undefined}>
         <Symbol name="checkmark.circle" size={11} color={theme.textSecondary} style={{ width: 16, height: 16 }} />
         <Text size="small" tone="textSecondary" style={LABEL}>
-          {shown.length} Completed
+          {t("{count} Completed", { count: shown.length })}
         </Text>
       </SidebarListRow>
       <Fold

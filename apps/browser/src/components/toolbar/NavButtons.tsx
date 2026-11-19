@@ -14,6 +14,7 @@ import type { ToolbarPalette } from "../ui/toolbarColors";
 import { useShortcutHint, withShortcut } from "../../state/commands/commandShortcuts";
 import { GLYPH, RELOAD_BUTTON_MOTION } from "./tokens";
 import { showReloadMenu } from "../../state/site/reloadMenu";
+import { useTranslate } from "../ui/Translate";
 
 const ICON_CENTER = { width: GLYPH, height: GLYPH, alignItems: "center" as const, justifyContent: "center" as const };
 const ICON_LAYER = { ...ICON_CENTER, position: "absolute" as const };

@@ -28,6 +28,7 @@ import { TAB_ROW, useSidebarTokens } from "./tokens";
 import { useSidebarRowLook } from "./rowLook";
 import { ROW_TITLE_FRAME, SidebarRowLabel, SidebarRowSurface } from "./SidebarRow";
 import { AwayTitleLabel } from "./AwayTitle";
+import { useTranslate } from "../ui/Translate";
 import { withShortcut } from "../../state/commands/commandShortcuts";
 import { TabPressArea } from "./TabPressArea";
 import { entryKey } from "../../state/sidebar/entryKey";
@@ -67,6 +68,7 @@ export const TabRow = memo(function TabRow({
   const windowId = useWindowId();
   const { tab, flags } = useRowState(tabId, windowId);
   const active = !!(flags & ACTIVE);
+  const t = useTranslate();
   const selected = !!(flags & SELECTED);
   const playingAudio = !!(flags & PLAYING);
   const mute = mutedBy(flags);
@@ -84,7 +86,7 @@ export const TabRow = memo(function TabRow({
   if (!tab) return null;
   const resettable = (isPinnedRow(tab) || !tab.pin) && awayFromPin(tab);
   const resetting = resettable && backToPin.hovered && !renaming;
-  const title = resetting ? "Back to Pinned URL" : tab.customTitle ? tabTitle(tab) : titleWithoutUnread(tabTitle(tab), unread);
+  const title = resetting ? t("Back to Pinned URL") : tab.customTitle ? tabTitle(tab) : titleWithoutUnread(tabTitle(tab), unread);
   const away = resettable && !resetting ? awayTitle(tab) : null;
   const fill = active ? theme.tabSelected : selected ? tokens.multiSelected : hovered ? theme.tabHover : ink.clear;
   const border = active || selected ? 0.5 : 0;
@@ -109,7 +111,7 @@ export const TabRow = memo(function TabRow({
           >
             <View {...backToPin.hoverProps}>
               {resettable ? (
-                <Pressable onPress={() => returnToPinnedUrl(tab.id)} tooltip={withShortcut("Back to Pinned URL", backToPinHint)}>
+                <Pressable onPress={() => returnToPinnedUrl(tab.id)} tooltip={withShortcut(t("Back to Pinned URL"), backToPinHint)}>
                   {resetting ? (
                     <View style={{ width: 16, height: 16, alignItems: "center", justifyContent: "center" }}>
                       <Symbol name="arrow.uturn.backward" size={11} weight="semibold" color={active ? theme.rowSelectedText : theme.textTab} style={{ width: 16, height: 16 }} />
@@ -129,19 +131,19 @@ export const TabRow = memo(function TabRow({
               )}
             </View>
             {pip && (
-              <Pressable onPress={togglePip} style={{ marginLeft: space.s }} tooltip="Exit Picture in Picture">
+              <Pressable onPress={togglePip} style={{ marginLeft: space.s }} tooltip={t("Exit Picture in Picture")}>
                 <Symbol name="pip" size={12} color={theme.textTab} style={{ width: 18, height: 16 }} />
               </Pressable>
             )}
             {(playingAudio || mute) && (
-              <Pressable onPress={() => toggleMute(tab.id)} style={{ marginLeft: space.s }} tooltip={muteTitle(mute)}>
+              <Pressable onPress={() => toggleMute(tab.id)} style={{ marginLeft: space.s }} tooltip={t(muteTitle(mute))}>
                 <Symbol name={mute ? "speaker.slash" : "speaker.wave.2"} size={12} color={theme.textTab} style={{ width: 18, height: 16 }} />
               </Pressable>
             )}
             {renaming ? (
               <RenameField
                 initial={tab.customTitle ?? tab.title}
-                placeholder={tab.title || "Tab name"}
+                placeholder={tab.title || t("Tab name")}
                 color={active ? theme.rowSelectedText : theme.textPrimary}
                 onDone={(text) => (text === null ? endRename({ kind: "tab", id: tabId }) : commitRename({ kind: "tab", id: tabId }, text))}
               />

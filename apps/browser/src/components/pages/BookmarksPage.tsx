@@ -1,3 +1,4 @@
+import { useTranslate } from "../ui/Translate";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { type LayoutChangeEvent, type NativeScrollEvent, type NativeSyntheticEvent, ScrollView, View } from "react-native";
 import { folderChildren, type RemovedBookmarks } from "../../state/bookmarks/bookmarks";
@@ -22,6 +23,7 @@ type Drop = { into: string } | { parentId: string; index: number };
 
 export function BookmarksPage({ tabId, profileId }: { tabId: string; profileId: string }) {
   const theme = useTheme();
+  const t = useTranslate();
   const colors = pagesColors(theme);
   const windowId = useTab(tabId, (t) => t?.windowId ?? "");
   const roots = useBookmarkRoots(profileId);
@@ -120,7 +122,7 @@ export function BookmarksPage({ tabId, profileId }: { tabId: string; profileId: 
   const actions =
     selected.length > 0 ? (
       <>
-        <Text size="small" tone="textSecondary">{`${selected.length} selected`}</Text>
+        <Text size="small" tone="textSecondary">{t("{count} selected", { count: selected.length })}</Text>
         <Button title="Delete" kind="primary" onPress={() => remove(selected)} />
       </>
     ) : (
@@ -131,7 +133,7 @@ export function BookmarksPage({ tabId, profileId }: { tabId: string; profileId: 
 
   return (
     <View style={{ flex: 1 }}>
-      <PageHeader title="Bookmarks" query={query} onQuery={setQuery} actions={actions} />
+      <PageHeader title={t("Bookmarks")} query={query} onQuery={setQuery} actions={actions} />
       <View style={BODY}>
         <ScrollView style={TREE} contentContainerStyle={TREE_CONTENT}>
           <FolderTree
@@ -155,7 +157,7 @@ export function BookmarksPage({ tabId, profileId }: { tabId: string; profileId: 
         <Box radius="panel" fill="groupFill" border="groupBorder" style={LIST_CARD}>
           <Box row padX="xl" gap="m" style={LIST_HEADER}>
             <Text lines={1} weight="semibold" style={LIST_TITLE}>
-              {searching ? `Results for “${query.trim()}”` : folderTitle}
+              {searching ? t("Results for “{query}”", { query: query.trim() }) : folderTitle}
             </Text>
             {!searching && folderId && (
               <Button title="Open All" onPress={() => void openFolder(folderId, windowId)} disabled={!ids.length} />
@@ -165,7 +167,7 @@ export function BookmarksPage({ tabId, profileId }: { tabId: string; profileId: 
           {ids.length === 0 ? (
             <EmptyState
               symbol={searching ? "magnifyingglass" : "bookmark"}
-              title={searching ? "No search results found" : "This folder is empty"}
+              title={searching ? t("No search results found") : t("This folder is empty")}
             />
           ) : (
             <View

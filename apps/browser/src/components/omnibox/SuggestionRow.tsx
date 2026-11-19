@@ -4,6 +4,7 @@ import { Image, Pressable, Text as NativeText, View } from "react-native";
 import { Button, Symbol, Text, useHover, useTheme, withAlpha, type Theme } from "../ui";
 import { Favicon } from "../favicon/Favicon";
 import { SELECTED_SUGGESTION_ALPHA, SUGGESTION } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 const ICON_BOX = { width: SUGGESTION.iconBox, height: SUGGESTION.iconBox } as const;
 
@@ -35,20 +36,20 @@ export function SuggestionIcon({ suggestion: s, color }: { suggestion: Suggestio
   }
 }
 
-function labels(s: Suggestion): [string, string | null] {
+function labels(s: Suggestion, t: (text: string, params?: Record<string, string | number>) => string): [string, string | null] {
   switch (s.kind) {
     case "page":
-      if (s.tabId) return [s.title || displayUrl(s.url), "Switch to Tab"];
+      if (s.tabId) return [s.title || displayUrl(s.url), t("Switch to Tab")];
       return s.title ? [s.title, displayUrl(s.url)] : [displayUrl(s.url), null];
     case "search":
-      return [s.bang ? `Search ${s.engine} for ${s.query}` : s.query, null];
+      return [s.bang ? t("Search {engine} for {query}", { engine: s.engine, query: s.query }) : s.query, null];
     case "calc":
       return [s.value, s.expression];
     case "action":
     case "create":
       return [s.title, null];
     case "extension":
-      return [s.title, s.open === "action" ? "Open Extension" : "Extension Options"];
+      return [s.title, t(s.open === "action" ? "Open Extension" : "Extension Options")];
     case "provider": {
       const host = displayHost(hostOf(s.url)) || displayUrl(s.url);
       return [s.title, s.subtitle ? `${host} · ${s.subtitle}` : host];
@@ -111,8 +112,9 @@ const SuggestionRow = memo(
     actions: RowActions;
   }) {
     const theme = useTheme();
+    const t = useTranslate();
     const { hovered, hoverProps } = useHover();
-    const [title, accessory] = labels(s);
+    const [title, accessory] = labels(s, t);
     const hint = trailing ?? (s.kind === "action" ? s.hint : s.kind === "provider" ? s.provider : null);
     const onRemove = isRemovable(s) ? () => actions.remove(s.url) : undefined;
     const removable = !!onRemove && (hovered || selected);

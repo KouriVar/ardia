@@ -17,6 +17,7 @@ import { measureRect, useEased, useSlide } from "./barMotion";
 import { openBarMenu } from "../../state/bookmarks/barMenus";
 import { useBarSize, useBookmarksBarHeight } from "./barSize";
 import { bookmarksBar, type BarSize } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 export const BookmarksBar = memo(function BookmarksBar({ tabId, placeholder }: { tabId: string; placeholder?: boolean }) {
   const windowId = useWindowId();
@@ -52,6 +53,7 @@ const barRooms = new Map<string, number>();
 const widthKey = (size: BarSize, id: string) => `${size.item}:${id}`;
 
 function Bar({ windowId }: { windowId: string }) {
+  const t = useTranslate();
   const theme = useTheme();
   const size = useBarSize();
   const zone = useId();
@@ -189,7 +191,7 @@ function Bar({ windowId }: { windowId: string }) {
             <ImportButton />
           ) : children.length === 0 ? (
             <Text size="small" tone="textTertiary" style={HINT}>
-              For quick access, place your bookmarks here on the bookmarks bar.
+              {t("For quick access, place your bookmarks here on the bookmarks bar.")}
             </Text>
           ) : (
             <View style={[ITEMS, { height: size.item }]}>

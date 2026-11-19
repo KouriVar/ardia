@@ -3,9 +3,11 @@ import { Pressable, View } from "react-native";
 import { Symbol, Text, useHover, useTheme } from "../ui";
 import { GlassFill, useGlass } from "../ui/Glass";
 import { ADD_CHIP } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 export const AddChip = memo(function AddChip({ onPress }: { onPress(): void }) {
   const theme = useTheme();
+  const t = useTranslate();
   const { hovered, hoverProps } = useHover();
   const glass = useGlass();
   return (
@@ -27,7 +29,7 @@ export const AddChip = memo(function AddChip({ onPress }: { onPress(): void }) {
         >
           {glass ? <GlassFill radius={ADD_CHIP.radius} state={hovered ? "lit" : "rest"} /> : null}
           <Symbol name="arrow.up.right" size={ADD_CHIP.glyph} weight="medium" color={theme.chipText} style={{ width: ADD_CHIP.glyphBox, height: ADD_CHIP.glyphBox }} />
-          <Text tone="chipText">Open a tab or file</Text>
+          <Text tone="chipText">{t("Open a tab or file")}</Text>
         </View>
       </Pressable>
     </View>

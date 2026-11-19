@@ -2,6 +2,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { FlatList, Pressable, View } from "react-native";
 import { Button, iconButton, radius, space, Symbol, Text } from "../ui";
 import { useTheme } from "../ui/theme";
+import { useTranslate } from "../ui/Translate";
 import { iconSymbol } from "../../lib/customIcon";
 import { sameIcon } from "../../lib/emoji";
 import { ICON_PICKER, iconPickerColors } from "./tokens";
@@ -34,6 +35,7 @@ export function IconGrid({
   onChoose: (icon: string) => void;
   scrollKey: string;
 }) {
+  const t = useTranslate();
   const list = useRef<FlatList<GridRow>>(null);
   const rows = useMemo(() => gridRows(sections), [sections]);
   const offsets = useMemo(() => {
@@ -81,7 +83,7 @@ export function IconGrid({
         renderItem={({ item }) =>
           "title" in item ? (
             <Text size="caption" weight="semibold" tone="textSecondary" style={HEADER}>
-              {item.title}
+              {t(item.title)}
             </Text>
           ) : (
             <View style={ROW}>
@@ -93,7 +95,7 @@ export function IconGrid({
         }
         ListEmptyComponent={
           <Text size="small" tone="textTertiary" style={NO_MATCHES}>
-            No matches
+            {t("No matches")}
           </Text>
         }
       />

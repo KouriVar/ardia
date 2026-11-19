@@ -138,6 +138,7 @@ const menus: Modules["ArdiaMenus"] = {
   setMenuState: () => Promise.resolve(),
   setMenuBookmarks: () => Promise.resolve(),
   menuShortcuts: () => Promise.resolve([]),
+  setMenuLanguage: () => Promise.resolve(),
   recordShortcut: () => Promise.resolve(null),
   cancelRecording: () => Promise.resolve(),
 };

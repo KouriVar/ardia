@@ -10,6 +10,7 @@ import { useSidebarUi } from "../../state/sidebar/sidebarUi";
 import { commitSwitcher, hoverSwitcherRow, leaveSwitcherRow } from "../../state/sidebar/switcher";
 import { TabIcon } from "./TabIcon";
 import { SIDEBAR_SHADOW, useSidebarTokens } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 const WIDTH = 400;
 const ROW = 40;
@@ -20,6 +21,7 @@ const ROW_RADIUS = concentric(SWITCHER_RADIUS, SWITCHER_PAD);
 
 export function TabSwitcher({ windowId, windowWidth, windowHeight }: { windowId: string; windowWidth: number; windowHeight: number }) {
   const theme = useTheme();
+  const t = useTranslate();
   const tokens = useSidebarTokens();
   const switcher = useSidebarUi((u) => (u.switcher?.windowId === windowId && u.switcher.visible ? u.switcher : null));
   if (!switcher) return null;
@@ -34,7 +36,7 @@ export function TabSwitcher({ windowId, windowWidth, windowHeight }: { windowId:
       shadow={SIDEBAR_SHADOW.tabSwitcher}
       style={{ position: "absolute", left: (windowWidth - WIDTH) / 2, top: Math.max(40, (windowHeight - height) / 2 - 40), width: WIDTH, padding: SWITCHER_PAD }}
     >
-      <SectionLabel title="Recent Tabs" inset={space.m} top={space.xxs} bottom={space.s} />
+      <SectionLabel title={t("Recent Tabs")} inset={space.m} top={space.xxs} bottom={space.s} />
       {shown.map((id, i) => (
         <SwitcherRow key={id} tabId={id} focused={start + i === switcher.index} index={start + i} focusFill={tokens.switcherFocus} outline={tokens.switcherOutline} />
       ))}

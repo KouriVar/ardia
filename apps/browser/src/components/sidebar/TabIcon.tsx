@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { useIsSleeping } from "../../state/tabs/tabLifecycle";
 import { Symbol, Text } from "../ui";
 import { useTheme } from "../ui/theme";
+import { useTranslate } from "../ui/Translate";
 import { sidebarTokens } from "./tokens";
 import { useTab } from "../../state/browser/hooks";
 import { ENGINE_NAMES, ENGINE_SYMBOLS, type PageEngine } from "../../state/engines/engines";
@@ -49,11 +50,12 @@ export const TabIcon = memo(function TabIcon({
 
 function EngineMark({ mark, size }: { mark: PageEngine; size: number }) {
   const theme = useTheme();
+  const t = useTranslate();
   const box = Math.round(size * 0.6);
   return (
     <View
       pointerEvents="none"
-      accessibilityLabel={`Opens in ${ENGINE_NAMES[mark]}`}
+      accessibilityLabel={t("Opens in {engine}", { engine: ENGINE_NAMES[mark] })}
       style={{
         position: "absolute",
         right: -box / 3,

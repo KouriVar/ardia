@@ -6,8 +6,10 @@ import { useSettings } from "../../../state/browser/hooks";
 import { updateSettings } from "../../../state/settings/actions";
 import { Box, Button, Checkbox, EmptyState, PopUp, radius, space, Text, Toggle } from "../../ui";
 import { Group, Row, SectionHeader } from "../Form";
+import { useT } from "../../../state/i18n";
 
 export function CalendarPane() {
+  const t = useT();
   const settings = useLive((s) => s.calendar);
   const { access, calendars, requesting, requestError } = useCalendar();
   const autoGroup = useSettings((s) => s.autoGroupMeetingTabs);
@@ -27,20 +29,20 @@ export function CalendarPane() {
           anchor="calendar.access"
           description={
             access === "fixture"
-              ? "Development build: using calendar-fixture.json"
+              ? t("Development build: using calendar-fixture.json")
               : connected
-                ? `Connected · ${calendars.length === 1 ? "1 calendar" : `${calendars.length} calendars`}`
+                ? t("Connected · {count}", { count: calendars.length === 1 ? t("1 calendar") : t("{count} calendars", { count: calendars.length }) })
                 : blocked
-                  ? (requestError ?? "Ardia isn't allowed to read your calendars. Allow it in System Settings › Privacy & Security › Calendars.")
-                  : (requestError ?? "Not connected")
+                  ? (requestError ?? t("Ardia isn't allowed to read your calendars. Allow it in System Settings › Privacy & Security › Calendars."))
+                  : (requestError ?? t("Not connected"))
           }
         >
           {blocked ? (
-            <Button title="Open System Settings" onPress={openCalendarPrivacy} />
+            <Button title={t("Open System Settings")} onPress={openCalendarPrivacy} />
           ) : !connected ? (
             <Box row gap="s">
-              {requestError ? <Button title="Open System Settings" onPress={openCalendarPrivacy} /> : null}
-              <Button title={requesting ? "Connecting…" : "Connect Calendar…"} kind="primary" disabled={requesting} onPress={() => void connectCalendar()} />
+              {requestError ? <Button title={t("Open System Settings")} onPress={openCalendarPrivacy} /> : null}
+              <Button title={requesting ? t("Connecting…") : t("Connect Calendar…")} kind="primary" disabled={requesting} onPress={() => void connectCalendar()} />
             </Box>
           ) : null}
         </Row>
@@ -49,14 +51,14 @@ export function CalendarPane() {
       <SectionHeader title="Meeting alerts" />
       <Group>
         <Row anchor="calendar.nextAlert">
-          <PopUp value={settings.alertLead} options={ALERT_LEADS.map((l) => ({ value: l.value, title: l.title, separatorBefore: l.value === "start" }))} onChange={(v) => updateCalendarSettings({ alertLead: v })} minWidth={170} />
+          <PopUp value={settings.alertLead} options={ALERT_LEADS.map((l) => ({ value: l.value, title: t(l.title), separatorBefore: l.value === "start" }))} onChange={(v) => updateCalendarSettings({ alertLead: v })} minWidth={170} />
         </Row>
         <Row anchor="calendar.alertCondition">
           <PopUp
             value={settings.alertCondition}
             options={[
-              { value: "always", title: "Always" },
-              { value: "activeOnly", title: "Only When Active" },
+              { value: "always", title: t("Always") },
+              { value: "activeOnly", title: t("Only When Active") },
             ]}
             disabled={settings.alertLead === "never"}
             onChange={(v) => updateCalendarSettings({ alertCondition: v })}
@@ -76,7 +78,7 @@ export function CalendarPane() {
         <Row anchor="calendar.countdownLead">
           <PopUp
             value={String(settings.countdownLead)}
-            options={COUNTDOWN_LEADS.map((m) => ({ value: String(m), title: countdownLeadTitle(m) }))}
+            options={COUNTDOWN_LEADS.map((m) => ({ value: String(m), title: t(countdownLeadTitle(m)) }))}
             disabled={!settings.showTimeToNext}
             onChange={(v) => updateCalendarSettings({ countdownLead: Number(v) })}
             minWidth={170}
@@ -95,13 +97,13 @@ export function CalendarPane() {
         <>
           <SectionHeader title="Active calendars" description="Meetings from unchecked calendars don't show or alert." />
           <Group>
-            {owned.length ? <CalendarList title="My Calendars" calendars={owned} hidden={settings.hiddenCalendarIds} /> : null}
-            {others.length ? <CalendarList title="Other Calendars" calendars={others} hidden={settings.hiddenCalendarIds} /> : null}
+            {owned.length ? <CalendarList title={t("My Calendars")} calendars={owned} hidden={settings.hiddenCalendarIds} /> : null}
+            {others.length ? <CalendarList title={t("Other Calendars")} calendars={others} hidden={settings.hiddenCalendarIds} /> : null}
           </Group>
         </>
       ) : connected ? (
         <View style={NO_CALENDARS}>
-          <EmptyState symbol="calendar" title="No calendars found" subtitle="Add accounts in the Calendar app." />
+          <EmptyState symbol="calendar" title={t("No calendars found")} subtitle={t("Add accounts in the Calendar app.")} />
         </View>
       ) : null}
     </View>

@@ -15,6 +15,7 @@ import { cardHoverProps } from "./hoverController";
 import { useHoverCardOrigin } from "./hoverMotion";
 import { useSidebarUi, type Anchor } from "../../state/sidebar/sidebarUi";
 import { TabIcon } from "./TabIcon";
+import { useTranslate } from "../ui/Translate";
 
 const WIDTH = 264;
 const SEARCH_ROW = 44;
@@ -42,6 +43,7 @@ function useGroupRows(groupId: string, windowId: string): Row[] {
 }
 
 export function GroupPanel({ groupId, windowId, anchor, windowHeight }: { groupId: string; windowId: string; anchor: Anchor; windowHeight: number }) {
+  const t = useTranslate();
   const exists = useGroup(groupId, (g) => !!g);
   const all = useGroupRows(groupId, windowId);
   const live = useSidebarUi((u) => u.hover?.kind === "group" && u.hover.id === groupId && u.hover.windowId === windowId);
@@ -167,7 +169,7 @@ export function GroupPanel({ groupId, windowId, anchor, windowHeight }: { groupI
       >
         {rows.length === 0 ? (
           <Text lines={1} tone="textTertiary" style={EMPTY_LINE}>
-            {q ? `No tabs match “${q}”` : "No tabs"}
+            {q ? t("No tabs match “{query}”", { query: q }) : t("No tabs")}
           </Text>
         ) : null}
         {rows.map((row, i) => (

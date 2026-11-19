@@ -1,4 +1,5 @@
 import { showMenu } from "../../../state/app/system";
+import { useT } from "../../../state/i18n";
 import { Box, Button, Checkbox, DialogActions, DialogTitle, ink, lineHeight, proseLineHeight, radius, Sheet, space, Symbol, tabularNums, Text, TextField } from "../../ui";
 import {
   copyRecoveryKit,
@@ -254,6 +255,7 @@ export function showConnectDevice() {
 }
 
 function ConnectDeviceSheet() {
+  const t = useT();
   const theme = useTheme();
   const [qr, setQr] = useState<string | null>(null);
   const [words, setWords] = useState<string[] | null>(null);
@@ -267,7 +269,7 @@ function ConnectDeviceSheet() {
       <Box row gap="xl" style={[SECTION_TOP, { alignItems: "center" }]}>
         <View style={syncCodeFrame(theme, qr !== null)}>{qr ? <Image source={{ uri: qr }} style={QR} /> : <Button title="Show Code" onPress={() => void recoveryQrCode().then(setQr)} />}</View>
         <Text size="small" tone="textSecondary" style={QR_NOTE}>
-          Click Show Code. On your iPhone, open Ardia, tap Sync With Mac, and scan the code. For another Mac, you can also scan it with your iPhone’s camera and paste the words there with Universal Clipboard.
+          {t("Click Show Code. On your iPhone, open Ardia, tap Sync With Mac, and scan the code. For another Mac, you can also scan it with your iPhone’s camera and paste the words there with Universal Clipboard.")}
         </Text>
       </Box>
       {words ? (

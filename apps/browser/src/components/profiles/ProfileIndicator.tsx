@@ -4,6 +4,7 @@ import { profileNameColor, useTheme } from "../ui/theme";
 import { useIsIncognito, useProfiles, useWindowId, useWindowProfile } from "../../state/browser/hooks";
 import { setMeasuredWidth, useMeasuredWidth } from "../../state/windows/measuredWidths";
 import { ContextMenuArea, radius, Symbol, Text, useHover } from "../ui";
+import { useTranslate } from "../ui/Translate";
 import { openProfileItemMenu } from "./profileMenu";
 import { openProfileMenu } from "../../state/browser/actions";
 
@@ -15,10 +16,11 @@ export const PROFILE_INDICATOR_X = 84;
 
 function useIndicator(room: number) {
   const theme = useTheme();
+  const t = useTranslate();
   const incognito = useIsIncognito();
   const profiles = useProfiles();
   const profile = useWindowProfile();
-  const title = incognito ? "Incognito" : profile.name;
+  const title = incognito ? t("Incognito") : profile.name;
   const textWidth = useMeasuredWidth(`profile-name|${title}`);
   const shown = (incognito || profiles.length >= 2) && room >= ICON_WIDTH;
   const nameRoom = room - 2 * PAD;

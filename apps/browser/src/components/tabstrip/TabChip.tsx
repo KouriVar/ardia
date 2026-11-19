@@ -13,6 +13,7 @@ import { Button, FadeLabel, Symbol, useHover } from "../ui";
 import { HoverSlot } from "../ui/HoverSlot";
 import { surfaceTheme, ThemeContext, useTheme } from "../ui/theme";
 import { toolbarPalette, useEasedColor } from "../ui/toolbarColors";
+import { useTranslate } from "../ui/Translate";
 import { font, iconButton } from "../ui/tokens";
 import { DockContext, FloatingStrip } from "./context";
 import { tabIn, tileHold } from "./dockCross";
@@ -120,6 +121,7 @@ export function TabChip({ tabId, width, tuck, dragged }: { tabId: string; width:
   const onto = useOnto({ kind: "tab", id: tabId });
   const active = useIsActiveTab(tabId);
   const theme = active ? surfaceTheme(onTint) : onTint;
+  const t = useTranslate();
   const floating = useContext(FloatingStrip);
   const playing = useTabLive(tabId, (l) => l.playingAudio);
   const mute = useMuteState(tabId);
@@ -148,7 +150,7 @@ export function TabChip({ tabId, width, tuck, dragged }: { tabId: string; width:
                 <TabBadges tabId={tab.id} />
               </View>
               {(playing || mute) && (
-                <Pressable onPress={() => toggleMute(tab.id)} style={{ marginLeft: CHIP_LABEL_GAP }} tooltip={muteTitle(mute)}>
+                <Pressable onPress={() => toggleMute(tab.id)} style={{ marginLeft: CHIP_LABEL_GAP }} tooltip={t(muteTitle(mute))}>
                   <Symbol name={mute ? "speaker.slash" : "speaker.wave.2"} size={11} color={onBand ? palette.icon : theme.textTab} style={{ width: 16, height: 16 }} />
                 </Pressable>
               )}

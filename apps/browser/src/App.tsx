@@ -1,4 +1,4 @@
-import { WindowBackdrop } from "./components/ui";
+import { WindowBackdrop, TranslateProvider } from "./components/ui";
 import { useMemo, useState } from "react";
 import { StyleSheet } from "react-native";
 import { CommandPanel } from "./components/omnibox/CommandPanel";
@@ -31,17 +31,25 @@ import { provideProfileLooks } from "./state/profiles/looks";
 import { currentBasePalette } from "./state/config/basePalette";
 import { focusedWindowOf } from "./state/windows/ui";
 import { SETTLE_MS, useSettled } from "./components/ui/useSettled";
+import { useT } from "./state/i18n";
 
 provideProfileLooks({ accent: profileAccent, theme: (profile, appDark, source) => profileTheme(profile, appDark, source, currentBasePalette()) });
 
 export function WindowRoot({ windowId }: { windowId?: string }) {
+  const t = useT();
   if (isUtilityWindowId(windowId))
     return (
-      <ThemeScope>
-        <UtilityWindow id={windowId!} />
-      </ThemeScope>
+      <TranslateProvider value={t}>
+        <ThemeScope>
+          <UtilityWindow id={windowId!} />
+        </ThemeScope>
+      </TranslateProvider>
     );
-  return <BrowserWindowRoot windowId={windowId} />;
+  return (
+    <TranslateProvider value={t}>
+      <BrowserWindowRoot windowId={windowId} />
+    </TranslateProvider>
+  );
 }
 
 function BrowserWindowRoot({ windowId }: { windowId?: string }) {

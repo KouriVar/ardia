@@ -2,6 +2,7 @@ import type { SearchScope } from "@ardia/core";
 import type { ComponentProps, RefObject } from "react";
 import { TextInput } from "react-native";
 import { useTheme } from "../ui";
+import { useTranslate } from "../ui/Translate";
 import { PASTED_TYPES } from "./omniboxKeys";
 import { BAR, BAR_TYPE } from "./tokens";
 
@@ -26,6 +27,7 @@ export function BarField({
   incognito: boolean;
 } & Pick<InputProps, "value" | "onLayout" | "onChangeText" | "onSubmitEditing" | "onFocus" | "onBlur" | "keyDownEvents" | "onKeyDown">) {
   const theme = useTheme();
+  const t = useTranslate();
   const type = variant === "hero" ? BAR_TYPE.heroField : variant === "sidebar" || floating ? BAR_TYPE.floatingField : BAR_TYPE.panelField;
   return (
     <TextInput
@@ -44,7 +46,7 @@ export function BarField({
         }
         onSelection(next);
       }}
-      placeholder={scope ? `Search ${scope.name}` : incognito ? "Search privately or enter address" : "Search or enter address"}
+      placeholder={scope ? t("Search {name}", { name: scope.name }) : incognito ? t("Search privately or enter address") : t("Search or enter address")}
       placeholderTextColor={theme.placeholder}
       pastedTypes={PASTED_TYPES}
       selectionColor={theme.selection}

@@ -13,22 +13,25 @@ import { RefreshSpinner } from "./RefreshSpinner";
 import { SectionLabel } from "./SectionLabel";
 import { SidebarListRow } from "./SidebarRow";
 import { TAB_ROW } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 const SECTION_HEIGHT = 22;
 
 export function SectionTitle({ title }: { title: string }) {
-  return <SectionLabel title={title} inset={TAB_ROW.contentLeft} top={SECTION_HEIGHT - space.xxs - lineHeight.caption} bottom={space.xxs} />;
+  const t = useTranslate();
+  return <SectionLabel title={t(title)} inset={TAB_ROW.contentLeft} top={SECTION_HEIGHT - space.xxs - lineHeight.caption} bottom={space.xxs} />;
 }
 
 export function NoteRow({ text, icon, spinner, onPress }: { text: string; icon?: string; spinner?: boolean; onPress?: () => void }) {
   const theme = useTheme();
+  const t = useTranslate();
   const colors = useLiveColors();
   const { hovered, hoverProps } = useHover();
   const body = (
     <SidebarListRow height={28} padRight={TAB_ROW.trailing} fill={onPress && hovered ? theme.rowHover : undefined} style={NOTE_GAP}>
       {spinner ? <Spinner /> : icon ? <Symbol name={icon} size={10} color={colors.pending} style={{ width: 16, height: 16 }} /> : null}
       <Text lines={2} size="small" tone="textSecondary" style={FILL}>
-        {text}
+        {t(text)}
       </Text>
     </SidebarListRow>
   );
@@ -55,6 +58,7 @@ function Spinner() {
 
 export function MoreRow({ folderId, section, count }: { folderId: string; section: string; count: number }) {
   const theme = useTheme();
+  const t = useTranslate();
   const { hovered, hoverProps } = useHover();
   return (
     <View {...hoverProps}>
@@ -62,7 +66,7 @@ export function MoreRow({ folderId, section, count }: { folderId: string; sectio
         <SidebarListRow height={26} fill={hovered ? theme.rowHover : undefined}>
           <Symbol name="ellipsis" size={11} color={theme.textSecondary} style={{ width: 16, height: 16 }} />
           <Text size="small" tone="textSecondary" style={LABEL}>
-            Show {count} More
+            {t("Show {count} More", { count })}
           </Text>
         </SidebarListRow>
       </Pressable>
@@ -75,6 +79,7 @@ const STACK_COUNT = { marginRight: space.xs } as const;
 
 export function StackRow({ folderId, windowId, stack }: { folderId: string; windowId: string; stack: Extract<FolderRow, { kind: "stack" }> }) {
   const theme = useTheme();
+  const t = useTranslate();
   const collapsed = useLive((s) => s.expandedStacks[stack.id] === false);
   const fold = useFold(collapsed);
   const { hovered, hoverProps } = useHover();
@@ -90,12 +95,12 @@ export function StackRow({ folderId, windowId, stack }: { folderId: string; wind
         >
           <Pressable
             onPress={() => toggleStack(stack.id)}
-            accessibilityLabel={collapsed ? "Expand pull request stack" : "Collapse pull request stack"}
+            accessibilityLabel={t(collapsed ? "Expand pull request stack" : "Collapse pull request stack")}
           >
             <SidebarListRow height={26} padRight={space.m} fill={hovered ? theme.rowHover : undefined}>
               <Symbol name="square.stack.3d.up" size={11} color={theme.textSecondary} style={{ width: 16, height: 16 }} />
               <Text lines={1} size="small" weight="medium" tone="textSecondary" style={STACK_TITLE}>
-                {repo} stack
+                {t("{repo} stack", { repo })}
               </Text>
               <View style={STACK_COUNT}>
                 <Badge text={stack.items.length} size="m" />

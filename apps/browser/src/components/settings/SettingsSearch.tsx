@@ -13,14 +13,18 @@ import {
   setSettingsQuery,
   useSettingsSearch,
 } from "../../state/settings/searchState";
-import { SETTINGS_INDEX, type SettingEntry } from "./settingsIndex";
+import { findSetting, localizedIndex, type SettingEntry } from "./settingsIndex";
 import { useUnshownSettings } from "./Form";
 import { settingsInk } from "./tokens";
 import { PREVIEW_DELAY_MS, RESULT_GAP, RESULT_MIN_HEIGHT, RESULTS_BOTTOM, RESULTS_TOP, scrollToShow } from "./searchResultLayout";
+import { useT, useUiLanguage } from "../../state/i18n";
+import type { UiLanguage } from "../../lib/i18n/languages";
 
 export type SettingsHit = SearchHit<SettingEntry>;
 
 export function SettingsSearchField() {
+  const t = useT();
+  const language = useUiLanguage();
   const query = useSettingsSearch((s) => s.query);
   const focusRequest = useSettingsSearch((s) => s.focusRequest);
   const input = useRef<TextInput>(null);
@@ -36,14 +40,14 @@ export function SettingsSearchField() {
         inputRef={input}
         value={query}
         onChangeText={setSettingsQuery}
-        placeholder="Search"
+        placeholder={t("Search")}
         onSubmit={() => {
           const { query, selected } = currentSettingsSearch();
-          const hit = settingsResults(query, unshown)[selected];
-          if (hit) revealSetting(hit.entry, "keyboard", selected);
+          const hit = settingsResults(query, unshown, language)[selected];
+          if (hit) revealSetting(findSetting(hit.entry.id)!, "keyboard", selected);
         }}
         onArrow={(step) => {
-          const count = settingsResults(currentSettingsSearch().query, unshown).length;
+          const count = settingsResults(currentSettingsSearch().query, unshown, language).length;
           if (count) moveSettingsSelection(step, count);
         }}
         onEscape={() => {
@@ -56,19 +60,21 @@ export function SettingsSearchField() {
 
 const FIELD = { marginHorizontal: space.ml, marginBottom: space.ml } as const;
 
-let cached: { query: string; unshown: ReadonlySet<string>; results: SettingsHit[] } = { query: "", unshown: new Set(), results: [] };
+let cached: { query: string; unshown: ReadonlySet<string>; language: UiLanguage; results: SettingsHit[] } = { query: "", unshown: new Set(), language: "en", results: [] };
 
-export function settingsResults(query: string, unshown: ReadonlySet<string>): SettingsHit[] {
-  if (cached.query !== query || cached.unshown !== unshown) {
-    cached = { query, unshown, results: search(SETTINGS_INDEX.filter((p) => !unshown.has(p.entry.id)), query) };
+export function settingsResults(query: string, unshown: ReadonlySet<string>, language: UiLanguage): SettingsHit[] {
+  if (cached.query !== query || cached.unshown !== unshown || cached.language !== language) {
+    cached = { query, unshown, language, results: search(localizedIndex(language).filter((p) => !unshown.has(p.entry.id)), query) };
   }
   return cached.results;
 }
 
 export function SettingsSearchResults({ query }: { query: string }) {
+  const t = useT();
+  const language = useUiLanguage();
   const selected = useSettingsSearch((s) => s.selected);
   const keyboardMove = useSettingsSearch((s) => s.keyboardMove);
-  const results = settingsResults(query, useUnshownSettings());
+  const results = settingsResults(query, useUnshownSettings(), language);
   const scroller = useRef<ScrollView>(null);
   const viewport = useRef({ offset: 0, height: 0 });
   const rows = useRef<{ top: number; height: number }[]>([]);
@@ -82,7 +88,7 @@ export function SettingsSearchResults({ query }: { query: string }) {
 
   useEffect(() => {
     if (!target) return;
-    const timer = setTimeout(() => previewSetting(target), PREVIEW_DELAY_MS);
+    const timer = setTimeout(() => previewSetting(findSetting(target.id)!), PREVIEW_DELAY_MS);
     return () => clearTimeout(timer);
   }, [target]);
 
@@ -98,7 +104,7 @@ export function SettingsSearchResults({ query }: { query: string }) {
   }, [keyboardMove]);
 
   if (!results.length) {
-    return <EmptyState symbol="magnifyingglass" title="No Results" subtitle={`Nothing matches “${query.trim()}”. Try a setting's name or a shorter word, like “dark” or “downloads”.`} />;
+    return <EmptyState symbol="magnifyingglass" title={t("No Results")} subtitle={t("Nothing matches “{query}”. Try a setting's name or a shorter word, like “dark” or “downloads”.", { query: query.trim() })} />;
   }
   return (
     <ScrollView
@@ -121,6 +127,7 @@ const RESULTS = { paddingHorizontal: space.ml, paddingTop: RESULTS_TOP, paddingB
 const ROW_GAP = { marginBottom: RESULT_GAP } as const;
 
 function ResultRow({ hit, selected, rank }: { hit: SettingsHit; selected: boolean; rank: number }) {
+  const t = useT();
   const theme = useTheme();
   const { entry } = hit;
   const primary = selected ? theme.onAccent : theme.textPrimary;
@@ -134,7 +141,7 @@ function ResultRow({ hit, selected, rank }: { hit: SettingsHit; selected: boolea
       selectedTone="accent"
       onPress={() => {
         selectSettingsResult(rank);
-        revealSetting(entry, "click", rank);
+        revealSetting(findSetting(entry.id)!, "click", rank);
       }}
     >
       <View style={RESULT_TEXT}>
@@ -148,7 +155,7 @@ function ResultRow({ hit, selected, rank }: { hit: SettingsHit; selected: boolea
         </Text>
         {note ? (
           <Text size="caption" lines={2} color={secondary}>
-            {keyword ? "Also called “" : ""}
+            {keyword ? t("Also called “") : ""}
             <Marked text={note.text} ranges={note.ranges} color={secondary} />
             {keyword ? "”" : ""}
           </Text>

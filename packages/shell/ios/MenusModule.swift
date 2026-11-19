@@ -42,6 +42,12 @@ public class MenusModule: Module {
       DispatchQueue.main.async { promise.resolve(target.chosen) }
     }.runOnQueue(.main)
 
+    AsyncFunction("setMenuLanguage") { (language: String, tableJSON: String) in
+      guard let data = tableJSON.data(using: .utf8),
+            let table = try? JSONDecoder().decode([String: String].self, from: data) else { return }
+      guard MenuTranslator.apply(language: language, table: table) else { return }
+      NSApp.mainMenu = MainMenu.build()
+    }.runOnQueue(.main)
     AsyncFunction("menuShortcuts") { () -> [[String: Any]] in MainMenu.shortcutList() }.runOnQueue(.main)
 
     AsyncFunction("recordShortcut") { [weak self] (promise: Promise) in

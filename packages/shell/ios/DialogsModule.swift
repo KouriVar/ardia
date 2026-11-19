@@ -35,7 +35,7 @@ public class DialogsModule: Module {
       }
       let alert = DialogsModule.alert(title: options.title, message: options.message)
       alert.addButton(withTitle: options.confirmTitle)
-      alert.addButton(withTitle: "Cancel")
+      alert.addButton(withTitle: MenuTranslator.text("Cancel"))
       let field = NSTextField(frame: NSRect(x: 0, y: 0, width: 260, height: 24))
       field.stringValue = options.value
       field.placeholderString = options.placeholder

@@ -10,6 +10,7 @@ import { menuBarRevision, shortcutHint } from "../commands/commandShortcuts";
 import type { Tab } from "../browser/types";
 import { organizeActions } from "./organizeActions";
 import { muteState, muteTitle, siteMuteTitle } from "../tabs/mute";
+import { currentT } from "../i18n";
 
 type Context = { s: BrowserState; windowId: string; tab: Tab | undefined };
 
@@ -99,6 +100,7 @@ const DEFS: ActionDef[] = [
 const actionId = (d: Pick<ActionDef, "command" | "arg">) => (d.arg ? `${d.command}:${d.arg}` : d.command);
 
 export function barActions(s: BrowserState, windowId: string): CommandAction[] {
+  const t = currentT();
   const w = s.windows[windowId];
   const tab = activeTab(s, windowId);
   const c: Context = { s, windowId, tab };
@@ -113,7 +115,7 @@ export function barActions(s: BrowserState, windowId: string): CommandAction[] {
     const hint = shortcutHint(id, s);
     out.push({
       id,
-      title: d.title?.(c) ?? commandBarTitle(d.command, d.arg),
+      title: t(d.title?.(c) ?? commandBarTitle(d.command, d.arg)),
       icon: d.icon ?? commandSymbol(d.command, d.arg),
       ...(hint ? { hint } : {}),
       ...(d.keywords ? { keywords: d.keywords } : {}),
@@ -124,7 +126,7 @@ export function barActions(s: BrowserState, windowId: string): CommandAction[] {
       if (id === w.profileId) return;
       const name = s.profiles[id]?.name ?? "";
       const action = `switchProfile:${id}`;
-      out.push({ id: action, title: `Switch to ${name}`, icon: "person.crop.circle", hint: shortcutHint(action, s), keywords: [name, "profile", "space"] });
+      out.push({ id: action, title: t("Switch to {name}", { name }), icon: "person.crop.circle", hint: shortcutHint(action, s), keywords: [name, "profile", "space"] });
     });
   }
   out.push(...organizeActions(s, windowId));
