@@ -1,0 +1,9 @@
+"NSAppleEventsUsageDescription" = "导入时，Ardia 会向 Dia 请求其个人资料、打开的标签页和固定标签页。它只读取，不会更改 Dia 中的任何内容。";
+"NSAudioCaptureUsageDescription" = "与你共享屏幕或窗口的网站可能会请求收听其音频。";
+"NSBluetoothAlwaysUsageDescription" = "使用手机上的通行密钥登录会用到蓝牙，网站也可能请求使用蓝牙设备。";
+"NSCalendarsFullAccessUsageDescription" = "Ardia 会在固定的日历标签页上显示即将到来的会议，在会议开始前提醒你，并将通话期间打开的标签页分组。";
+"NSCameraUsageDescription" = "网站可能会请求使用你的摄像头。";
+"NSLocalNetworkUsageDescription" = "Ardia 会在你的网络上查找投射设备，以便将标签页投射到这些设备。";
+"NSLocationUsageDescription" = "网站可能会请求使用你的位置。";
+"NSLocationWhenInUseUsageDescription" = "网站可能会请求使用你的位置。";
+"NSMicrophoneUsageDescription" = "网站可能会请求使用你的麦克风。";

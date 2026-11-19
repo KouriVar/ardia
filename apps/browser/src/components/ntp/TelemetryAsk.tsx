@@ -10,6 +10,7 @@ import { onboardingCompletedAt, useOnboarding } from "../../state/onboarding/onb
 import { Box, Button, IconTile, lineHeight, Text } from "../ui";
 import { NtpCard, NtpCardSlot, NtpCardSurface, NtpCardTitle, useCardRetire } from "./NtpCard";
 import { useNtpColors } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 import { openSettings } from "../../state/settings/settingsWindows";
 import { usePendingReleaseNotes } from "../../state/releaseNotes/releaseNotes";
 
@@ -68,6 +69,7 @@ function Card({
   onClose: () => void;
 }) {
   const colors = useNtpColors();
+  const t = useTranslate();
   return (
     <View onLayout={(e) => onLayout(e.nativeEvent.layout.height)}>
       <NtpCard appearDelay={600} leaving={leaving} onClose={onClose}>
@@ -76,18 +78,18 @@ function Card({
           <Box row gap="ml">
             <IconTile symbol="stethoscope" size="m" fill={colors.badge} glyph={colors.badgeGlyph} />
             <Box gap="xxs" style={FILL}>
-              <NtpCardTitle>{SHARING_COPY.ask.title}</NtpCardTitle>
+              <NtpCardTitle>{t(SHARING_COPY.ask.title)}</NtpCardTitle>
               <Text size="caption" style={{ lineHeight: lineHeight.caption, color: colors.body }}>
-                {SHARING_COPY.ask.body}{" "}
+                {t(SHARING_COPY.ask.body)}{" "}
                 <Span onPress={() => openSettings("privacy")} style={LINK} accessibilityRole="link">
-                  {SHARING_COPY.whatsSent}
+                  {t(SHARING_COPY.whatsSent)}
                 </Span>
               </Text>
             </Box>
           </Box>
           <Box row gap="m">
-            <AskButton title={SHARING_COPY.ask.notNow} onPress={onNotNow} />
-            <AskButton title={SHARING_COPY.ask.share} onPress={onShare} />
+            <AskButton title={t(SHARING_COPY.ask.notNow)} onPress={onNotNow} />
+            <AskButton title={t(SHARING_COPY.ask.share)} onPress={onShare} />
           </Box>
         </Box>
       </NtpCard>

@@ -1,6 +1,7 @@
 import { Children, forwardRef, type ReactNode } from "react";
 import { Image, Pressable, View, type AccessibilityActionEvent, type GestureResponderEvent, type StyleProp, type ViewStyle } from "react-native";
 import { useTheme } from "../ui/theme";
+import { useTranslate } from "../ui/Translate";
 import { capsule, ContextMenuArea, Dot, GlassFill, hairline, menuRowFill, opacity, PANEL, radius, space, Symbol, Text, useGlass, useHover } from "../ui";
 import { useSiteTokens } from "./tokens";
 
@@ -41,6 +42,7 @@ export function Tile({
   children: ReactNode;
 }) {
   const theme = useTheme();
+  const t = useTranslate();
   const site = useSiteTokens();
   const glass = useGlass();
   const lit = pressed || open;
@@ -93,13 +95,14 @@ export const ActionTile = forwardRef<
   { icon: string; label: string; active?: boolean; caption?: boolean; onPress: (press: GestureResponderEvent | AccessibilityActionEvent) => void }
 >(function ActionTile({ icon, label, active, caption = false, onPress }, ref) {
   const theme = useTheme();
+  const t = useTranslate();
   const { hovered, hoverProps } = useHover();
   return (
-    <View ref={ref} collapsable={false} tooltip={caption ? undefined : label} accessibilityLabel={label} style={{ flex: 1 }} {...hoverProps}>
+    <View ref={ref} collapsable={false} tooltip={caption ? undefined : t(label)} accessibilityLabel={t(label)} style={{ flex: 1 }} {...hoverProps}>
       <Pressable
         onPress={onPress}
         accessibilityRole="button"
-        accessibilityLabel={label}
+        accessibilityLabel={t(label)}
         accessibilityState={active === undefined ? undefined : { selected: active }}
         accessibilityActions={ACTIVATE}
         onAccessibilityAction={(event) => event.nativeEvent.actionName === "activate" && onPress(event)}
@@ -110,7 +113,7 @@ export const ActionTile = forwardRef<
               <>
                 <Symbol name={icon} size={13} color={active ? theme.accent : theme.icon} style={CAPTION_GLYPH} />
                 <Text lines={1} size="tiny" tone="textSecondary">
-                  {label}
+                  {t(label)}
                 </Text>
               </>
             ) : (
@@ -170,6 +173,7 @@ export function SettingRow({
   onPress?: () => void;
 }) {
   const theme = useTheme();
+  const t = useTranslate();
   const site = useSiteTokens();
   const { hovered, hoverProps } = useHover();
   const content = (pressed: boolean) => (
@@ -179,10 +183,10 @@ export function SettingRow({
       </Dot>
       <View style={{ flex: 1 }}>
         <Text lines={1} weight="medium" style={{ fontSize: PANEL.titleSize, lineHeight: PANEL.titleLine }}>
-          {title}
+          {t(title)}
         </Text>
         <Text lines={1} tone="textSecondary" style={{ fontSize: PANEL.subtitleSize, lineHeight: PANEL.subtitleLine }}>
-          {value}
+          {t(value)}
         </Text>
       </View>
     </Tile>
@@ -190,7 +194,7 @@ export function SettingRow({
   if (!onPress) return <View {...hoverProps}>{content(false)}</View>;
   return (
     <View {...hoverProps}>
-      <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${title}: ${value}`}>
+      <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={`${t(title)}: ${t(value)}`}>
         {({ pressed }) => content(pressed)}
       </Pressable>
     </View>
@@ -217,15 +221,16 @@ export function ChipButton({
   onPress?: (press: GestureResponderEvent) => void;
 }) {
   const theme = useTheme();
+  const t = useTranslate();
   const { hovered, hoverProps } = useHover();
   return (
-    <View {...hoverProps} tooltip={tooltip}>
-      <Pressable onPress={onPress} disabled={!onPress} accessibilityRole="button" accessibilityLabel={label ?? title}>
+    <View {...hoverProps} tooltip={tooltip === undefined ? undefined : t(tooltip)}>
+      <Pressable onPress={onPress} disabled={!onPress} accessibilityRole="button" accessibilityLabel={t(label ?? title)}>
         {({ pressed }) => (
           <Tile shape="tile" quiet={quiet} height={SITE_PANEL.footerControl} hovered={!!onPress && hovered} pressed={pressed} open={open} style={CHIP}>
             <Symbol name={icon} size={quiet ? 12 : 11} weight="medium" color={color ?? theme.icon} style={quiet ? QUIET_GLYPH : CHIP_GLYPH} />
             <Text lines={1} size={quiet ? "body" : "small"} weight="medium" color={color}>
-              {title}
+              {t(title)}
             </Text>
           </Tile>
         )}

@@ -30,7 +30,8 @@ import { updateSettings } from "../../../state/settings/actions";
 import { blockerAvailable, categoryOn, setBlockingCategory, setFilterList } from "../../../state/site/contentBlocking";
 import { noteContentBlockerUnavailable, noteContentBlockerWriteFailure } from "../../../state/telemetry/usage";
 import { ShareDiagnosticsSection } from "./ShareDiagnostics";
-import { UI_LOCALE } from "../../../lib/uiLocale";
+import { uiLocale } from "../../../lib/uiLocale";
+import { useTranslate } from "../../ui/Translate";
 
 const CATEGORIES: { id: FilterListCategory; section: string; anchor?: SettingId }[] = [
   { id: "ads", section: "Ad blockers", anchor: "privacy.blockAds" },
@@ -41,7 +42,7 @@ const CATEGORIES: { id: FilterListCategory; section: string; anchor?: SettingId 
   { id: "regional", section: "Regional blockers" },
 ];
 
-const filtersText = (n: number) => `${n.toLocaleString(UI_LOCALE)} ${n === 1 ? "filter" : "filters"}`;
+const filtersText = (n: number, t: (text: string, params?: Record<string, string | number>) => string) => t("{count} filters", { count: n.toLocaleString(uiLocale()) });
 
 const UNAVAILABLE_RETRY_MS = 3000;
 
@@ -81,6 +82,7 @@ async function writeBlocker(write: () => Promise<unknown>, refresh: () => void) 
 }
 
 export function PrivacyPane() {
+  const t = useTranslate();
   const [blocker, refresh, unavailable] = useContentBlocker({ countOutages: true });
   const commandScrollZoom = useSettings((s) => s.commandScrollZoom);
 
@@ -110,7 +112,7 @@ export function PrivacyPane() {
           <Button title="Advanced…" disabled={!blocker} onPress={() => showSettingsSheet(<FilterListsSheet />)} />
         </Row>
         {unavailable && (
-          <Row title="uBlock Origin isn't answering" description="Its settings show here once it responds. Pages keep the blocking they had.">
+          <Row title="uBlock Origin isn't answering" description={t("Its settings show here once it responds. Pages keep the blocking they had.")}>
             <Button title="Try Again" onPress={refresh} />
           </Row>
         )}
@@ -143,7 +145,7 @@ export function PrivacyPane() {
       <ZoomLevels />
       {blocker && (
         <Text size="caption" tone="textTertiary" style={RULES_LOADED}>
-          {`${(blocker.stats.networkFilters ?? 0).toLocaleString(UI_LOCALE)} network and ${(blocker.stats.cosmeticFilters ?? 0).toLocaleString(UI_LOCALE)} cosmetic rules loaded.`}
+          {t("{network} network and {cosmetic} cosmetic rules loaded.", { network: (blocker.stats.networkFilters ?? 0).toLocaleString(uiLocale()), cosmetic: (blocker.stats.cosmeticFilters ?? 0).toLocaleString(uiLocale()) })}
         </Text>
       )}
       <ShareDiagnosticsSection />
@@ -156,6 +158,7 @@ const LISTS = { maxHeight: 420, marginTop: space.m } as const;
 const SITE_LIST = { maxHeight: 380, marginTop: space.l } as const;
 
 function FilterListsSheet() {
+  const t = useTranslate();
   const [blocker, refresh] = useContentBlocker();
   const toggle = async (l: FilterList, on: boolean) => {
     if (!blocker) return;
@@ -176,7 +179,7 @@ function FilterListsSheet() {
                   <Row
                     key={l.id}
                     title={<Checkbox value={l.enabled} onChange={(v) => void toggle(l, v)} label={l.title} />}
-                    description={l.defaultOn ? `${filtersText(l.filters)} · On by default` : filtersText(l.filters)}
+                    description={l.defaultOn ? t("{filters} · On by default", { filters: filtersText(l.filters, t) }) : filtersText(l.filters, t)}
                   />
                 ))}
               </Group>

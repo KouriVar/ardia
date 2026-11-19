@@ -17,7 +17,7 @@ import { openImport } from "../../../state/settings/settingsWindows";
 import { redoSetupFromSettings } from "../../../state/onboarding/redo";
 import { ExportBookmarksRow } from "./ExportBookmarksRow";
 import { SetupCodeRow } from "./SetupCodeRow";
-import { UI_LOCALE } from "../../../lib/uiLocale";
+import { uiLocale } from "../../../lib/uiLocale";
 import { useT } from "../../../state/i18n";
 
 const APP = "Ardia";
@@ -182,7 +182,7 @@ function UpdatesSection() {
   if (!state?.available) return null;
   const ready = state.configured;
   const lastCheck = state.lastCheck
-    ? t("Last checked {date}.", { date: new Date(state.lastCheck).toLocaleString(UI_LOCALE, { dateStyle: "medium", timeStyle: "short" }) })
+    ? t("Last checked {date}.", { date: new Date(state.lastCheck).toLocaleString(uiLocale(), { dateStyle: "medium", timeStyle: "short" }) })
     : t("Not checked yet.");
   const status = switchCheckLine(state, APP) ?? lastCheck;
   const checkNow = checkNowControl(state);

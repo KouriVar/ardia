@@ -16,6 +16,7 @@ import { useOnboardingColors } from "./Parts";
 import { curve, springs } from "../ui/motion";
 import { space } from "../ui/tokens";
 import { onboardingMotion, onboardingType } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 const WORDMARK = "Ardia";
 const ICON = require("../../../assets/app-icon.png");
@@ -38,6 +39,7 @@ const OPENING_TONE: Record<"day" | "night", MeadowTone> = { day: { tone: "light"
 
 export function Intro({ onDone }: { onDone: () => void }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   const dark = useTheme().dark;
   const icon = useRef(new Animated.Value(0)).current;
   const letters = useRef([...WORDMARK].map(() => new Animated.Value(0))).current;
@@ -133,7 +135,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
         </View>
         <Animated.View style={{ opacity: tagline, transform: [{ translateY: tagline.interpolate({ inputRange: [0, 1], outputRange: [6, 0] }) }] }}>
           <Text color={colors.subtitle} style={[onboardingType.tagline, ink]}>
-            Your new home on the internet
+            {t("Your new home on the internet")}
           </Text>
         </Animated.View>
       </Animated.View>
@@ -148,7 +150,7 @@ export function Intro({ onDone }: { onDone: () => void }) {
           onPress={toggleMute}
         />
       </View>
-      <View style={{ position: "absolute", right: 28, bottom: 28 }} accessibilityHint="Button that skips the onboarding intro animation">
+      <View style={{ position: "absolute", right: 28, bottom: 28 }} accessibilityHint={t("Button that skips the onboarding intro animation")}>
         <SecondaryButton title="Skip" onPress={skip} />
       </View>
     </Animated.View>

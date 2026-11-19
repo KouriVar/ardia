@@ -7,6 +7,7 @@ import { MenuRow, MenuSeparator, MouseArea, PANEL, Popover, POPOVER_MARGIN, POPO
 import { Favicon, NewTabIcon } from "../favicon/Favicon";
 import { modifiersOf } from "../../lib/keys";
 import { closeHistoryMenu, closeHistoryMenuOf, goToHistoryItem, historyFavicons, useHistoryMenu, type HistoryItem } from "../../state/tabs/navigation";
+import { useTranslate } from "../ui/Translate";
 
 const FAVICON_X = PANEL.inset + (PANEL.iconSlot - 16) / 2;
 
@@ -15,6 +16,7 @@ export const HISTORY_MENU_WIDTH = POPOVER_WIDTH.s;
 export const underButton = (buttonCenter: number) => Math.max(POPOVER_MARGIN, buttonCenter - FAVICON_X - 2);
 
 export function HistoryPopover({ tabId, windowId, left, top }: { tabId: string; windowId: string; left: (direction: -1 | 1) => number; top: number }) {
+  const t = useTranslate();
   const menu = useHistoryMenu((s) => (s.menu?.tabId === tabId ? s.menu : null));
   const profileId = useTab(tabId, (t) => t?.profileId ?? "");
   const favicons = useMemo(() => {
@@ -43,7 +45,7 @@ export function HistoryPopover({ tabId, windowId, left, top }: { tabId: string; 
         <MenuSeparator />
         <MenuRow
           icon="clock"
-          title="Show Full History"
+          title={t("Show Full History")}
           onPress={() => {
             closeHistoryMenu();
             openInternalPage("history", windowId);

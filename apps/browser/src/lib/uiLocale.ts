@@ -1,3 +1,5 @@
-const systemRegion = Intl.DateTimeFormat().resolvedOptions().locale.split("-").slice(1).find((part) => /^([A-Z]{2}|\d{3})$/.test(part));
+import { activeLanguage } from "./i18n/active";
 
-export const UI_LOCALE = systemRegion ? `en-${systemRegion}` : "en-US";
+const systemLocale = Intl.DateTimeFormat().resolvedOptions().locale || "en-US";
+
+export const uiLocale = () => (activeLanguage() === "zh-Hans" ? "zh-CN" : systemLocale);

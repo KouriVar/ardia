@@ -19,13 +19,13 @@ final class RecordingPill {
       HStack(spacing: 10) {
         Circle().fill(Color(nsColor: .systemRed)).frame(width: 8, height: 8)
         HStack(spacing: 6) {
-          Text("Recording")
+          Text(MenuTranslator.text("Recording"))
           Text("\(model.seconds / 60):\(String(format: "%02d", model.seconds % 60))").monospacedDigit().foregroundStyle(.white.opacity(0.7))
         }
         Button(action: onStop) {
           HStack(spacing: 5) {
             RoundedRectangle(cornerRadius: 1.5).frame(width: 8, height: 8)
-            Text("Stop").fontWeight(.semibold)
+            Text(MenuTranslator.text("Stop")).fontWeight(.semibold)
           }
           .padding(.horizontal, 10)
           .frame(height: 24)
@@ -33,7 +33,7 @@ final class RecordingPill {
           .contentShape(Capsule())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("Stop recording")
+        .accessibilityLabel(MenuTranslator.text("Stop recording"))
       }
       .font(.system(size: 13, weight: .medium))
       .foregroundStyle(.white)

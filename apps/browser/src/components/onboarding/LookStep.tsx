@@ -13,6 +13,7 @@ import { keysOf } from "../../state/onboarding/questions";
 import { change, Page, useQuestion } from "./LayoutSteps";
 import { OptionCard } from "./OptionCard";
 import { OptionRow, useOnboardingCard } from "./Parts";
+import { useTranslate } from "../ui/Translate";
 import { Slider } from "../settings/ThemeControls";
 import { Text } from "../ui";
 import { noteOnboardingStyle } from "../../state/telemetry/usage";
@@ -50,7 +51,7 @@ const FRAME_CHOICES: { value: number; title: string; subtitle: string }[] = [
   { value: 0, title: "Edge to edge", subtitle: "No frame: the page meets the window and the sidebar" },
 ];
 const FRAME_VALUE_WIDTH = 40;
-const framePicked = (frame: number) => (frame === PAGE_FRAME.default ? [] : frame === 0 ? ["Edge-to-edge page"] : [`Page frame ${frame} pt`]);
+const framePicked = (frame: number, t: (text: string, params?: Record<string, string | number>) => string) => (frame === PAGE_FRAME.default ? [] : frame === 0 ? [t("Edge-to-edge page")] : [t("Page frame {frame} pt", { frame })]);
 
 export function LookStep() {
   const { focus } = useQuestion("look");
@@ -61,7 +62,8 @@ export function LookStep() {
   useEffect(() => {
     previewLive(liquidGlass ? { appearance: values.appearance, interfaceStyle: values.interfaceStyle } : { appearance: values.appearance });
   }, []);
-  const name = customTheme ? "Custom" : color ? PROFILE_COLORS[color]?.name : null;
+  const t = useTranslate();
+  const name = customTheme ? t("Custom") : color ? PROFILE_COLORS[color]?.name : null;
   const glass = liquidGlass ? { interfaceStyle: values.interfaceStyle, glassTintWithTheme: values.glassTintWithTheme } : {};
   const styleLine = !liquidGlass ? [] : values.interfaceStyle === "classic" ? ["Classic style"] : values.glassTintWithTheme ? ["Tinted glass"] : [];
   return (
@@ -70,7 +72,7 @@ export function LookStep() {
       title="Make it yours"
       subtitle="Your color, light or dark, and the style. Everything else is set up for you."
       patch={{ appearance: values.appearance, ...glass }}
-      picked={[...(name ? [`${name} theme`] : []), ...(values.appearance === "auto" ? [] : [`Appearance ${APPEARANCE_LABEL[values.appearance]}`]), ...styleLine]}
+      picked={[...(name ? [t("{name} theme", { name })] : []), ...(values.appearance === "auto" ? [] : [t("Appearance {name}", { name: APPEARANCE_LABEL[values.appearance] })]), ...styleLine.map((line) => t(line))]}
       preview={liquidGlass ? <StylePanel settings={mock} focus={focus.focus} /> : <MockPanel settings={mock} focus={focus.focus} />}
       onConfirm={() => liquidGlass && noteOnboardingStyle(values.interfaceStyle, values.glassTintWithTheme)}
     >
@@ -102,6 +104,7 @@ function StyleChoices({ style, tint, mock }: { style: Settings["interfaceStyle"]
 }
 
 export function DetailsStep() {
+  const t = useTranslate();
   const { id, focus } = useQuestion("details");
   const { values, mock } = useScreen(DETAIL_KEYS);
   const appIcon = useOnboarding((s) => s.extras.appIcon);
@@ -123,7 +126,7 @@ export function DetailsStep() {
         title="How much frame?"
         subtitle="The room between the page and the window. Change it any time in Settings › Appearance."
         patch={{ pageFrame: values.pageFrame, borderlessMode: values.borderlessMode }}
-        picked={framePicked(frame)}
+        picked={framePicked(frame, t)}
         preview={preview}
       >
         <View style={{ gap: space.ml }}>
@@ -131,7 +134,7 @@ export function DetailsStep() {
             <OptionCard key={c.value} control="radio" title={c.title} subtitle={c.subtitle} selected={frame === c.value} onPress={() => change({ pageFrame: c.value, borderlessMode: false }, true)} />
           ))}
           <View style={{ marginTop: space.m }}>
-            <Slider stacked label="Thickness" value={frame / PAGE_FRAME.max} onChange={(v) => change({ pageFrame: Math.round(v * PAGE_FRAME.max), borderlessMode: false }, true)}>
+            <Slider stacked label={t("Thickness")} value={frame / PAGE_FRAME.max} onChange={(v) => change({ pageFrame: Math.round(v * PAGE_FRAME.max), borderlessMode: false }, true)}>
               <Text size="small" tone="textSecondary" style={{ width: FRAME_VALUE_WIDTH, textAlign: "right" }}>
                 {`${frame} pt`}
               </Text>

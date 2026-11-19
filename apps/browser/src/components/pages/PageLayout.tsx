@@ -55,8 +55,9 @@ const HEADER_SEARCH = { flex: 1, alignItems: "center" } as const;
 const SEARCH_WIDTH = { width: "100%", maxWidth: pageHeader.searchMaxWidth } as const;
 const HEADER_ACTIONS = { width: pageHeader.sideWidth, justifyContent: "flex-end", alignItems: "center" } as const;
 
-const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+import { uiLocale } from "../../lib/uiLocale";
+import { activeLanguage } from "../../lib/i18n/active";
+import { translate } from "../../lib/i18n/translate";
 
 export const dayStart = (ms: number) => {
   const d = new Date(ms);
@@ -64,18 +65,15 @@ export const dayStart = (ms: number) => {
 };
 
 export function dayLabel(start: number, now = Date.now()): string {
-  const d = new Date(start);
-  const full = `${DAYS[d.getDay()]}, ${MONTHS[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
+  const full = new Intl.DateTimeFormat(uiLocale(), { weekday: "long", year: "numeric", month: "long", day: "numeric" }).format(start);
   const today = dayStart(now);
-  if (start === today) return `Today – ${full}`;
-  if (start === dayStart(today - 1)) return `Yesterday – ${full}`;
+  if (start === today) return translate("Today – {date}", activeLanguage(), { date: full });
+  if (start === dayStart(today - 1)) return translate("Yesterday – {date}", activeLanguage(), { date: full });
   return full;
 }
 
 export function timeLabel(ms: number): string {
-  const d = new Date(ms);
-  const h = d.getHours();
-  return `${h % 12 || 12}:${String(d.getMinutes()).padStart(2, "0")} ${h < 12 ? "AM" : "PM"}`;
+  return new Intl.DateTimeFormat(uiLocale(), { hour: "numeric", minute: "2-digit" }).format(ms);
 }
 
 export const hostLabel = (url: string) => appUrlOrigin(url) || displayHostOf(url) || url;

@@ -14,6 +14,7 @@ import {
 import { useEffect, useState, type ReactNode } from "react";
 import { Image, View } from "react-native";
 import { useTheme } from "../../ui/theme";
+import { useTranslate } from "../../ui/Translate";
 import { addRemoteProfile, enterRecoveryPhrase, stopSync, useSync } from "../../../state/sync/engine";
 import type { RemoteProfile } from "../../../state/sync/syncDoc";
 import { ProfileBadge } from "../../profiles/ProfileIcons";
@@ -83,14 +84,14 @@ function RecoveryKitSheet() {
             <Text size="small" style={WARNING_TEXT}>
               Save a copy of your Recovery Kit to{" "}
               <Text size="small" style={UNDERLINE}>
-                another
+                {useTranslate()("another")}
               </Text>{" "}
-              device or to the cloud. You’ll need it if you lose access to this device.
+              {useTranslate()("device or to the cloud. You’ll need it if you lose access to this device.")}
             </Text>
           </Box>
-          {saved ? <Body>Saved to {saved.replace(/^\/Users\/[^/]+/, "~")}.</Body> : null}
+          {saved ? <Body>{useTranslate()("Saved to {path}.", { path: saved.replace(/^\/Users\/[^/]+/, "~") })}</Body> : null}
         </View>
-        <View accessibilityLabel="Recovery kit preview" style={[PREVIEW_FRAME, { borderColor: theme.groupBorder }]}>
+        <View accessibilityLabel={useTranslate()("Recovery kit preview")} style={[PREVIEW_FRAME, { borderColor: theme.groupBorder }]}>
           {preview ? <Image source={{ uri: preview }} style={PREVIEW} /> : null}
         </View>
       </Box>

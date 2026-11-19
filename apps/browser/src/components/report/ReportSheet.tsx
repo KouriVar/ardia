@@ -11,6 +11,7 @@ import { RecordSection } from "./RecordSection";
 import { ReportPreview } from "./ReportPreview";
 import { SentView } from "./SentView";
 import { REPORT } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 const FOOTER_NOTE = "Your title and description become a public GitHub issue. Recordings, contact and details stay private.";
 
@@ -25,6 +26,7 @@ export function ReportSheetHost() {
 }
 
 function ReportForm() {
+  const t = useTranslate();
   const preview = useReport((s) => s.preview);
   const ready = useReport(mayStartSending);
   return (
@@ -51,14 +53,15 @@ function ReportForm() {
 }
 
 function Header() {
+  const t = useTranslate();
   const kind = useReport((s) => s.draft.kind);
   return (
     <Box row gap="l" style={CENTER_ROW}>
       <Text size="title" weight="semibold" style={FLEX}>
-        Report a Problem
+        {t("Report a Problem")}
       </Text>
       <Segmented options={REPORT_KINDS.map((k) => ({ value: k.value, title: k.title }))} value={kind} onChange={setKind} />
-      <Button variant="close" look="panel" tooltip="Close" onPress={() => void closeReport()} />
+      <Button variant="close" look="panel" tooltip={t("Close")} onPress={() => void closeReport()} />
     </Box>
   );
 }
@@ -77,6 +80,7 @@ function FieldHint({ hint }: { hint: string | null }) {
 }
 
 function Fields() {
+  const t = useTranslate();
   const { title, description } = useReportShallow((s) => ({ title: s.draft.title, description: s.draft.description }));
   const titleHint = useFieldHint("title");
   const descriptionHint = useFieldHint("description");
@@ -85,26 +89,27 @@ function Fields() {
     <>
       <Box row gap="m" style={{ marginTop: space.xl, marginBottom: space.s, alignItems: "baseline" }}>
         <Text weight="medium" tone="textSecondary" style={FLEX}>
-          Title
+          {t("Title")}
         </Text>
         <FieldHint hint={titleHint} />
         <Text size="small" weight={counter.full ? "semibold" : "regular"} tone={counter.full ? "destructive" : "textTertiary"} accessibilityLabel={`${counter.count} of ${counter.max} characters`}>
           {`${counter.count}/${counter.max}`}
         </Text>
       </Box>
-      <TextField value={title} onChangeText={setTitle} placeholder="Sidebar tabs flicker after waking from sleep" invalid={counter.full || !!titleHint} autoFocus />
+      <TextField value={title} onChangeText={setTitle} placeholder={t("Sidebar tabs flicker after waking from sleep")} invalid={counter.full || !!titleHint} autoFocus />
       <Box row gap="m" style={{ marginTop: space.l, marginBottom: space.s, alignItems: "baseline" }}>
         <Text weight="medium" tone="textSecondary" style={FLEX}>
-          What happened?
+          {t("What happened?")}
         </Text>
         <FieldHint hint={descriptionHint} />
       </Box>
-      <TextField value={description} onChangeText={setDescription} placeholder="What did you do, what did you expect, what happened instead?" multiline invalid={!!descriptionHint} />
+      <TextField value={description} onChangeText={setDescription} placeholder={t("What did you do, what did you expect, what happened instead?")} multiline invalid={!!descriptionHint} />
     </>
   );
 }
 
 function Watch() {
+  const t = useTranslate();
   const sharing = useTelemetry((t) => t.sharing);
   const watch = useReport((s) => s.draft.watch);
   if (sharing) return null;
@@ -112,28 +117,30 @@ function Watch() {
     <Box row gap="m" style={{ marginTop: space.l, alignItems: "flex-start" }}>
       <Checkbox value={watch} onChange={setWatch} />
       <View style={FLEX}>
-        <Text onPress={() => setWatch(!watch)}>Help confirm the fix: share crash reports and usage for 14 days</Text>
-        <Text size="small" tone="textSecondary">{`Turns itself off on ${formatDay(watchEndDate(Date.now()))}.`}</Text>
+        <Text onPress={() => setWatch(!watch)}>{t("Help confirm the fix: share crash reports and usage for 14 days")}</Text>
+        <Text size="small" tone="textSecondary">{t("Turns itself off on {date}.", { date: formatDay(watchEndDate(Date.now())) })}</Text>
       </View>
     </Box>
   );
 }
 
 function Contact() {
+  const t = useTranslate();
   const contact = useReport((s) => s.draft.contact);
   const hint = useFieldHint("contact");
   return (
     <Box row gap="l" style={{ marginTop: space.l, alignItems: "center" }}>
       <Text weight="medium" tone="textSecondary" style={{ width: REPORT.labelWidth }}>
-        Contact
+        {t("Contact")}
       </Text>
-      <TextField value={contact} onChangeText={setContact} placeholder="@handle or email, if you'd like a reply" invalid={!!hint} style={FLEX} />
+      <TextField value={contact} onChangeText={setContact} placeholder={t("@handle or email, if you'd like a reply")} invalid={!!hint} style={FLEX} />
       <FieldHint hint={hint} />
     </Box>
   );
 }
 
 function Footer({ ready }: { ready: boolean }) {
+  const t = useTranslate();
   const upload = useReport((s) => s.upload);
   const busy = isBusy(upload);
   const failed = upload.phase === "failed" ? upload : null;
@@ -144,7 +151,7 @@ function Footer({ ready }: { ready: boolean }) {
         {busy ? (
           <View style={{ gap: space.xs }}>
             <Text size="small" tone="textSecondary">
-              {upload.phase === "creating" ? "Sending…" : upload.phase === "completing" ? "Finishing…" : `Uploading… ${percent}%`}
+              {upload.phase === "creating" ? t("Sending…") : upload.phase === "completing" ? t("Finishing…") : t("Uploading… {percent}%", { percent })}
             </Text>
             <ProgressTrack value={upload.phase === "creating" ? 0.02 : uploadFraction(upload)} tone="formAccent" />
           </View>
@@ -156,8 +163,8 @@ function Footer({ ready }: { ready: boolean }) {
           </Text>
         )}
       </View>
-      <Button title="Cancel" onPress={() => void closeReport()} />
-      <Button title={failed ? "Try Again" : busy ? "Sending…" : "Send"} kind="primary" disabled={!ready} onPress={() => void sendCurrentReport()} />
+      <Button title={t("Cancel")} onPress={() => void closeReport()} />
+      <Button title={t(failed ? "Try Again" : busy ? "Sending…" : "Send")} kind="primary" disabled={!ready} onPress={() => void sendCurrentReport()} />
     </Box>
   );
 }

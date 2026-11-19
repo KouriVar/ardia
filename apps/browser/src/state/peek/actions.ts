@@ -7,6 +7,7 @@ import { splitLinkModifierOf, type PeekModifier, type SplitLinkModifier } from "
 import { MAX_SPLIT_PANES, splitOf, splitTabIdsOf } from "../splits/splits";
 import { openSplitPane } from "../splits/actions";
 import { showToast } from "../app/toasts";
+import { currentT } from "../i18n";
 import { isPeekTab, otherSitePeekTabIds, shownPageId } from "./peek";
 import { closeFind } from "../find/actions";
 import { hostOf } from "@ardia/core";
@@ -61,7 +62,8 @@ export function openPeekInSplit(windowId: string) {
   const peek = s.peeks[windowId];
   if (!peek) return;
   if ((splitTabIdsOf(splitOf(s, peek.sourceId))?.length ?? 0) >= MAX_SPLIT_PANES) {
-    return showToast(windowId, "Cannot Add New Pane", `Split View can show up to ${MAX_SPLIT_PANES} tabs at once.`);
+    const t = currentT();
+    return showToast(windowId, t("Cannot Add New Pane"), t("Split View can show up to {count} tabs at once.", { count: MAX_SPLIT_PANES }));
   }
   const id = s.peekToTab(windowId, { activate: false });
   if (!id) return;

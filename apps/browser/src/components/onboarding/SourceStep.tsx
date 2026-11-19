@@ -10,6 +10,7 @@ import { chooseSource, confirmAnswer, PRESET_NAMES, presetFor, skipStep, sourceP
 import { StepActions, StepLayout } from "./StepLayout";
 import { SecondaryButton } from "./Buttons";
 import { SectionLabel, SelectTile, Tag, useOnboardingCard, useOnboardingColors } from "./Parts";
+import { useTranslate } from "../ui/Translate";
 import { ChoiceCard } from "./ChoiceCard";
 import { SetupCodeLink, SetupCodeStep } from "./SetupCodeStep";
 import { browserIcon } from "./browserIcons";
@@ -58,6 +59,7 @@ function detect(): Tile[] {
 
 export function SourceStep() {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   const source = useOnboarding((s) => s.source);
   const [tiles, setTiles] = useState<Tile[]>(detect);
   const [importing, setImporting] = useState<BrowserSourceId | null>(null);
@@ -80,7 +82,7 @@ export function SourceStep() {
     setImporting(chosen.id);
   };
 
-  const done = () => confirmAnswer("source", sourcePatch(), chosen ? [`Coming from ${chosen.name}`] : source === "fresh" ? ["Starting fresh"] : []);
+  const done = () => confirmAnswer("source", sourcePatch(), chosen ? [t("Coming from {name}", { name: chosen.name })] : source === "fresh" ? [t("Starting fresh")] : []);
 
   if (pastingCode) return <SetupCodeStep onBack={() => setPastingCode(false)} />;
 
@@ -103,10 +105,10 @@ export function SourceStep() {
           <ChoiceCard radius={radius.panel} style={{ flexDirection: "row", alignItems: "center", gap: space.l, padding: space.l }}>
             <View style={{ flex: 1, gap: space.xxs }}>
               <Text weight="medium" color={colors.title}>
-                {importing === chosen.id ? `Importing from ${chosen.name}` : `Bring your stuff from ${chosen.name}`}
+                {importing === chosen.id ? t("Importing from {name}", { name: chosen.name }) : t("Bring your stuff from {name}", { name: chosen.name })}
               </Text>
               <Text size="small" color={colors.rowSubtitle}>
-                {importing === chosen.id ? "It runs in its own window. Carry on here." : "Bookmarks, history, passwords and tabs."}
+                {importing === chosen.id ? t("It runs in its own window. Carry on here.") : t("Bookmarks, history, passwords and tabs.")}
               </Text>
             </View>
             {importing === chosen.id ? <Checkbox look="ring" size="m" value /> : <SecondaryButton title="Import…" filled onPress={startImport} />}

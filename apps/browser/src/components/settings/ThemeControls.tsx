@@ -5,6 +5,7 @@ import type { ProfileTheme } from "../../state/browser/types";
 import { Box, capsule, Dot, ink, ProgressTrack, radius, tabularNums, Text, ThemeSwatch, useTheme } from "../ui";
 import { MiniWindow } from "./MiniWindow";
 import { settingsInk, themePreview } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 export const PAD = 172;
 const KNOB = 22;
@@ -20,6 +21,7 @@ const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
 export function DirectionDial({ angle, onChange }: { angle: number; onChange: (angle: number, settle: boolean) => void }) {
   const ui = useTheme();
+  const t = useTranslate();
   const ref = useRef<View>(null);
   const centre = useRef({ x: 0, y: 0 });
   const measure = () => ref.current?.measureInWindow((x, y, width, height) => (centre.current = { x: x + width / 2, y: y + height / 2 }));
@@ -38,11 +40,11 @@ export function DirectionDial({ angle, onChange }: { angle: number; onChange: (a
         onMouseEnter={measure}
         accessible
         accessibilityRole="adjustable"
-        accessibilityLabel="Direction"
+        accessibilityLabel={t("Direction")}
         accessibilityValue={{ text: `${Math.round(angle)}°` }}
         accessibilityActions={[{ name: "increment" }, { name: "decrement" }]}
         onAccessibilityAction={(e) => step(e.nativeEvent.actionName === "increment" ? 1 : -1)}
-        tooltip="Drag to turn the gradient"
+        tooltip={t("Drag to turn the gradient")}
         style={{ width: DIAL, height: DIAL, borderRadius: capsule(DIAL), backgroundColor: ui.control, borderWidth: DIAL_BORDER, borderColor: ui.controlBorder }}
         onStartShouldSetResponder={() => true}
         onResponderGrant={(e) => {
@@ -162,13 +164,14 @@ export function ColorPad({
   );
 }
 export function LightnessBar({ theme, index, onChange }: { theme: ProfileTheme; index: number; onChange: (next: ProfileTheme, settle?: boolean) => void }) {
+  const t = useTranslate();
   const stop = theme.stops[index]!;
   return (
     <View style={{ width: PAD }}>
       <Track
         value={stopLightness(stop)}
         thumbColor={colorHex(stop.color)}
-        tooltip="Brightness"
+        tooltip={t("Brightness")}
         onChange={(v, settle) => onChange(withStopLightness(theme, index, v), settle)}
         bar={
           <View style={{ height: 8, borderRadius: capsule(8), overflow: "hidden", flexDirection: "row" }}>
@@ -182,10 +185,11 @@ export function LightnessBar({ theme, index, onChange }: { theme: ProfileTheme; 
   );
 }
 export function Labelled({ label, children }: { label: string; children: ReactNode }) {
+  const t = useTranslate();
   return (
     <Box gap="s">
       <Text size="small" lines={1}>
-        {label}
+        {t(label)}
       </Text>
       {children}
     </Box>
@@ -205,6 +209,7 @@ export function Slider({
   children?: ReactNode;
 }) {
   const ui = useTheme();
+  const t = useTranslate();
   const track = (
     <Track
       value={value}
@@ -228,7 +233,7 @@ export function Slider({
   return (
     <Box row gap="ml" style={CENTER}>
       <Text size="small" lines={1} style={{ width: LABEL }}>
-        {label}
+        {t(label)}
       </Text>
       <View style={{ flex: 1 }}>{track}</View>
       {children}
@@ -237,11 +242,12 @@ export function Slider({
 }
 export function AmountSlider({ value, onChange, tooltip }: { value: number; onChange: (value: number, settle: boolean) => void; tooltip?: string }) {
   const ui = useTheme();
+  const t = useTranslate();
   return (
     <Track
       value={value}
       onChange={onChange}
-      tooltip={tooltip}
+      tooltip={tooltip === undefined ? undefined : t(tooltip)}
       bar={<ProgressTrack value={value} height={4} tone="formAccent" style={{ backgroundColor: ui.switchOff }} />}
     />
   );
@@ -260,6 +266,7 @@ function Track({
   thumbColor?: string;
   tooltip?: string;
 }) {
+  const t = useTranslate();
   const ref = useRef<View>(null);
   const frame = useRef({ x: 0, width: 1 });
   const measure = () => ref.current?.measureInWindow((x, _y, width) => (frame.current = { x, width: Math.max(1, width) }));

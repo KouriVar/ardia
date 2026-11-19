@@ -26,6 +26,7 @@ import { importArcTheme } from "../../state/profiles/arcThemes";
 import { Row, SectionHeader } from "./Form";
 import { ColorPad, DirectionDial, LABEL, Labelled, LightnessBar, Preview, Slider } from "./ThemeControls";
 import { settingsInk } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 export { arcThemeChoices, importArcTheme } from "../../state/profiles/arcThemes";
 
@@ -75,6 +76,7 @@ export function useThemeDraft(profileId: string, apply: (theme: ProfileTheme) =>
 }
 
 export function ThemeSection({ profileId }: { profileId: string }) {
+  const t = useTranslate();
   const { profile, stored, custom, editsDark, shown, followsApp, change, startCustom } = useThemeDraft(profileId, (theme) => setProfileTheme(profileId, theme));
   const editing = !!profile && !!stored;
   useEffect(() => {
@@ -86,18 +88,18 @@ export function ThemeSection({ profileId }: { profileId: string }) {
   return (
     <>
       <SectionHeader
-        title="Theme"
-        description="Tints this profile's windows, New Tab page and highlights."
-        action={<Button title="Import from Arc…" onPress={() => void importArcTheme(profileId)} />}
+        title={t("Theme")}
+        description={t("Tints this profile's windows, New Tab page and highlights.")}
+        action={<Button title={t("Import from Arc…")} onPress={() => void importArcTheme(profileId)} />}
       />
       <Group>
         <Row
-          title="Colour"
+          title={t("Colour")}
           description={
             stored?.dark
-              ? `Separate light and dark looks. Editing keeps the ${editsDark ? "dark" : "light"} one.`
+              ? t("Separate light and dark looks. Editing keeps the {mode} one.", { mode: t(editsDark ? "dark" : "light") })
               : custom
-                ? "Custom gradient"
+                ? t("Custom gradient")
                 : PROFILE_COLORS[profile.color]?.name
           }
         >
@@ -167,8 +169,9 @@ export function ThemeSwatches({
   size?: number;
   gap?: number;
 }) {
+  const t = useTranslate();
   return (
-    <View style={{ flexDirection: "row", flexWrap: "wrap", gap }} accessibilityRole="radiogroup" accessibilityLabel="Theme color">
+    <View style={{ flexDirection: "row", flexWrap: "wrap", gap }} accessibilityRole="radiogroup" accessibilityLabel={t("Theme color")}>
       {COLORS.map((c) => (
         <ColorButton key={c} name={PROFILE_COLORS[c].name} ring={PROFILE_COLORS[c].swatch} size={size} selected={color === c} onPress={() => onPreset(c)} />
       ))}
@@ -182,9 +185,10 @@ export function ThemeSwatches({
 }
 
 function ColorButton({ name, ring, size, selected, onPress, children }: { name: string; ring: string; size: number; selected: boolean; onPress: () => void; children?: ReactNode }) {
+  const t = useTranslate();
   return (
-    <View tooltip={name}>
-      <Pressable onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected }} accessibilityLabel={name}>
+    <View tooltip={t(name)}>
+      <Pressable onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected }} accessibilityLabel={t(name)}>
         {({ pressed }) => (
           <View style={{ transform: [{ scale: pressed ? PRESSED_SCALE : 1 }] }}>
             <Swatch animated size={size} selected={selected} ring={ring} fill={children ? undefined : ring}>
@@ -223,6 +227,7 @@ export function CustomSwatch({ theme }: { theme: ProfileTheme | null }) {
 }
 
 function ThemeStops({ theme, onChange }: { theme: ProfileTheme; onChange: (next: ProfileTheme, settle?: boolean) => void }) {
+  const t = useTranslate();
   const [selected, setSelected] = useState(0);
   const index = Math.min(selected, theme.stops.length - 1);
   return (
@@ -231,13 +236,13 @@ function ThemeStops({ theme, onChange }: { theme: ProfileTheme; onChange: (next:
       <LightnessBar theme={theme} index={index} onChange={onChange} />
       <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
         <Text size="caption" tone="textSecondary">
-          {theme.stops.length} of {MAX_THEME_STOPS} colours
+          {t("{current} of {total} colours", { current: theme.stops.length, total: MAX_THEME_STOPS })}
         </Text>
         <Box row gap="xs">
           <Button
             variant="stepper"
             icon="minus"
-            tooltip="Remove Colour"
+            tooltip={t("Remove Colour")}
             disabled={theme.stops.length <= 1}
             onPress={() => {
               onChange(withoutStop(theme, index), true);
@@ -247,7 +252,7 @@ function ThemeStops({ theme, onChange }: { theme: ProfileTheme; onChange: (next:
           <Button
             variant="stepper"
             icon="plus"
-            tooltip="Add Colour"
+            tooltip={t("Add Colour")}
             disabled={theme.stops.length >= MAX_THEME_STOPS}
             onPress={() => {
               onChange(withAddedStop(theme), true);
@@ -269,15 +274,16 @@ export function ThemeEditor({
   full?: { shown: ShownLook; followsApp: boolean };
   onChange: (next: ProfileTheme, settle?: boolean) => void;
 }) {
+  const t = useTranslate();
   const stacked = !full;
   return (
     <Box row gap="xl">
       <ThemeStops theme={theme} onChange={onChange} />
       <Box gap={full ? "l" : "xl"} style={FILL}>
         {full ? <Preview shown={full.shown} /> : null}
-        <Slider stacked={stacked} label="Intensity" value={theme.intensity} onChange={(v, settle) => onChange({ ...theme, intensity: v }, settle)} />
-        <Slider stacked={stacked} label="Pass-through blur" value={theme.translucency} onChange={(v, settle) => onChange({ ...theme, translucency: v }, settle)} />
-        <Slider stacked={stacked} label="Noise" value={theme.grain} onChange={(v, settle) => onChange({ ...theme, grain: v }, settle)}>
+        <Slider stacked={stacked} label={t("Intensity")} value={theme.intensity} onChange={(v, settle) => onChange({ ...theme, intensity: v }, settle)} />
+        <Slider stacked={stacked} label={t("Pass-through blur")} value={theme.translucency} onChange={(v, settle) => onChange({ ...theme, translucency: v }, settle)} />
+        <Slider stacked={stacked} label={t("Noise")} value={theme.grain} onChange={(v, settle) => onChange({ ...theme, grain: v }, settle)}>
           <PopUp
             value={theme.texture}
             minWidth={78}
@@ -285,21 +291,21 @@ export function ThemeEditor({
             onChange={(texture) => onChange({ ...theme, texture, grain: theme.grain || 0.5 }, true)}
           />
         </Slider>
-        <EditorRow stacked={stacked} label="Direction">
+        <EditorRow stacked={stacked} label={t("Direction")}>
           <DirectionDial angle={lookAngle(theme)} onChange={(angle, settle) => onChange(withAngle(theme, angle), settle)} />
         </EditorRow>
         {full ? (
-          <EditorRow label="Appearance">
+          <EditorRow label={t("Appearance")}>
             {full.followsApp ? (
               <Text size="caption" tone="textSecondary" lines={2} style={FILL}>
-                Follows Settings › Appearance
+                {t("Follows Settings › Appearance")}
               </Text>
             ) : (
               <Segmented options={MODE_OPTIONS} value={theme.mode} onChange={(mode) => onChange({ ...theme, mode }, true)} />
             )}
             {full.shown.dark !== full.shown.requestedDark ? (
               <Text size="caption" tone="textSecondary" lines={2} style={KEPT_NOTE}>
-                Kept {full.shown.dark ? "dark" : "light"} so text stays readable
+                {t("Kept {mode} so text stays readable", { mode: t(full.shown.dark ? "dark" : "light") })}
               </Text>
             ) : null}
           </EditorRow>
@@ -310,11 +316,12 @@ export function ThemeEditor({
 }
 
 function EditorRow({ label, stacked, children }: { label: string; stacked?: boolean; children: ReactNode }) {
+  const t = useTranslate();
   if (stacked) return <Labelled label={label}>{children}</Labelled>;
   return (
     <View style={LABELLED_ROW}>
       <Text size="small" style={EDITOR_LABEL}>
-        {label}
+        {t(label)}
       </Text>
       {children}
     </View>

@@ -132,6 +132,7 @@ export const ReloadButton = memo(function ReloadButton({
 }) {
   const web = () => webviews.get(tab.id);
   const reloadHint = useShortcutHint("reload");
+  const t = useTranslate();
   const pressMotion = useRef(new Animated.Value(1)).current;
   const animateReloadPress = () => {
     if (reduceMotion() !== false) return;
@@ -157,7 +158,7 @@ export const ReloadButton = memo(function ReloadButton({
         onFocus();
         void showReloadMenu(tab.id);
       }}
-      tooltip={loading ? "Stop Loading This Page" : withShortcut("Refresh", reloadHint)}
+      tooltip={loading ? t("Stop Loading This Page") : withShortcut(t("Refresh"), reloadHint)}
     >
       <ReloadGlyph loading={loading} color={tab.url ? palette.icon : palette.iconDisabled} press={pressMotion} />
     </Button>
@@ -182,6 +183,7 @@ export const HistoryButton = memo(function HistoryButton({
   onFocus: () => void;
 }) {
   const historyHint = useShortcutHint(direction < 0 ? "back" : "forward");
+  const t = useTranslate();
   const openMenu = () => {
     onFocus();
     toggleHistoryMenu(tabId, direction);
@@ -205,7 +207,7 @@ export const HistoryButton = memo(function HistoryButton({
         onPress={onPress}
         onLongPress={openMenu}
         onContextMenu={openMenu}
-        tooltip={withShortcut(direction < 0 ? "Go Back" : "Go Forward", historyHint)}
+        tooltip={withShortcut(t(direction < 0 ? "Go Back" : "Go Forward"), historyHint)}
       />
     </MouseArea>
   );

@@ -10,9 +10,11 @@ import { Dot } from "../ui";
 import { capsule, ink, radius, space } from "../ui/tokens";
 import { SelectTile, useOnboardingColors } from "./Parts";
 import { StepActions, StepLayout } from "./StepLayout";
+import { useTranslate } from "../ui/Translate";
 import { trafficLights } from "./tokens";
 
 export function PinnedTabsStep() {
+  const t = useTranslate();
   const windowId = useOnboarding((s) => s.windowId);
   const chosen = useOnboarding((s) => s.extras.pins);
   const history = useWindowHistory(windowId);
@@ -25,7 +27,7 @@ export function PinnedTabsStep() {
 
   const pinSelected = () => {
     if (windowId && selected.length) pinSites(windowId, selected);
-    confirmAnswer("pins", {}, selected.length ? [`${selected.length} ${selected.length === 1 ? "app" : "apps"} pinned`] : []);
+    confirmAnswer("pins", {}, selected.length ? [t("{count} apps pinned", { count: selected.length })] : []);
   };
 
   return (
@@ -34,7 +36,7 @@ export function PinnedTabsStep() {
       subtitle="Pin the apps you use most. They stay put when you open Ardia."
       actions={
         <StepActions
-          continueTitle={selected.length ? `Pin ${selected.length} ${selected.length === 1 ? "Tab" : "Tabs"}` : "Continue"}
+          continueTitle={selected.length ? t("Pin {count} Tabs", { count: selected.length }) : t("Continue")}
           onContinue={pinSelected}
           onSkip={() => skipStep()}
         />

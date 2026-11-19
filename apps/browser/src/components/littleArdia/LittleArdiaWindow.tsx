@@ -1,4 +1,5 @@
 import { Button, ContextMenuArea, PinchArea, pinchScale, pinchSettle, reduceMotion, useHover, WindowBackdrop, WindowDragRegion, type PinchMotion } from "../ui";
+import { useTranslate } from "../ui/Translate";
 import { setTrafficLightsCenter } from "../../state/windows/nativeWindow";
 import { useEffect, useRef, useState } from "react";
 import { Animated, StyleSheet, View } from "react-native";
@@ -39,6 +40,7 @@ const alreadyFocused = () => {};
 
 export function LittleArdiaWindow() {
   const theme = useTheme();
+  const t = useTranslate();
   const windowId = useWindowId();
   const fullScreen = useWindowFullScreen(windowId);
   const [width, setWidth] = useState(0);
@@ -95,6 +97,7 @@ function useLittleArdiaPinch(windowId: string) {
 }
 
 function LittleArdiaBar() {
+  const t = useTranslate();
   const windowId = useWindowId();
   const tab = useActiveTab();
   const panelOpen = useWindowUi().panel.open;
@@ -120,8 +123,8 @@ function LittleArdiaBar() {
       fieldMaxWidth={FIELD_MAX_WIDTH}
       field={tab ? <PageField tab={tab} windowId={windowId} hidden={panelOpen} /> : null}
       buttons={[
-        { icon: copied ? "checkmark" : "link", disabled: !tab?.url, tooltip: "Copy Link (⇧⌘C)", onPress: copy },
-        { icon: "arrow.up.left.and.arrow.down.right", tooltip: "Open in Ardia (⌘O)", onPress: () => openInMainWindow(windowId) },
+        { icon: copied ? "checkmark" : "link", disabled: !tab?.url, tooltip: t("Copy Link (⇧⌘C)"), onPress: copy },
+        { icon: "arrow.up.left.and.arrow.down.right", tooltip: t("Open in Ardia (⌘O)"), onPress: () => openInMainWindow(windowId) },
       ]}
       trailing={severalProfiles ? <ProfileButton windowId={windowId} /> : undefined}
     >

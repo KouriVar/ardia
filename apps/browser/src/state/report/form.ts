@@ -1,3 +1,5 @@
+import { uiLocale } from "../../lib/uiLocale";
+
 export const REPORT_KINDS = [
   { value: "bug", title: "Bug" },
   { value: "slow", title: "Slow" },
@@ -239,7 +241,7 @@ export function watchEndDate(from: number, days = WATCH_DAYS): number {
 }
 
 export function formatDay(ms: number): string {
-  return new Date(ms).toLocaleDateString(undefined, { month: "long", day: "numeric" });
+  return new Date(ms).toLocaleDateString(uiLocale(), { month: "long", day: "numeric" });
 }
 
 export function formatDuration(seconds: number): string {

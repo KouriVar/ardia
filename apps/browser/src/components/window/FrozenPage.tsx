@@ -5,9 +5,11 @@ import { windowColors } from "./tokens";
 import { useTab } from "../../state/browser/hooks";
 import { activate } from "../../state/tabs/actions";
 import { notePainted, startPinHandoff, useFrozenPages } from "../../state/pins/pinHandoff";
+import { useTranslate } from "../ui/Translate";
 
 export function FrozenPage({ windowId, tabId, top }: { windowId: string; tabId: string | undefined; top: number }) {
   const theme = useTheme();
+  const t = useTranslate();
   useEffect(startPinHandoff, []);
   const frozen = useTab(tabId, (t) => t?.page.kind === "frozen");
   const pass = useFrozenPages((f) => f.bridges[windowId]);
@@ -16,7 +18,7 @@ export function FrozenPage({ windowId, tabId, top }: { windowId: string; tabId: 
   if (!frozen && !pass) return null;
   return (
     <Pressable
-      accessibilityLabel="Bring this tab to this window"
+      accessibilityLabel={t("Bring this tab to this window")}
       onPress={() => {
         if (frozen && tabId) activate(tabId);
       }}

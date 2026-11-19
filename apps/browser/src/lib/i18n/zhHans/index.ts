@@ -9,5 +9,9 @@ import { commands } from "./commands";
 import { menu } from "./menu";
 import { menuItems } from "./menuItems";
 import { browser } from "./browser";
+import { browserExtra } from "./browserExtra";
+import { browserMore } from "./browserMore";
+import { audit } from "./audit";
+import { auditExtra } from "./auditExtra";
 
-export const zhHans: Record<string, string> = { ...chrome, ...general, ...profiles, ...tabs, ...privacy, ...tools, ...inline, ...commands, ...menu, ...menuItems, ...browser };
+export const zhHans: Record<string, string> = { ...chrome, ...general, ...profiles, ...tabs, ...privacy, ...tools, ...inline, ...commands, ...menu, ...menuItems, ...browser, ...browserExtra, ...browserMore, ...audit, ...auditExtra };

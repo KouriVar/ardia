@@ -9,9 +9,11 @@ import { tabLabel } from "../../state/browser/model";
 import { Panel, SearchField, shadow, space, Symbol, Text, useHover } from "../ui";
 import { EMPTY_STATE_RADIUS, EMPTY_STATE_WIDTH, SPLIT_ROW_HEIGHT, SPLIT_ROW_RADIUS, splitColors } from "./tokens";
 import { Favicon } from "../favicon/Favicon";
+import { useTranslate } from "../ui/Translate";
 
 export function SplitEmptyState({ tabId, focused }: { tabId: string; focused: boolean }) {
   const theme = useTheme();
+  const t = useTranslate();
   const [typing, setTyping] = useState(focused);
   const [text, setText] = useState("");
   const suggestions = useSplitSuggestions(tabId);
@@ -29,7 +31,7 @@ export function SplitEmptyState({ tabId, focused }: { tabId: string; focused: bo
         style={{ width: "100%", maxWidth: EMPTY_STATE_WIDTH, paddingVertical: space.ml }}
       >
         <Text weight="semibold" style={{ paddingHorizontal: space.xl, paddingTop: space.xs, paddingBottom: space.ml }}>
-          Add a tab to this Split View
+          {t("Add a tab to this Split View")}
         </Text>
         {typing ? (
           <View style={{ height: SPLIT_ROW_HEIGHT, marginHorizontal: space.s, paddingHorizontal: space.ml, borderRadius: SPLIT_ROW_RADIUS, justifyContent: "center", backgroundColor: theme.rowHover }}>
@@ -38,7 +40,7 @@ export function SplitEmptyState({ tabId, focused }: { tabId: string; focused: bo
               autoFocus
               value={text}
               onChangeText={setText}
-              placeholder="Search or Ask a Question"
+              placeholder={t("Search or Ask a Question")}
               onSubmit={go}
               onEscape={() => {
                 setText("");
@@ -47,7 +49,7 @@ export function SplitEmptyState({ tabId, focused }: { tabId: string; focused: bo
             />
           </View>
         ) : (
-          <Row icon={<Symbol name="magnifyingglass" size={13} color={theme.textSecondary} style={{ width: 16, height: 16 }} />} label="Search or Ask a Question" secondary onPress={() => setTyping(true)} />
+          <Row icon={<Symbol name="magnifyingglass" size={13} color={theme.textSecondary} style={{ width: 16, height: 16 }} />} label={t("Search or Ask a Question")} secondary onPress={() => setTyping(true)} />
         )}
         {suggestions.length > 0 && <View style={{ height: space.s }} />}
         {suggestions.map((id) => (

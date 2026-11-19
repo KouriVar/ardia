@@ -4,12 +4,14 @@ import { Symbol, Text, useHover, type SymbolProps } from "../ui";
 import { ink, space } from "../ui/tokens";
 import { useOnboardingColors } from "./Parts";
 import { onboardingButton } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 function PressScale({ title, onPress, disabled, scale, tooltip, children }: { title: string; onPress: () => void; disabled?: boolean; scale: number; tooltip?: string; children: (state: { hovered: boolean; pressed: boolean }) => ReactNode }) {
+  const t = useTranslate();
   const { hovered, hoverProps } = useHover();
   return (
-    <View {...hoverProps} tooltip={tooltip} style={disabled === undefined ? undefined : { opacity: disabled ? onboardingButton.disabledOpacity : 1 }}>
-      <Pressable disabled={disabled} onPress={onPress} accessibilityRole="button" accessibilityLabel={title}>
+    <View {...hoverProps} tooltip={tooltip === undefined ? undefined : t(tooltip)} style={disabled === undefined ? undefined : { opacity: disabled ? onboardingButton.disabledOpacity : 1 }}>
+      <Pressable disabled={disabled} onPress={onPress} accessibilityRole="button" accessibilityLabel={t(title)}>
         {({ pressed }) => (
           <View mouseDownCanMoveWindow={false} style={{ transform: [{ scale: pressed ? scale : 1 }] }}>
             {children({ hovered, pressed })}
@@ -22,6 +24,7 @@ function PressScale({ title, onPress, disabled, scale, tooltip, children }: { ti
 
 export function PrimaryButton({ title, onPress, disabled, icon }: { title: string; onPress: () => void; disabled?: boolean; icon?: string }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   return (
     <PressScale title={title} onPress={onPress} disabled={!!disabled} scale={onboardingButton.pressScale}>
       {({ hovered }) => (
@@ -38,7 +41,7 @@ export function PrimaryButton({ title, onPress, disabled, icon }: { title: strin
           }}
         >
           <Text weight="semibold" color={colors.primaryText}>
-            {title}
+            {t(title)}
           </Text>
           {icon ? <Symbol name={icon} size={11} weight="semibold" color={colors.primaryText} style={{ width: 12, height: 12 }} /> : null}
         </View>
@@ -49,6 +52,7 @@ export function PrimaryButton({ title, onPress, disabled, icon }: { title: strin
 
 export function SecondaryButton({ title, onPress, filled }: { title: string; onPress: () => void; filled?: boolean }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   return (
     <PressScale title={title} onPress={onPress} scale={onboardingButton.pressScale}>
       {({ hovered }) => (
@@ -65,7 +69,7 @@ export function SecondaryButton({ title, onPress, filled }: { title: string; onP
           }}
         >
           <Text weight="medium" color={filled ? colors.buttonText : colors.noThanksText}>
-            {title}
+            {t(title)}
           </Text>
         </View>
       )}

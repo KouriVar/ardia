@@ -19,6 +19,7 @@ import { Box, Button, DialogActions, MenuRow, MenuSeparator, PANEL, PanelCloseBu
 import { answerPermission, describePermission } from "../../state/site/permissions";
 import { hostOrOrigin } from "../../lib/url";
 import { CheckRow, PromptIcon, usePromptInputGuard, Well } from "./PromptParts";
+import { useTranslate } from "../ui/Translate";
 
 export function PromptBody({
   icons,
@@ -35,6 +36,7 @@ export function PromptBody({
   detail?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const t = useTranslate();
   return (
     <View style={{ padding: PANEL.inset }}>
       <Box gap="ml">
@@ -45,10 +47,10 @@ export function PromptBody({
           ))}
         </Box>
         <Box gap="xs">
-          <Text weight="semibold">{title}</Text>
+          <Text weight="semibold">{t(title)}</Text>
           {message ? (
             <Text size="small" tone="textSecondary">
-              {message}
+              {t(message)}
             </Text>
           ) : null}
         </Box>
@@ -65,6 +67,7 @@ export const PERMISSION_PROMPT_WIDTH = POPOVER_WIDTH.s;
 export const EXTERNAL_APP_WIDTH = POPOVER_WIDTH.m;
 
 export function PermissionPrompt({ tabId, left, top }: { tabId: string; left: number; top: number }) {
+  const t = useTranslate();
   const request = usePage(tabId, (p) => p.permission);
   const guard = usePromptInputGuard(request?.id);
   if (!request) return null;
@@ -72,7 +75,7 @@ export function PermissionPrompt({ tabId, left, top }: { tabId: string; left: nu
   return (
     <Popover key={request.id} width={PERMISSION_PROMPT_WIDTH} top={top} left={left} modal={false}>
       <View>
-        <PromptBody icons={icons} title={question} message="Click the lock to change this any time">
+        <PromptBody icons={icons} title={question} message={t("Click the lock to change this any time")}>
           <Button variant="pill" title="Don't Allow" onPress={guard(() => answerPermission(tabId, request.id, "deny"))} />
           <Button variant="pill" title="Allow" primary onPress={guard(() => answerPermission(tabId, request.id, "accept"))} />
         </PromptBody>
@@ -85,6 +88,7 @@ export function PermissionPrompt({ tabId, left, top }: { tabId: string; left: nu
 export const BLOCKED_POPUPS_WIDTH = POPOVER_WIDTH.l;
 
 export function BlockedPopupsPrompt({ tabId, right, left, top }: { tabId: string; right?: number; left?: number; top: number }) {
+  const t = useTranslate();
   const popups = usePage(tabId, (p) => p.popups);
   if (!popups.length) return null;
   const origin = popups[0]!.origin;
@@ -101,8 +105,8 @@ export function BlockedPopupsPrompt({ tabId, right, left, top }: { tabId: string
       <View style={{ paddingBottom: PANEL.listPadding }}>
         <PromptBody
           icons={["macwindow.badge.plus"]}
-          title={`Always allow pop-ups from ${site}?`}
-          message={`Allow ${site} to always open pop-up windows, choose every time, or always deny pop-ups.`}
+          title={t("Always allow pop-ups from {site}?", { site })}
+          message={t("Allow {site} to always open pop-up windows, choose every time, or always deny pop-ups.", { site })}
         >
           <Button variant="pill"
             title="Always Deny"
@@ -142,7 +146,7 @@ export function BlockedPopupsPrompt({ tabId, right, left, top }: { tabId: string
           />
         ))}
         {popups.length > 5 ? (
-          <Text size="caption" tone="textSecondary" style={{ paddingLeft: PANEL.textColumn, paddingTop: space.xxs }}>{`and ${popups.length - 5} more`}</Text>
+          <Text size="caption" tone="textSecondary" style={{ paddingLeft: PANEL.textColumn, paddingTop: space.xxs }}>{t("and {count} more", { count: popups.length - 5 })}</Text>
         ) : null}
       </View>
     </Popover>
@@ -150,6 +154,7 @@ export function BlockedPopupsPrompt({ tabId, right, left, top }: { tabId: string
 }
 
 export function PasswordPrompt({ tabId, right, top }: { tabId: string; right: number; top: number }) {
+  const t = useTranslate();
   const prompt = usePage(tabId, (p) => p.passwordPrompt);
   const [chosen, setChosen] = useState<string | null>(null);
   const guard = usePromptInputGuard(prompt ? `${prompt.origin}|${prompt.username}|${prompt.state}` : null);
@@ -168,8 +173,8 @@ export function PasswordPrompt({ tabId, right, top }: { tabId: string; right: nu
       <View>
         <PromptBody
           icons={["key.fill"]}
-          title={update ? "Update saved password?" : `Save password for ${site}?`}
-          message={update ? `It will be auto-filled on ${site}` : "That way, it'll be auto-filled next time"}
+          title={update ? t("Update saved password?") : t("Save password for {site}?", { site })}
+          message={update ? t("It will be auto-filled on {site}", { site }) : t("That way, it'll be auto-filled next time")}
           detail={
             choices.length ? (
               <Well list>
@@ -180,7 +185,7 @@ export function PasswordPrompt({ tabId, right, top }: { tabId: string; right: nu
             ) : (
               <Well gap="xs">
                 <Text lines={1} size="small" weight="medium">
-                  {username || (prompt.federation ? `Signed in with ${hostOrOrigin(prompt.federation)}` : "No username")}
+                  {username || (prompt.federation ? t("Signed in with {host}", { host: hostOrOrigin(prompt.federation) }) : t("No username"))}
                 </Text>
                 {prompt.passwordLength > 0 && (
                   <Text lines={1} size="small" tone="textSecondary" style={{ letterSpacing: tracking.wide }}>
@@ -191,9 +196,9 @@ export function PasswordPrompt({ tabId, right, top }: { tabId: string; right: nu
             )
           }
         >
-          {!update && <Button variant="pill" title="Never on This Site" onPress={() => answer("never")} />}
-          <Button variant="pill" title="Not Now" onPress={() => answer(update ? "nope" : "dismiss")} />
-          <Button variant="pill" title={update ? "Update" : "Save"} primary onPress={() => answer(update ? "update" : "save")} />
+          {!update && <Button variant="pill" title={t("Never on This Site")} onPress={() => answer("never")} />}
+          <Button variant="pill" title={t("Not Now")} onPress={() => answer(update ? "nope" : "dismiss")} />
+          <Button variant="pill" title={t(update ? "Update" : "Save")} primary onPress={() => answer(update ? "update" : "save")} />
         </PromptBody>
         <PanelCloseButton onPress={() => answer("dismiss")} />
       </View>

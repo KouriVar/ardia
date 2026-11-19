@@ -5,9 +5,11 @@ import { capsule, space, Symbol, Text, useHover, usePresence } from "../ui";
 import { useTheme } from "../ui/theme";
 import { Hud } from "./Hud";
 import { NEW_TAB_NOTICE, windowColors } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 export function NewTabNotice({ windowId, tabId, right, top }: { windowId: string; tabId: string; right: number; top: number }) {
   const theme = useTheme();
+  const t = useTranslate();
   const live = usePaneNewTabNotice(windowId, tabId);
   const { shown, appear } = usePresence(live, NEW_TAB_NOTICE.motion);
   const { hovered, hoverProps } = useHover();
@@ -28,14 +30,14 @@ export function NewTabNotice({ windowId, tabId, right, top }: { windowId: string
         }}
       >
         <View {...hoverProps} style={POINTER}>
-          <Pressable onPress={() => goToNoticedTab(windowId, shown)} accessibilityRole="button" accessibilityLabel="New tab opened. Go to the new tab." style={POINTER}>
+          <Pressable onPress={() => goToNoticedTab(windowId, shown)} accessibilityRole="button" accessibilityLabel={t("New tab opened. Go to the new tab.")} style={POINTER}>
             {({ pressed }) => (
               <View style={{ opacity: pressed ? NEW_TAB_NOTICE.pressedOpacity : 1 }}>
                 <Hud shape="capsule" height={NEW_TAB_NOTICE.height}>
                   <View style={[ROW, { backgroundColor: hover ? windowColors(theme.dark).noticeHover : undefined }]}>
                     <Symbol name="plus.square.on.square" size={12} weight="semibold" color={theme.icon} style={ICON} />
                     <Text size="small" weight="semibold" numberOfLines={1}>
-                      New tab opened
+                      {t("New tab opened")}
                     </Text>
                     <Symbol name="arrow.right" size={10} weight="semibold" color={hover ? theme.textPrimary : theme.textSecondary} style={ICON} />
                   </View>

@@ -22,9 +22,11 @@ import { currentTab } from "../../state/browser/current";
 import { isIncognitoProfile } from "../../state/browser/model";
 import { Button, MenuRow, MenuSeparator, Toggle } from "../ui";
 import type { ToolbarPalette } from "../ui/toolbarColors";
+import { useTranslate } from "../ui/Translate";
 
 export const TranslateButton = memo(function TranslateButton({ tabId, palette, onFocus }: { tabId: string; palette: ToolbarPalette; onFocus: () => void }) {
   const theme = useTheme();
+  const t = useTranslate();
   const state = useTranslateState(tabId);
   if (!translation || (!state.source && state.status === "idle")) return null;
   const translated = state.status !== "idle";
@@ -39,7 +41,7 @@ export const TranslateButton = memo(function TranslateButton({ tabId, palette, o
         toggleTranslation(tabId);
       }}
       onContextMenu={() => void showTranslateMenu(tabId)}
-      tooltip={translated ? `Show Original (${languageName(state.source ?? "")})` : "Translate this page"}
+      tooltip={translated ? t("Show Original ({language})", { language: languageName(state.source ?? "") }) : t("Translate this page")}
     />
   );
 });
@@ -71,6 +73,7 @@ async function showTranslateMenu(tabId: string) {
 }
 
 export function TranslateRows({ tabId, onClose }: { tabId: string; onClose: () => void }) {
+  const t = useTranslate();
   const state = useTranslateState(tabId);
   const tab = useTab(tabId);
   useSettings((st) => st.neverTranslateSites);
@@ -82,7 +85,7 @@ export function TranslateRows({ tabId, onClose }: { tabId: string; onClose: () =
       {!never && (
         <MenuRow
           icon={translated ? "arrow.uturn.backward" : "translate"}
-          title={translated ? `Show Original (${languageName(state.source ?? "")})` : `Translate to ${languageName(defaultTarget())}`}
+          title={translated ? t("Show Original ({language})", { language: languageName(state.source ?? "") }) : t("Translate to {language}", { language: languageName(defaultTarget()) })}
           onPress={() => {
             onClose();
             toggleTranslation(tabId);
@@ -92,7 +95,7 @@ export function TranslateRows({ tabId, onClose }: { tabId: string; onClose: () =
       {!never && (
         <MenuRow
           icon="globe"
-          title="Choose Another Language…"
+          title={t("Choose Another Language…")}
           onPress={() => {
             onClose();
             void chooseLanguage(tabId);
@@ -100,7 +103,7 @@ export function TranslateRows({ tabId, onClose }: { tabId: string; onClose: () =
         />
       )}
       {!isIncognitoProfile(tab.profileId) && (
-        <MenuRow icon="nosign" title="Never Translate This Site" accessory={<Toggle look="panel" value={never} onChange={(v) => setNeverTranslate(tabId, v)} />} />
+        <MenuRow icon="nosign" title={t("Never Translate This Site")} accessory={<Toggle look="panel" value={never} onChange={(v) => setNeverTranslate(tabId, v)} />} />
       )}
       <MenuSeparator />
     </>

@@ -2,6 +2,7 @@ import { useBrowser } from "../browser/store";
 import { plural } from "../browser/model";
 import { tidyingPins, untidyingPins, type TidiedPins } from "../pins/tidyPins";
 import { showToast } from "../app/toasts";
+import { currentT } from "../i18n";
 
 export function tidyPins(windowId: string, profileId?: string) {
   let tidied: TidiedPins | null = null;
@@ -12,10 +13,11 @@ export function tidyPins(windowId: string, profileId?: string) {
   });
   const done = tidied as TidiedPins | null;
   if (!done) return;
-  const duplicates = done.duplicates ? `Closed ${plural(done.duplicates, done.pins ? "duplicate" : "Duplicate Pin")}` : "";
-  const title = done.pins ? `Tidied ${plural(done.pins, "Pin")} into ${plural(done.folders, "Folder")}` : duplicates;
+  const t = currentT();
+  const duplicates = done.duplicates ? t("Closed {count} duplicates", { count: done.duplicates }) : "";
+  const title = done.pins ? t("Tidied {pins} into {folders}", { pins: t("{count} pins", { count: done.pins }), folders: t("{count} folders", { count: done.folders }) }) : duplicates;
   showToast(windowId, title, done.pins && duplicates ? duplicates : undefined, {
     icon: "sparkles",
-    action: { title: "Undo", run: () => useBrowser.setState((s) => untidyingPins(s, done)) },
+    action: { title: t("Undo"), run: () => useBrowser.setState((s) => untidyingPins(s, done)) },
   });
 }

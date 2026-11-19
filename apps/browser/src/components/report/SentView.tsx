@@ -5,9 +5,11 @@ import { formatDay } from "../../state/report/form";
 import { AnonymousAvatar } from "../settings/AnonymousAvatar";
 import { Box, Button, Dialog, Dot, space, Symbol, Text, useTheme } from "../ui";
 import { REPORT } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 export function SentView({ sent }: { sent: SentReport }) {
   const theme = useTheme();
+  const t = useTranslate();
   return (
     <Dialog width="l" animated onDismiss={finishReport} onSubmit={finishReport}>
       <View style={COLUMN}>
@@ -15,14 +17,14 @@ export function SentView({ sent }: { sent: SentReport }) {
           <Symbol name="checkmark" size={REPORT.sentGlyph} weight="bold" color={theme.onAccent} style={{ width: REPORT.sentIcon, height: REPORT.sentIcon }} />
         </Dot>
         <Text size="large" weight="semibold" style={{ marginTop: space.l }}>
-          {`Sent · ${sent.id}`}
+          {t("Sent · {id}", { id: sent.id })}
         </Text>
         <Text tone="textSecondary" style={{ marginTop: space.xs }}>
-          Thanks. Every report gets read and tracked.
+          {t("Thanks. Every report gets read and tracked.")}
         </Text>
         {sent.issueUrl ? (
           <View style={{ marginTop: space.xs }}>
-            <Button variant="text" look="link" title={sent.issueNumber ? `View on GitHub · #${sent.issueNumber}` : "View on GitHub"} onPress={viewIssue} />
+            <Button variant="text" look="link" title={sent.issueNumber ? t("View on GitHub · #{number}", { number: sent.issueNumber }) : t("View on GitHub")} onPress={viewIssue} />
           </View>
         ) : null}
       </View>
@@ -34,19 +36,19 @@ export function SentView({ sent }: { sent: SentReport }) {
             <Text weight="semibold">{sent.name}</Text>
           </Text>
           <Text size="small" tone="textSecondary">
-            A made-up name. No account, no email.
+            {t("A made-up name. No account, no email.")}
           </Text>
         </View>
       </Box>
       {sent.watchUntil ? (
         <Text size="small" tone="textSecondary" style={{ marginTop: space.l, textAlign: "center" }}>
           {sent.watchTurnsOff
-            ? `Crash reports and usage are shared until ${formatDay(sent.watchUntil)} to confirm the fix, then sharing turns itself off. Stop early in Settings › Privacy.`
-            : `We'll watch for this problem until ${formatDay(sent.watchUntil)}.`}
+            ? t("Crash reports and usage are shared until {date} to confirm the fix, then sharing turns itself off. Stop early in Settings › Privacy.", { date: formatDay(sent.watchUntil) })
+            : t("We'll watch for this problem until {date}.", { date: formatDay(sent.watchUntil) })}
         </Text>
       ) : null}
       <View style={{ marginTop: space.xl, alignItems: "center" }}>
-        <Button title="Done" kind="primary" onPress={finishReport} />
+        <Button title={t("Done")} kind="primary" onPress={finishReport} />
       </View>
     </Dialog>
   );

@@ -7,6 +7,7 @@ import type { PageSelection } from "../../platform/tabs";
 import { useBrowser } from "../browser/store";
 import { defaultSearchEngine } from "../settings/settings";
 import { showToast } from "../app/toasts";
+import { currentT } from "../i18n";
 import { openModeFor } from "../bookmarks/actions";
 import { openFromPage } from "../tabs/openFromPage";
 import { awaitsFirstPage } from "../tabs/pendingAddress";
@@ -89,7 +90,8 @@ export async function copyLinkToSelection(tabId: string) {
   const windowId = store().tabs[tabId]?.windowId;
   if (!link || !windowId) return;
   copyText(link);
-  showToast(windowId, "Copied Quote Link", "Links directly to the selected text.", { icon: "quote.bubble.fill" });
+  const t = currentT();
+  showToast(windowId, t("Copied Quote Link"), t("Links directly to the selected text."), { icon: "quote.bubble.fill" });
 }
 
 const HAS_SELECTION = `post("result", JSON.stringify(!!String(getSelection() || "").trim()))`;
@@ -100,11 +102,12 @@ export async function copyPageUrl(tabId: string) {
   const clean = cleanUrl(tab.url);
   copyText(clean);
   noteUrlCopied(awaitsFirstPage(tabId));
-  const title = clean !== tab.url ? "Copied a clean link without trackers" : "Copied Current URL";
+  const t = currentT();
+  const title = clean !== tab.url ? t("Copied a clean link without trackers") : t("Copied Current URL");
   const web = webviews.get(tabId);
   const selected = /^https?:/.test(tab.url) && web ? await web.evaluate<boolean>(HAS_SELECTION) : false;
   if (selected !== true) return showToast(tab.windowId, title, undefined, { icon: "link" });
-  showToast(tab.windowId, title, "Share a link directly to this text instead?", {
+  showToast(tab.windowId, title, t("Share a link directly to this text instead?"), {
     icon: "link",
     action: { title: "Copy Quote Link", run: () => void copyLinkToSelection(tabId) },
   });

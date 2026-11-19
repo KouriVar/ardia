@@ -16,6 +16,7 @@ import { syncFolderAfterNow, syncFolderNow } from "./engine";
 import { bindFolder, boundFolders, folderRef, sharedFolderOf, unbindFolder, useSharedFolders } from "./store";
 import { canShareGroup, sharedFolderOfGroup } from "./removal";
 import { showToast } from "../app/toasts";
+import { currentT } from "../i18n";
 
 const store = () => useBrowser.getState();
 
@@ -65,7 +66,8 @@ export async function addSharedFolder(windowId: string) {
   const known = boundFolders().find((b) => b.profileId === profileId && b.folder.path === path);
   if (known) {
     const g = Object.values(store().groups).find((x) => x.profileId === profileId && x.pinned && pinKeyOf(x) === known.key);
-    showToast(windowId, `“${(g && groupLabel(store(), g)) || path.split("/").at(-1)}” is already in your sidebar`, undefined, { icon: "person.2" });
+    const t = currentT();
+    showToast(windowId, t("“{name}” is already in your sidebar", { name: (g && groupLabel(store(), g)) || path.split("/").at(-1) || "" }), undefined, { icon: "person.2" });
     return syncFolderNow(profileId, known.key);
   }
   const [next, groupId] = withSharedGroup(store(), windowId, path.split("/").filter(Boolean).at(-1) ?? "Shared Folder");
@@ -96,12 +98,12 @@ export async function shareFolder(windowId: string, groupId: string) {
     if (state !== "synced" && state !== "waiting") {
       const why = useSharedFolders.getState().sync[folderRef(g.profileId, key)]?.error;
       const reason = why ?? (state === "missing" ? "Its folder can’t be found any more. Stop syncing it, then share it again." : "Its links aren’t in the folder yet. Try again in a moment.");
-      return showToast(windowId, "Couldn’t share this folder yet", reason, { icon: "exclamationmark.icloud" });
+      return showToast(windowId, currentT()("Couldn’t share this folder yet"), reason, { icon: "exclamationmark.icloud" });
     }
     const anchor = await measureRow(windowId, groupId);
     await sharePage(fileUrlOf(folder.path), groupLabel(store(), g) || null, windowId, anchor ? [anchor.x, anchor.y, anchor.width, anchor.height] : null);
   } catch (error) {
-    showToast(windowId, "Couldn’t share this folder", error instanceof Error ? error.message : String(error), { icon: "exclamationmark.icloud" });
+    showToast(windowId, currentT()("Couldn’t share this folder"), error instanceof Error ? error.message : String(error), { icon: "exclamationmark.icloud" });
   }
 }
 

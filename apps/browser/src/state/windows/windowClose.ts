@@ -6,6 +6,7 @@ import { tabsLostWithWindow } from "../tabs/sharedWindowClose";
 import { isLastRegularWindow, isOpenRegularWindow, isSmall } from "./small";
 import { closeLittleArdia } from "../littleArdia/actions";
 import { closeWindowAnimated } from "./closeAnimated";
+import { currentT } from "../i18n";
 
 const MIN_TABS = 2;
 
@@ -46,9 +47,10 @@ const unpinnedTabIds = (windowId: string) => {
 };
 
 export function closeWindowDialog(windowId: string, closing = unpinnedTabIds(windowId)) {
+  const t = currentT();
   const s = useBrowser.getState();
   const w = s.windows[windowId]!;
-  const tabs = (n: number) => plural(n, "tab");
+  const tabs = (n: number) => (n === 1 ? t("1 tab") : t("{count} tabs", { count: n }));
   const byProfile = new Map<string, number>();
   for (const id of closing) {
     const profileId = s.tabs[id]?.profileId ?? w.profileId;
@@ -57,11 +59,11 @@ export function closeWindowDialog(windowId: string, closing = unpinnedTabIds(win
   const count = closing.length;
   const message =
     byProfile.size > 1
-      ? ["Closing this window closes all tabs open across profiles:", ...[...byProfile].map(([id, n]) => `  • ${tabs(n)} in ${profileFor(s, id).name}`)].join("\n")
-      : `This window has ${tabs(count)} open in your ${profileFor(s, [...byProfile.keys()][0] ?? w.profileId).name} profile.`;
+      ? [t("Closing this window closes all tabs open across profiles:"), ...[...byProfile].map(([id, n]) => `  • ${t("{tabs} in {profile}", { tabs: tabs(n), profile: profileFor(s, id).name })}`)].join("\n")
+      : t("This window has {tabs} open in your {profile} profile.", { tabs: tabs(count), profile: profileFor(s, [...byProfile.keys()][0] ?? w.profileId).name });
   return {
-    title: count === 1 ? "Close 1 tab?" : `Close ${count} tabs?`,
+    title: count === 1 ? t("Close 1 tab?") : t("Close {count} tabs?", { count }),
     message,
-    confirmTitle: count === 1 ? "Close Tab" : "Close All Tabs",
+    confirmTitle: t(count === 1 ? "Close Tab" : "Close All Tabs"),
   };
 }

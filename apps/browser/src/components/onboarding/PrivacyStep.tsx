@@ -13,6 +13,7 @@ import { keysOf, useQuestions } from "../../state/onboarding/questions";
 import { SelectTile, useOnboardingColors } from "./Parts";
 import { useSiteRing } from "./GlassBacking";
 import { MONO, onboardingType, receiptStamp } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 const KEYS = keysOf("searchPrivacy");
 const ENGINES = ["google", "duckduckgo", "bing", "kagi", "ecosia", "brave", "startpage"];
@@ -23,6 +24,7 @@ const TYPED_CHOICES: ChoiceOption<Settings["commandBarPreference"]>[] = [
 ];
 
 export function SearchPrivacyStep() {
+  const t = useTranslate();
   const sub = useOnboarding((s) => s.sub);
   const id = useQuestions("searchPrivacy")[sub]?.id;
   const focus = useMockFocus(id);
@@ -56,7 +58,7 @@ export function SearchPrivacyStep() {
       title="Search with what?"
       subtitle="For anything that isn't a website."
       patch={{ searchEngine: values.searchEngine }}
-      picked={[`Search with ${engine?.name ?? "your engine"}`]}
+      picked={[t("Search with {name}", { name: engine?.name ?? t("your engine") })]}
       preview={<MockPanel settings={mock} focus={focus.focus} />}
     >
       <View style={{ flexDirection: "row", flexWrap: "wrap", gap: space.m }} accessibilityRole="radiogroup" accessibilityLabel="Search engine">
@@ -85,6 +87,7 @@ const RECEIPT_WIDTH = 250;
 
 export function Receipt({ on }: { on: boolean }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   const mono = { fontFamily: MONO } as const;
   const line = (label: string, mark: string, dim: boolean) => (
     <View key={label} style={{ flexDirection: "row", alignItems: "center", gap: space.s, opacity: dim ? 0.35 : 1 }}>
@@ -117,19 +120,19 @@ export function Receipt({ on }: { on: boolean }) {
         ARDIA
       </Text>
       <Text color={colors.subtitle} style={[mono, onboardingType.receiptSmall, { textAlign: "center", marginTop: space.xs }]}>
-        ITEMIZED. UNLIKE SOME EXPENSES.
+        {t("ITEMIZED. UNLIKE SOME EXPENSES.")}
       </Text>
       {rule}
       <View style={{ gap: space.s }}>
-        {SENT.map((label) => line(label, on ? "SENT" : "—", !on))}
-        {ALWAYS.map((label) => line(label, "SENT", false))}
+        {SENT.map((label) => line(t(label), t(on ? "SENT" : "—"), !on))}
+        {ALWAYS.map((label) => line(t(label), t("SENT"), false))}
       </View>
       {rule}
-      <View style={{ gap: space.s }}>{NEVER.map((label) => line(label, "NEVER", false))}</View>
+      <View style={{ gap: space.s }}>{NEVER.map((label) => line(t(label), t("NEVER"), false))}</View>
       {rule}
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text size="caption" weight="bold" color={colors.title} style={mono}>
-          PERSONAL DATA
+          {t("PERSONAL DATA")}
         </Text>
         <Text size="caption" weight="bold" color={colors.title} style={mono}>
           0.00

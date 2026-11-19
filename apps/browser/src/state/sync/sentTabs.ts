@@ -2,6 +2,7 @@ import { useBrowser, type BrowserState } from "../browser/store";
 import { activeTabId, plural } from "../browser/model";
 import { switchToTab } from "../browser/actions";
 import { showToast } from "../app/toasts";
+import { currentT } from "../i18n";
 import { isQuitting } from "../app/quit";
 import { flushPersistence } from "../session/persist";
 import { newBookmarkId as newUuid } from "../bookmarks/bookmarks";
@@ -84,10 +85,11 @@ function showReceivedTabs(received: ReceivedTab[]) {
   for (const [windowId, tabs] of byWindow) {
     const last = tabs[tabs.length - 1]!;
     const labels = new Set(tabs.map((r) => deviceLabel(r.from.kind, r.from.name)));
-    const from = labels.size === 1 ? [...labels][0]! : "Your Devices";
-    const title = tabs.length === 1 ? `Tab from ${from}` : `${plural(tabs.length, "Tab")} from ${from}`;
+    const t = currentT();
+    const from = labels.size === 1 ? [...labels][0]! : t("Your Devices");
+    const title = tabs.length === 1 ? t("Tab from {from}", { from }) : t("{count} Tabs from {from}", { count: tabs.length, from });
     const message = tabs.length === 1 ? last.send.t || hostOf(last.send.u) : undefined;
     const icon = labels.size === 1 ? deviceSymbol(last.from.kind, last.from.name) : "macbook.and.iphone";
-    showToast(windowId, title, message, { icon, action: { title: "Show", run: () => switchToTab(last.tabId) } });
+    showToast(windowId, title, message, { icon, action: { title: t("Show"), run: () => switchToTab(last.tabId) } });
   }
 }

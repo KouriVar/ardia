@@ -6,6 +6,7 @@ import { useReport, useReportShallow, useReportWindowIsPrivate } from "../../sta
 import { discardRecording, startRecording } from "../../state/report/recording";
 import { ActivitySpinner, Box, Button, Checkbox, Dot, ink, radius, ReportVideo, space, Symbol, Text, useTheme } from "../ui";
 import { REPORT } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 const RECORD_HINT = "Records this window, its Picture in Picture and the menus and prompts it opens. Never your other windows. Reports with a recording get fixed first.";
 const PAGES_WARNING =
@@ -13,6 +14,7 @@ const PAGES_WARNING =
 const PRIVATE_NOTE = "Pages always stay hidden when you record a private window. Tab names and addresses still show.";
 
 export function RecordSection() {
+  const t = useTranslate();
   const recording = useReport((s) => s.recording);
   const { includePages, kind, trace } = useReportShallow((s) => ({ includePages: s.draft.includePages, kind: s.draft.kind, trace: s.draft.trace }));
   const [watching, setWatching] = useState(false);
@@ -39,13 +41,13 @@ export function RecordSection() {
       ) : recording.phase === "saving" ? (
         <Box row gap="m" style={CENTER_ROW}>
           <ActivitySpinner style={SPINNER} />
-          <Text tone="textSecondary">Saving the recording…</Text>
+          <Text tone="textSecondary">{t("Saving the recording…")}</Text>
         </Box>
       ) : (
         <Box row gap="l" style={CENTER_ROW}>
-          <Button title="Record the problem" icon="record.circle" onPress={() => void startRecording()} />
+          <Button title={t("Record the problem")} icon="record.circle" onPress={() => void startRecording()} />
           <Text size="small" tone={recording.phase === "failed" ? "destructive" : "textSecondary"} style={FLEX}>
-            {recording.phase === "failed" ? recording.message : RECORD_HINT}
+            {recording.phase === "failed" ? recording.message : t(RECORD_HINT)}
           </Text>
         </Box>
       )}
@@ -75,15 +77,16 @@ function Recorded({
   onWatch: (on: boolean) => void;
 }) {
   const theme = useTheme();
+  const t = useTranslate();
   const actions = (
     <Box row gap="l" style={ACTIONS}>
-      <Button variant="text" look="link" pad="none" title={watching ? "Hide" : "Watch"} onPress={() => onWatch(!watching)} />
-      <Button variant="text" look="link" pad="none" title="Record again" onPress={() => void startRecording()} />
+      <Button variant="text" look="link" pad="none" title={t(watching ? "Hide" : "Watch")} onPress={() => onWatch(!watching)} />
+      <Button variant="text" look="link" pad="none" title={t("Record again")} onPress={() => void startRecording()} />
       <Button
         variant="text"
         look="link"
         tone="destructive"
-        title="Remove"
+        title={t("Remove")}
         onPress={() => {
           onWatch(false);
           discardRecording();
@@ -91,7 +94,7 @@ function Recorded({
       />
     </Box>
   );
-  const summary = `Recording · ${formatDuration(seconds)} · ${pages ? "pages included" : "pages hidden"}${pictureInPicture ? " · with Picture in Picture" : ""}`;
+  const summary = t("Recording · {duration} · {pages}{pip}", { duration: formatDuration(seconds), pages: t(pages ? "pages included" : "pages hidden"), pip: pictureInPicture ? t(" · with Picture in Picture") : "" });
   if (watching)
     return (
       <View style={{ gap: space.m }}>
@@ -118,7 +121,7 @@ function Recorded({
       </View>
       <View style={FLEX}>
         <Text weight="semibold">{summary}</Text>
-        <Text size="small" tone="textSecondary">{`${formatBytes(bytes)} · You'll watch it before it's sent.`}</Text>
+        <Text size="small" tone="textSecondary">{t("{size} · You'll watch it before it's sent.", { size: formatBytes(bytes) })}</Text>
         {actions}
       </View>
     </Box>
@@ -126,22 +129,23 @@ function Recorded({
 }
 
 function TraceRow({ on, locked }: { on: boolean; locked: boolean }) {
+  const t = useTranslate();
   const trace = useReport((s) => s.trace);
   const status =
     trace.phase === "ready"
-      ? `Trace attached · ${Math.round(trace.seconds)} s · ${formatBytes(trace.bytes)}`
+      ? t("Trace attached · {seconds} s · {size}", { seconds: Math.round(trace.seconds), size: formatBytes(trace.bytes) })
       : trace.phase === "tracing"
-        ? "Recording a trace…"
+        ? t("Recording a trace…")
         : trace.phase === "saving"
-          ? "Saving the trace…"
+          ? t("Saving the trace…")
           : trace.phase === "failed"
-            ? "The trace couldn't be recorded."
-            : `Records what the engine does for up to ${TRACE_MAX_SECONDS} seconds while you record.`;
+            ? t("The trace couldn't be recorded.")
+            : t("Records what the engine does for up to {seconds} seconds while you record.", { seconds: TRACE_MAX_SECONDS });
   return (
     <Box row gap="m" style={TOP_ROW}>
       <Checkbox value={on} onChange={setTrace} disabled={locked} />
       <View style={FLEX}>
-        <Text>Record a performance trace</Text>
+        <Text>{t("Record a performance trace")}</Text>
         <Text size="small" tone={trace.phase === "failed" ? "destructive" : "textSecondary"}>
           {status}
         </Text>
@@ -152,26 +156,27 @@ function TraceRow({ on, locked }: { on: boolean; locked: boolean }) {
 
 function PagesChoice({ on, locked, privateWindow }: { on: boolean; locked: boolean; privateWindow: boolean }) {
   const theme = useTheme();
+  const t = useTranslate();
   return (
     <Box row gap="m" style={TOP_ROW}>
       <Checkbox value={on} onChange={setIncludePages} disabled={locked || privateWindow} />
       <View style={FLEX}>
-        <Text tone={locked ? "textSecondary" : "textPrimary"}>Include web pages</Text>
+        <Text tone={locked ? "textSecondary" : "textPrimary"}>{t("Include web pages")}</Text>
         {privateWindow ? (
           <Text size="small" tone="textSecondary" style={{ marginTop: space.xxs }}>
-            {PRIVATE_NOTE}
+            {t(PRIVATE_NOTE)}
           </Text>
         ) : locked ? (
           <Box row gap="xs" style={CENTER_ROW}>
             <Symbol name="lock" size={10} color={theme.textTertiary} style={LOCK} />
             <Text size="small" tone="textSecondary">
-              Applies to the next recording ·
+              {t("Applies to the next recording ·")}
             </Text>
-            <Button variant="text" look="link" pad="none" title="Record again" onPress={() => void startRecording()} />
+            <Button variant="text" look="link" pad="none" title={t("Record again")} onPress={() => void startRecording()} />
           </Box>
         ) : (
           <Text size="small" tone="textSecondary" style={{ marginTop: space.xxs }}>
-            {PAGES_WARNING}
+            {t(PAGES_WARNING)}
           </Text>
         )}
       </View>

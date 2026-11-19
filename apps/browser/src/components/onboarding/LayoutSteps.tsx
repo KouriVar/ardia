@@ -10,6 +10,7 @@ import { keysOf, questionKeys, useQuestions } from "../../state/onboarding/quest
 import { StepActions, StepLayout } from "./StepLayout";
 import { OptionCard } from "./OptionCard";
 import { OptionRow } from "./Parts";
+import { useTranslate } from "../ui/Translate";
 
 export function Page({
   id,
@@ -171,6 +172,7 @@ const PEEK_WITH: { value: PeekModifier; title: string }[] = [
 const tidyLabel = (minutes: number) => (minutes !== TIDY_AFTER[0]!.value && TIDY_AFTER.find((o) => o.value === minutes)?.title) || durationTitle(minutes);
 
 export function TabsStep() {
+  const t = useTranslate();
   const { id, focus } = useQuestion("tabs");
   const { values, mock } = useScreen(keysOf("tabs"));
   const top = mock.tabLayout === "top";
@@ -203,7 +205,7 @@ export function TabsStep() {
         title="What about old tabs?"
         subtitle="Tabs you opened and forgot."
         patch={{ cleanUpInactiveTabsAfterMinutes: tidy }}
-        picked={[tidy === null ? "Old tabs stay until you close them" : `Old tabs tidy up after ${tidyLabel(tidy)}`]}
+        picked={[tidy === null ? t("Old tabs stay until you close them") : t("Old tabs tidy up after {duration}", { duration: tidyLabel(tidy) })]}
         preview={preview}
       >
         <ChoiceList

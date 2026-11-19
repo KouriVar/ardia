@@ -14,6 +14,7 @@ import type { Settings } from "../../../state/settings/settings";
 import { closeSettingsSheet, showSettingsSheet } from "../../../state/settings/sheet";
 import { openSettings, SETTINGS_WINDOW_ID } from "../../../state/settings/settingsWindows";
 import { useOnboardingColors } from "../Parts";
+import { useTranslate } from "../../ui/Translate";
 import { onboardingType } from "../tokens";
 import { DEMOS } from "./demos";
 import type { SceneOpts } from "./scene";
@@ -48,9 +49,10 @@ const MOCK_PAGES: MockState[][] = [
 
 function Caption({ text }: { text: string }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   return (
     <Text numberOfLines={1} style={{ ...onboardingType.galleryCaption, color: colors.subtitle }}>
-      {text}
+      {t(text)}
     </Text>
   );
 }

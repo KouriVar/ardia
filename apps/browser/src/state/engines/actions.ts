@@ -13,6 +13,7 @@ import { wantsPage } from "../tabs/tabPages";
 import { webviews } from "../../platform/webviews";
 import { withDeadline } from "../../lib/deadline";
 import { loadedPage, navigationOf } from "../tabs/pageSession";
+import { currentT } from "../i18n";
 
 export type EngineOffer = { site: string; host: string; keySystem: string; canRemember: boolean };
 
@@ -138,20 +139,21 @@ async function moveForProtectedVideo(tabId: string, site: string) {
   } finally {
     movingTabs.delete(tabId);
   }
-  const t = store().tabs[tabId];
-  if (!t) return;
+  const tab = store().tabs[tabId];
+  if (!tab) return;
   const key = `engine-move:${tabId}`;
   const stillThere = () => siteOf(pageUrl(store().tabs[tabId])) === site;
-  showToast(t.windowId, "Opened in WebKit for protected video", `${hostLabel(site)} plays here with FairPlay. WebKit keeps its own sign-ins.`, {
+  const t = currentT();
+  showToast(tab.windowId, t("Opened in WebKit for protected video"), t("{host} plays here with FairPlay. WebKit keeps its own sign-ins.", { host: hostLabel(site) }), {
     icon: "play.rectangle",
     key,
-    action: { title: "Move Back", run: () => void (stillThere() && openPageIn(tabId, "chromium", { rule: "chromium" })) },
+    action: { title: t("Move Back"), run: () => void (stillThere() && openPageIn(tabId, "chromium", { rule: "chromium" })) },
   });
   siteWatches.get(tabId)?.();
   const unwatchSite = useBrowser.subscribe((s, prev) => {
     if (s.tabs[tabId] === prev.tabs[tabId] || stillThere()) return;
     stopWatch();
-    hideKeyedToast(t.windowId, key);
+    hideKeyedToast(tab.windowId, key);
   });
   const stopWatch = () => {
     unwatchSite();

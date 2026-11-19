@@ -3,6 +3,7 @@ import { useBrowser } from "../browser/store";
 import { plural } from "../browser/model";
 import { canUndoClear, type ClearedTabs } from "../pins/tabCleanup";
 import { hideKeyedToast, showToast, useToasts } from "../app/toasts";
+import { currentT } from "../i18n";
 
 const store = () => useBrowser.getState();
 
@@ -32,11 +33,11 @@ function showUndoToast(cleared: ClearedTabs, title: string, icon: string) {
 
 export function closeAllTabs(windowId: string) {
   const cleared = store().clearUnpinnedTabs(windowId);
-  if (cleared?.entries.length) showUndoToast(cleared, `Cleared ${plural(cleared.entries.length, "Tab")}`, "arrow.down");
+  if (cleared?.entries.length) showUndoToast(cleared, currentT()("Cleared {count} Tabs", { count: cleared.entries.length }), "arrow.down");
 }
 
 export function middleClickTab(tabId: string) {
   const removed = store().removeClosedPin(tabId);
   if (!removed) return void closeTab(tabId);
-  if (removed.entries.length) showUndoToast(removed, "Removed Pinned Tab", "pin.slash");
+  if (removed.entries.length) showUndoToast(removed, currentT()("Removed Pinned Tab"), "pin.slash");
 }

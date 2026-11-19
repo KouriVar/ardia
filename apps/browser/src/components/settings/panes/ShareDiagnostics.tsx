@@ -3,7 +3,7 @@ import { ScrollView, View } from "react-native";
 import { setSharing, useTelemetry } from "../../../state/telemetry/client";
 import { IDENTITY_COPY, LOCAL_COPY, SHARING_COPY, WATCH_COPY, WHATS_SENT } from "../../../state/telemetry/copy";
 import { identityFor, resetAnonymousId, shortInstallId, stopWatch, useInstallId, useWatchReport, useWatchTurnedSharingOn, useWatchUntil, viewMyData } from "../../../state/telemetry/privacy";
-import { UI_LOCALE } from "../../../lib/uiLocale";
+import { uiLocale } from "../../../lib/uiLocale";
 import { Button, DialogActions, DialogTitle, lineHeight, proseLineHeight, Sheet, space, Text, Toggle } from "../../ui";
 import { Group, Row, SectionHeader } from "../Form";
 import { closeSettingsSheet, showSettingsSheet } from "../../../state/settings/sheet";
@@ -11,7 +11,7 @@ import { AnonymousAvatar } from "../AnonymousAvatar";
 
 const AVATAR_SIZE = 28;
 
-const longDate = (ms: number) => new Date(ms).toLocaleDateString(UI_LOCALE, { month: "long", day: "numeric", hour: "numeric", minute: "2-digit" });
+const longDate = (ms: number) => new Date(ms).toLocaleDateString(uiLocale(), { month: "long", day: "numeric", hour: "numeric", minute: "2-digit" });
 
 export function ShareDiagnosticsSection() {
   const sharing = useTelemetry((s) => s.sharing);

@@ -8,8 +8,10 @@ import { hoverZoomPopover, toggleZoomPopover, useIsZoomBubble } from "../../stat
 import { closedByThisPress, dismissPopoverByPress } from "../../state/tabs/popoverDismiss";
 import { markHoverProps } from "../../lib/hoverMarks";
 import { type ToolbarPalette } from "../ui/toolbarColors";
+import { useTranslate } from "../ui/Translate";
 
 export const ZoomIndicator = memo(function ZoomIndicator({ tabId, zoom, palette, onFocus }: { tabId: string; zoom: number; palette: ToolbarPalette; onFocus: () => void }) {
+  const t = useTranslate();
   const open = usePages((p) => p.popover[tabId] === "zoom");
   const actualSize = Math.abs(zoom - 1) < 0.001;
   if (actualSize && !open) return null;
@@ -23,7 +25,7 @@ export const ZoomIndicator = memo(function ZoomIndicator({ tabId, zoom, palette,
         if (!closedByThisPress(tabId, "zoom")) toggleZoomPopover(tabId);
       }}
       active={open}
-      tooltip={`Zoom: ${Math.round(zoom * 100)}%`}
+      tooltip={t("Zoom: {percent}%", { percent: Math.round(zoom * 100) })}
     />
   );
 });
@@ -38,6 +40,7 @@ export function ZoomPopover({ open, ...place }: ZoomPopoverPlace & { open: boole
 }
 
 function ZoomPanel({ tabId, right, left, top, closing, onClosed }: ZoomPopoverPlace & { closing: boolean; onClosed: () => void }) {
+  const t = useTranslate();
   const zoom = useTab(tabId)?.zoom ?? 1;
   const bubble = useIsZoomBubble(tabId);
   const [hoverProps] = useState(() => markHoverProps({ onMouseEnter: () => hoverZoomPopover(tabId, true), onMouseLeave: () => hoverZoomPopover(tabId, false) }));
@@ -45,9 +48,9 @@ function ZoomPanel({ tabId, right, left, top, closing, onClosed }: ZoomPopoverPl
   return (
     <Popover width={ZOOM_POPOVER_WIDTH} top={top} right={right} left={left} modal={!bubble} onDismiss={() => dismissPopoverByPress(tabId)} closing={closing} onClosed={onClosed}>
       <View {...hoverProps} style={{ flexDirection: "row", alignItems: "center", height: ZOOM_BAR, paddingLeft: PANEL.inset, paddingRight: (ZOOM_BAR - 28) / 2, gap: space.m }}>
-        <Text style={TABULAR_FILL}>{`Zoom: ${Math.round(zoom * 100)}%`}</Text>
+        <Text style={TABULAR_FILL}>{t("Zoom: {percent}%", { percent: Math.round(zoom * 100) })}</Text>
         <ZoomStepper tabId={tabId} zoom={zoom} percent={false} />
-        <Button variant="pill" title="Reset" onPress={() => void webviews.get(tabId)?.zoomStep(0)} />
+        <Button variant="pill" title={t("Reset")} onPress={() => void webviews.get(tabId)?.zoomStep(0)} />
       </View>
     </Popover>
   );
@@ -57,17 +60,18 @@ const ZOOM_BAR = 48;
 const TABULAR_FILL = { flex: 1, fontVariant: ["tabular-nums" as const] };
 
 export function ZoomStepper({ tabId, zoom, percent = true }: { tabId: string; zoom: number; percent?: boolean }) {
+  const t = useTranslate();
   return (
     <Box row gap={percent ? "xxs" : "xs"} style={CENTER_ROW}>
-      <Button variant="stepper" icon="minus" tooltip="Zoom Out (⌘-)" onPress={() => void webviews.get(tabId)?.zoomStep(-1)} />
+      <Button variant="stepper" icon="minus" tooltip={t("Zoom Out (⌘-)")} onPress={() => void webviews.get(tabId)?.zoomStep(-1)} />
       {percent ? (
-        <Pressable onPress={() => void webviews.get(tabId)?.zoomStep(0)} tooltip="Reset to 100%">
+        <Pressable onPress={() => void webviews.get(tabId)?.zoomStep(0)} tooltip={t("Reset to 100%")}>
           <Text size="small" tone={zoom === 1 ? "textSecondary" : "textPrimary"} style={{ width: 44, textAlign: "center", fontVariant: ["tabular-nums"] }}>
             {Math.round(zoom * 100)}%
           </Text>
         </Pressable>
       ) : null}
-      <Button variant="stepper" icon="plus" tooltip="Zoom In (⌘+)" onPress={() => void webviews.get(tabId)?.zoomStep(1)} />
+      <Button variant="stepper" icon="plus" tooltip={t("Zoom In (⌘+)")} onPress={() => void webviews.get(tabId)?.zoomStep(1)} />
     </Box>
   );
 }

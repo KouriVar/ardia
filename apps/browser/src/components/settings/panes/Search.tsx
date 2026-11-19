@@ -3,6 +3,7 @@ import { Box, Button, DialogActions, DialogTitle, Sheet, space, Symbol, Text, Te
 import { useState } from "react";
 import { View } from "react-native";
 import { useTheme } from "../../ui/theme";
+import { useTranslate } from "../../ui/Translate";
 import { useSettings } from "../../../state/browser/hooks";
 import { currentEngineProfile, currentProfileOrder } from "../../../state/browser/current";
 import { addCustomEngine, removeCustomEngine, setSearchEngine, updateCustomEngine, updateSettings } from "../../../state/settings/actions";
@@ -24,6 +25,7 @@ export function SearchPane() {
   const selectedId = useSettings((s) => defaultSearchEngine(s).id);
   const controlling = useSettings(controllingSearchExtension);
   const suggestions = useSettings((s) => s.searchSuggestions);
+  const t = useT();
   const theme = useTheme();
   const builtIn = engines.filter((e) => !e.custom && !e.extension);
   const custom = engines.filter((e) => e.custom);
@@ -37,8 +39,8 @@ export function SearchPane() {
         {controlling && (
           <Row
             icon={<Symbol name="puzzlepiece.extension" size={13} color={theme.formAccent} style={{ width: 18, height: 18 }} />}
-            title={`${controlling.extensionName || "An extension"} is controlling this setting`}
-            description="To change your default search engine, disable the extension or manage its settings."
+            title={t("{name} is controlling this setting", { name: controlling.extensionName || t("An extension") })}
+            description={t("To change your default search engine, disable the extension or manage its settings.")}
           >
             <Button title="Manage" onPress={() => manageExtensionsOf(controlling.profile)} />
             <Button title="Disable" onPress={() => void setEnabled(controlling.profile, controlling.extensionId, false)} />

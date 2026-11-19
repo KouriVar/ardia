@@ -4,6 +4,7 @@ import { acceptEngineOffer, stayOnPage, useEngineOffers, type EngineOffer } from
 import { Button, PanelCloseButton, Popover, POPOVER_WIDTH } from "../ui";
 import { CheckRow } from "./PromptParts";
 import { PromptBody } from "./Prompts";
+import { useTranslate } from "../ui/Translate";
 
 export const ENGINE_OFFER_WIDTH = POPOVER_WIDTH.s;
 
@@ -13,16 +14,17 @@ export function EngineOfferPrompt({ tabId, left, top }: { tabId: string; left: n
 }
 
 function OfferPopover({ tabId, offer, left, top }: { tabId: string; offer: EngineOffer; left: number; top: number }) {
+  const t = useTranslate();
   const [remember, setRemember] = useState(false);
   return (
     <Popover width={ENGINE_OFFER_WIDTH} top={top} left={left} modal={false}>
       <View>
         <PromptBody
           icons={["play.circle.fill", "safari"]}
-          title={`Play ${offer.host} in WebKit?`}
-          message="This site plays protected video, which Chromium in Ardia can't. The page reloads in WebKit, which keeps its own sign-ins."
+          title={t("Play {host} in WebKit?", { host: offer.host })}
+          message={t("This site plays protected video, which Chromium in Ardia can't. The page reloads in WebKit, which keeps its own sign-ins.")}
           detail={
-            offer.canRemember ? <CheckRow value={remember} onChange={setRemember} label="Don't ask again for this site" /> : undefined
+            offer.canRemember ? <CheckRow value={remember} onChange={setRemember} label={t("Don't ask again for this site")} /> : undefined
           }
         >
           <Button variant="pill" title="Stay on Page" onPress={() => stayOnPage(tabId, remember)} />

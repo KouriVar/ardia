@@ -1,18 +1,20 @@
-const units = (n: number, unit: string) => (n === 1 ? `1 ${unit} ago` : `${n} ${unit}s ago`);
+import { translateActive } from "./i18n/active";
+import { uiLocale } from "./uiLocale";
+
+const relative = () => new Intl.RelativeTimeFormat(uiLocale(), { numeric: "auto" });
 
 export function ago(at: number, now = Date.now()): string {
   const s = Math.max(0, (now - at) / 1000);
-  if (s < 60) return "just now";
+  if (s < 60) return translateActive("just now");
   const m = Math.floor(s / 60);
-  if (m < 60) return units(m, "minute");
+  if (m < 60) return relative().format(-m, "minute");
   const h = Math.floor(m / 60);
-  if (h < 24) return units(h, "hour");
+  if (h < 24) return relative().format(-h, "hour");
   const d = Math.floor(h / 24);
-  if (d === 1) return "yesterday";
-  if (d < 7) return `${d} days ago`;
-  if (d < 30) return units(Math.floor(d / 7), "week");
-  if (d < 365) return units(Math.floor(d / 30), "month");
-  return units(Math.floor(d / 365), "year");
+  if (d < 7) return relative().format(-d, "day");
+  if (d < 30) return relative().format(-Math.floor(d / 7), "week");
+  if (d < 365) return relative().format(-Math.floor(d / 30), "month");
+  return new Intl.RelativeTimeFormat(uiLocale(), { numeric: "always" }).format(-Math.floor(d / 365), "year");
 }
 
 export type DurationUnit = "minutes" | "hours" | "days";
@@ -29,7 +31,7 @@ export function durationParts(minutes: number): { amount: number; unit: Duration
 
 export function durationTitle(minutes: number): string {
   const { amount, unit } = durationParts(minutes);
-  return `${amount} ${amount === 1 ? unit.slice(0, -1) : unit}`;
+  return `${amount} ${translateActive(amount === 1 ? unit.slice(0, -1) : unit)}`;
 }
 
 export function durationMinutes(amount: string, unit: DurationUnit): number | null {

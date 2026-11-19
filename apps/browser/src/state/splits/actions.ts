@@ -7,11 +7,14 @@ import { activeTabId } from "../browser/model";
 import { isStacked, MAX_SPLIT_PANES, type OpenPaneOptions, splitOf, type SplitSide, splitTabIds, splitTabIdsOf } from "./splits";
 import type { AdoptId } from "../browser/types";
 import { noteSplit } from "../telemetry/usage";
+import { currentT } from "../i18n";
 
 const store = () => useBrowser.getState();
 
-const maxedOut = (windowId: string) =>
-  showToast(windowId, "Cannot Add New Pane", `Split View can show up to ${MAX_SPLIT_PANES} tabs at once.`);
+const maxedOut = (windowId: string) => {
+  const t = currentT();
+  showToast(windowId, t("Cannot Add New Pane"), t("Split View can show up to {count} tabs at once.", { count: MAX_SPLIT_PANES }));
+};
 
 export function openSplitPane(windowId: string, options: OpenPaneOptions = {}): string | null {
   const result = store().openSplitPane(windowId, options);

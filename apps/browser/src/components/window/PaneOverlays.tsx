@@ -6,6 +6,7 @@ import { Button, Dialog, DialogActions, DialogTitle, space, Symbol, Text, usePre
 import { Hud } from "./Hud";
 import { patchPage, usePage } from "../../state/tabs/pageState";
 import { STATUS_MOTION, windowColors } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 export function StatusBubble({ tabId, maxWidth }: { tabId: string; maxWidth: number }) {
   const colors = windowColors(useTheme().dark);
@@ -36,6 +37,7 @@ function displayUrl(url: string) {
 
 export function SadTab({ tabId }: { tabId: string }) {
   const theme = useTheme();
+  const t = useTranslate();
   const colors = windowColors(theme.dark);
   const crashed = usePage(tabId, (p) => !!p.crashed);
   const unresponsive = usePage(tabId, (p) => p.unresponsive);
@@ -44,10 +46,10 @@ export function SadTab({ tabId }: { tabId: string }) {
       <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.crashedBackground, alignItems: "center", justifyContent: "center", padding: space.xxxl }]}>
         <Symbol name="exclamationmark.triangle" size={30} weight="light" color={theme.textSecondary} style={{ width: 44, height: 40, marginBottom: space.xl }} />
         <Text size="large" weight="semibold" style={{ marginBottom: space.s }}>
-          This tab needs to reload
+          {t("This tab needs to reload")}
         </Text>
         <Text tone="textSecondary" style={{ textAlign: "center", maxWidth: 340, marginBottom: space.xl }}>
-          Something went wrong with this tab. Reloading often fixes it.
+          {t("Something went wrong with this tab. Reloading often fixes it.")}
         </Text>
         <Button variant="pill"
           title="Reload"
@@ -63,10 +65,10 @@ export function SadTab({ tabId }: { tabId: string }) {
   if (!unresponsive) return null;
   return (
     <Dialog width="xs" pad="xl">
-      <DialogTitle subtitle="You can wait for it to become responsive or exit the page.">Page Unresponsive</DialogTitle>
+      <DialogTitle subtitle={t("You can wait for it to become responsive or exit the page.")}>{t("Page Unresponsive")}</DialogTitle>
       <DialogActions>
         <Button variant="pill"
-          title="Exit Page"
+          title={t("Exit Page")}
           onPress={() => {
             patchPage(tabId, { unresponsive: false });
             void webviews.get(tabId)?.resolveUnresponsive(true);

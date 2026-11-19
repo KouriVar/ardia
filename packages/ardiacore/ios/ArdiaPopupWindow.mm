@@ -24,6 +24,8 @@ NSMapTable<ArdiaWebView *, NSPointerArray *> *PasswordPromptSources() {
   return sources;
 }
 
+static NSString *T(NSString *key) { return [NSBundle.mainBundle localizedStringForKey:key value:key table:nil]; }
+
 NSString *HostOf(NSString *url) {
   return [NSURL URLWithString:url ?: @""].host ?: @"";
 }
@@ -63,7 +65,7 @@ NSDictionary<NSString *, NSArray<NSString *> *> *PermissionKinds() {
 NSString *ListOf(NSArray<NSString *> *words) {
   if (words.count < 2) return words.firstObject ?: @"";
   NSString *head = [[words subarrayWithRange:NSMakeRange(0, words.count - 1)] componentsJoinedByString:@", "];
-  return [NSString stringWithFormat:@"%@ and %@", head, words.lastObject];
+  return [NSString stringWithFormat:@"%@%@%@", head, T(@" and "), words.lastObject];
 }
 
 NSString *PermissionQuestion(NSDictionary *request) {
@@ -73,16 +75,16 @@ NSString *PermissionQuestion(NSDictionary *request) {
   if (!site.length) site = origin;
   NSArray<NSString *> *kinds = [request[@"permissions"] isKindOfClass:NSArray.class] ? request[@"permissions"] : @[];
   if (kinds.count == 1 && PermissionKinds()[kinds[0]].count > 2)
-    return [NSString stringWithFormat:PermissionKinds()[kinds[0]][2], site];
+    return [NSString stringWithFormat:T(PermissionKinds()[kinds[0]][2]), site];
   NSMutableArray<NSString *> *nouns = [NSMutableArray array];
   BOOL allNouns = YES;
   for (NSString *kind in kinds) {
-    NSString *noun = PermissionKinds()[kind][1] ?: kind;
+    NSString *noun = T(PermissionKinds()[kind][1] ?: kind);
     allNouns &= noun.length > 0;
     [nouns addObject:noun.length ? noun : kind];
   }
-  return allNouns ? [NSString stringWithFormat:@"Allow %@ to access your %@?", site, ListOf(nouns)]
-                  : [NSString stringWithFormat:@"Allow %@ to use %@?", site, ListOf(nouns)];
+  return allNouns ? [NSString stringWithFormat:T(@"Allow %@ to access your %@?"), site, ListOf(nouns)]
+                  : [NSString stringWithFormat:T(@"Allow %@ to use %@?"), site, ListOf(nouns)];
 }
 
 NSImage *_Nullable PermissionIcon(NSDictionary *request) {
@@ -131,8 +133,8 @@ NSImage *_Nullable PermissionIcon(NSDictionary *request) {
   alert.messageText = PermissionQuestion(request);
   alert.informativeText = @"";
   if (NSImage *icon = PermissionIcon(request)) alert.icon = icon;
-  [alert addButtonWithTitle:@"Allow"];
-  [alert addButtonWithTitle:@"Don't Allow"].keyEquivalent = @"\e";
+  [alert addButtonWithTitle:T(@"Allow")];
+  [alert addButtonWithTitle:T(@"Don't Allow")].keyEquivalent = @"\e";
   _permissionAlert = alert;
   NSString *requestId = request[@"id"];
   __weak ArdiaPopupWindow *weakSelf = self;

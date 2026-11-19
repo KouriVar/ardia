@@ -1,10 +1,10 @@
 import { nativeModule, type ConfirmOptions, type PromptOptions } from "@ardia/shell";
-import { currentT } from "../state/i18n";
+import { translateActive } from "../lib/i18n/active";
 
 const Dialogs = nativeModule("ArdiaDialogs");
 
 const localize = <T extends ConfirmOptions | PromptOptions>(options: T): T => {
-  const t = currentT();
+  const t = translateActive;
   return {
     ...options,
     title: t(options.title),

@@ -14,6 +14,8 @@ namespace {
 
 NSString *gSearchEngineName = @"Google";
 
+static NSString *T(NSString *key) { return [NSBundle.mainBundle localizedStringForKey:key value:key table:nil]; }
+
 NSString *SelectionLabel(NSString *text) {
   NSArray *words = [text componentsSeparatedByCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
   NSString *collapsed = [[words filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"length > 0"]]
@@ -227,7 +229,7 @@ NSDictionary *FindMenuItem(NSArray *items, NSString *label) {
                            contextMenuItemsForSelection:(NSString *)text {
   return @[ @{
     @"id" : @"search",
-    @"title" : [NSString stringWithFormat:@"Search %@ for “%@”", gSearchEngineName, SelectionLabel(text)],
+    @"title" : [NSString stringWithFormat:T(@"Search %@ for “%@”"), gSearchEngineName, SelectionLabel(text)],
     @"replaces" : @"search",
   } ];
 }

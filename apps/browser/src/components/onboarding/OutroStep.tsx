@@ -12,12 +12,14 @@ import { OptionCard } from "./OptionCard";
 import { OptionRow, useOnboardingColors } from "./Parts";
 import { Receipt } from "./PrivacyStep";
 import { StepActions, StepLayout } from "./StepLayout";
+import { useTranslate } from "../ui/Translate";
 import { onboardingType } from "./tokens";
 
 type SystemState = { isDefault: boolean; inDock: boolean };
 
 export function OutroStep() {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   const picked = useOnboarding((s) => s.picked);
   const redo = useOnboarding((s) => s.redo);
   const customizing = useOnboarding((s) => s.customizing);
@@ -86,7 +88,7 @@ export function OutroStep() {
           onPress={() => setOnboardingExtras({ share: !share })}
         />
         <Text size="small" color={colors.rowSubtitle} style={NOTE}>
-          {SHARING_COPY.onboarding.note}
+          {t(SHARING_COPY.onboarding.note)}
         </Text>
         {customizing ? null : <CustomizeMoreLink />}
       </View>
@@ -108,10 +110,11 @@ const DOCK_CHOICES: { value: "yes" | "no"; title: string }[] = [
 ];
 
 export function CustomizeMoreLink() {
+  const t = useTranslate();
   return (
     <View mouseDownCanMoveWindow={false} style={{ flexDirection: "row", alignItems: "center", gap: space.xs }}>
       <Text size="small" color={useOnboardingColors().rowSubtitle}>
-        Tabs, search, pinned apps and more:
+        {t("Tabs, search, pinned apps and more:")}
       </Text>
       <Button variant="text" look="link" tone="textSecondary" title="Customize more…" label="Customize tabs, search, pinned apps and more" onPress={customizeMore} />
     </View>
@@ -120,6 +123,7 @@ export function CustomizeMoreLink() {
 
 function Postcard({ lines }: { lines: string[] }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   const shown = lines.slice(0, 8);
   return (
     <PostcardPaper
@@ -130,31 +134,31 @@ function Postcard({ lines }: { lines: string[] }) {
     >
       <View style={{ flex: 1, gap: space.ml, paddingRight: space.xl }}>
         <Text color={colors.title} style={onboardingType.postcardHello}>
-          Hello!
+          {t("Hello!")}
         </Text>
         {shown.length ? (
           <View style={{ gap: space.xs }}>
             <Text size="caption" color={colors.subtitle} style={CAPTION_LINE}>
-              {"You picked:"}
+              {t("You picked:")}
             </Text>
             {shown.map((line) => (
               <View key={line} style={{ flexDirection: "row", gap: space.s, alignItems: "flex-start" }}>
                 <Symbol name="checkmark" size={8} weight="bold" color={colors.title} style={{ width: 10, height: lineHeight.caption }} />
                 <Text size="caption" color={colors.title} style={PICKED_LINE}>
-                  {line}
+                  {t(line)}
                 </Text>
               </View>
             ))}
           </View>
         ) : (
           <Text size="small" color={colors.subtitle} style={GREETING}>
-            {"Glad you're here. Make yourself at home. Your tabs, bookmarks and pins are ready."}
+            {t("Glad you're here. Make yourself at home. Your tabs, bookmarks and pins are ready.")}
           </Text>
         )}
       </View>
       <View style={{ width: StyleSheet.hairlineWidth * 2, backgroundColor: colors.separator }} />
       <View style={{ width: 96, paddingLeft: space.xl, justifyContent: "space-between", alignItems: "flex-end" }}>
-        <PostageStamp icon={WELCOME_STAMP.icon} ring={WELCOME_STAMP.ring} label="WELCOME" tilt={WELCOME_STAMP.tilt} ink={{ frame: colors.rowBorder, ring: colors.steps, label: colors.steps }} ringAt={WELCOME_STAMP.ringAt} />
+        <PostageStamp icon={WELCOME_STAMP.icon} ring={WELCOME_STAMP.ring} label={t("WELCOME")} tilt={WELCOME_STAMP.tilt} ink={{ frame: colors.rowBorder, ring: colors.steps, label: colors.steps }} ringAt={WELCOME_STAMP.ringAt} />
         <View style={{ alignSelf: "stretch", gap: space.l }}>
           {[0, 1, 2].map((i) => (
             <View key={i} style={{ height: 1, backgroundColor: colors.separator }} />

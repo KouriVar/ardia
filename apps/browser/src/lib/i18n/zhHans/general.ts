@@ -54,7 +54,7 @@ export const general: Record<string, string> = {
   "Not checked yet.": "尚未检查。",
   "Check Now": "立即检查",
   "Stable": "稳定版",
-  "Ardia is your default browser": "Ardia 是您的默认浏览器",
+  "Ardia is your default browser": "Ardia 是你的默认浏览器",
   "Ardia works best as your default browser": "将 Ardia 设为默认浏览器可获得最佳体验",
   "Set Ardia as Default": "将 Ardia 设为默认浏览器",
   "Import…": "导入…",

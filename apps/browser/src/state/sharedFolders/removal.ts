@@ -1,6 +1,7 @@
 import { confirm } from "../../platform/dialogs";
 import { sharedFoldersAvailable, sharedLocation } from "../../platform/sharedFolders";
 import { useBrowser, type BrowserState } from "../browser/store";
+import { currentT } from "../i18n";
 import { isIncognitoProfile, pinKeyOf } from "../browser/model";
 import { groupLabel } from "../pins/tabGrouping";
 import { sharedFolderOf, type SharedFolder } from "./store";
@@ -29,13 +30,14 @@ export function folderLabel(path: string): string {
 }
 
 export async function confirmRemovingShared(windowId: string, groupId: string): Promise<boolean> {
+  const t = currentT();
   const shared = sharedFolderOfGroup(store(), groupId);
   if (!shared) return true;
   const g = store().groups[groupId];
   const name = (g && groupLabel(store(), g)) || "this folder";
   const { confirmed } = await confirm({
-    title: `Remove “${name}” from the Sidebar?`,
-    message: `The folder stays in ${folderLabel(shared.folder.path)}, with every link in it, and the people you shared it with keep it. Ardia only stops syncing it on this Mac.`,
+    title: t("Remove “{name}” from the Sidebar?", { name }),
+    message: t("The folder stays in {folder}, with every link in it, and the people you shared it with keep it. Ardia only stops syncing it on this Mac.", { folder: folderLabel(shared.folder.path) }),
     confirmTitle: "Remove",
     destructive: true,
     windowId,

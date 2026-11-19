@@ -10,6 +10,7 @@ import { curve } from "../ui/motion";
 import { capsule, concentric, ink, radius, space, tracking } from "../ui/tokens";
 import { onboardingColorsOf, onboardingMotion, onboardingType, TILE_WIDTH } from "./tokens";
 import { CARD_BORDER, ChoiceCard, SELECTED_BORDER } from "./ChoiceCard";
+import { useTranslate } from "../ui/Translate";
 
 export const useOnboardingColors = () => onboardingColorsOf(useTheme());
 
@@ -60,6 +61,7 @@ export function StepDots({ count, index, shape }: { count: number; index: number
 
 export function StepProgress() {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   const step = useOnboarding((s) => s.step);
   const sub = useOnboarding((s) => s.sub);
   const redo = useOnboarding((s) => s.redo);
@@ -72,15 +74,15 @@ export function StepProgress() {
     <View style={compact ? { flexDirection: "row", alignItems: "center", gap: space.ml } : { gap: space.m }}>
       <StepDots count={steps.length} index={index} shape="bar" />
       <View style={{ flex: compact ? 1 : undefined, flexDirection: "row", alignItems: "center", gap: space.ml, height: 14 }}>
-        <Text size="caption" weight="medium" color={colors.steps} style={{ letterSpacing: tracking.caps }}>{`STEP ${index + 1} OF ${steps.length}`}</Text>
+        <Text size="caption" weight="medium" color={colors.steps} style={{ letterSpacing: tracking.caps }}>{t("STEP {current} OF {total}", { current: index + 1, total: steps.length })}</Text>
         {count > 1 ? (
-          <View accessibilityLabel={`Question ${sub + 1} of ${count}`}>
+          <View accessibilityLabel={t("Question {current} of {total}", { current: sub + 1, total: count })}>
             <StepDots count={count} index={sub} shape="dot" />
           </View>
         ) : null}
         {redo ? (
           <View mouseDownCanMoveWindow={false} style={{ marginLeft: "auto" }}>
-            <Button variant="text" look="link" tone="textSecondary" title="Cancel" label="Cancel setup and keep your settings" onPress={cancelOnboarding} />
+            <Button variant="text" look="link" tone="textSecondary" title={t("Cancel")} label={t("Cancel setup and keep your settings")} onPress={cancelOnboarding} />
           </View>
         ) : null}
       </View>
@@ -90,15 +92,16 @@ export function StepProgress() {
 
 export function StepTitle({ title, subtitle }: { title: string; subtitle?: string }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   const { compact } = useOnboardingCard();
   return (
     <View style={{ gap: compact ? space.s : space.ml }}>
       <Text color={colors.title} style={compact ? onboardingType.stepTitleCompact : onboardingType.stepTitle}>
-        {title}
+        {t(title)}
       </Text>
       {subtitle ? (
         <Text color={colors.subtitle} style={onboardingType.stepSubtitle}>
-          {subtitle}
+          {t(subtitle)}
         </Text>
       ) : null}
     </View>
@@ -109,10 +112,11 @@ const TAG_HEIGHT = 20;
 
 export function Tag({ title }: { title: string }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   return (
     <View style={{ height: TAG_HEIGHT, paddingHorizontal: space.m, borderRadius: capsule(TAG_HEIGHT), justifyContent: "center", backgroundColor: colors.button }}>
       <Text size="caption" weight="semibold" color={colors.title}>
-        {title}
+        {t(title)}
       </Text>
     </View>
   );
@@ -120,10 +124,11 @@ export function Tag({ title }: { title: string }) {
 
 export function SectionLabel({ title, accessory }: { title: string; accessory?: ReactNode }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   return (
     <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", height: 18 }}>
       <Text size="small" weight="medium" color={colors.subtitle}>
-        {title}
+        {t(title)}
       </Text>
       {accessory}
     </View>
@@ -142,10 +147,11 @@ export function OptionRow<T extends string | number>({
   onChange: (value: T) => void;
 }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   return (
     <ChoiceCard mouseDownCanMoveWindow={false} radius={radius.panel} style={{ flexDirection: "row", alignItems: "center", gap: space.ml, minHeight: 36, paddingVertical: space.s, paddingHorizontal: space.l }}>
       <Text size="small" weight="medium" color={colors.title} style={{ flex: 1 }}>
-        {title}
+        {t(title)}
       </Text>
       <ChoiceCard
         radius={radius.tile}
@@ -153,7 +159,7 @@ export function OptionRow<T extends string | number>({
         border={null}
         style={{ flexDirection: "row", gap: space.xxs, padding: space.xxs }}
         accessibilityRole="radiogroup"
-        accessibilityLabel={title}
+        accessibilityLabel={t(title)}
       >
         {options.map((o) => (
           <Segment key={String(o.value)} title={o.title} image={o.image} selected={o.value === value} onPress={() => onChange(o.value)} />
@@ -167,10 +173,11 @@ const SEGMENT = { height: 22, minWidth: 34, imageBox: 30, image: 26 } as const;
 
 function Segment({ title, image, selected, onPress }: { title: string; image?: string | null; selected: boolean; onPress: () => void }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   const { hovered, hoverProps } = useHover();
   return (
-    <View {...hoverProps} tooltip={image ? title : undefined}>
-      <Pressable onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected }} accessibilityLabel={title}>
+    <View {...hoverProps} tooltip={image ? t(title) : undefined}>
+      <Pressable onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected }} accessibilityLabel={t(title)}>
         {({ pressed }) => (
           <ChoiceCard
             mouseDownCanMoveWindow={false}
@@ -192,7 +199,7 @@ function Segment({ title, image, selected, onPress }: { title: string; image?: s
               <Image source={{ uri: image }} style={{ width: SEGMENT.image, height: SEGMENT.image }} />
             ) : (
               <Text size="caption" weight={selected ? "semibold" : "medium"} color={selected ? colors.title : colors.subtitle}>
-                {title}
+                {t(title)}
               </Text>
             )}
           </ChoiceCard>
@@ -228,13 +235,14 @@ export function SelectTile({
   children: (hovered: boolean) => ReactNode;
 }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   const { hovered, hoverProps } = useHover();
   const state = role === "radio" ? { selected } : { checked: selected };
   const ringed = selected && !!ring;
   const border = selected ? SELECTED_BORDER : CARD_BORDER;
   return (
     <View {...hoverProps}>
-      <Pressable onPress={onPress} accessibilityRole={role} accessibilityState={state} accessibilityLabel={title}>
+      <Pressable onPress={onPress} accessibilityRole={role} accessibilityState={state} accessibilityLabel={t(title)}>
         {({ pressed }) => (
           <ChoiceCard
             mouseDownCanMoveWindow={false}
@@ -251,7 +259,7 @@ export function SelectTile({
             ) : null}
             {children(hovered)}
             <Text size="caption" weight="medium" lines={titleLines} color={selected ? colors.title : colors.subtitle} style={{ paddingHorizontal: titlePad }}>
-              {title}
+              {t(title)}
             </Text>
             {selected ? (
               <View pointerEvents="none" style={{ position: "absolute", top: TILE_CHECK_INSET, right: TILE_CHECK_INSET }}>

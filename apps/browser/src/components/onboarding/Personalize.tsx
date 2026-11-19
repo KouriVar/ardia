@@ -8,6 +8,7 @@ import { Segmented, Text, type SegmentOption } from "../ui";
 import { OptionCard } from "./OptionCard";
 import { useOnboardingColors } from "./Parts";
 import { radius, space } from "../ui/tokens";
+import { useTranslate } from "../ui/Translate";
 
 export const PERSONALIZE_COPY = {
   title: "Make it yours",
@@ -26,6 +27,7 @@ const SIDE_OPTIONS: SegmentOption<Side>[] = [
 const OFF_OPACITY = 0.4;
 
 export function TabLayoutPicker({ windowId }: { windowId: string }) {
+  const t = useTranslate();
   const layout = useTabLayout(windowId);
   const side = useSettings((s) => s.sidebarSide);
   const pick = (next: "sidebar" | "top") => {
@@ -34,9 +36,9 @@ export function TabLayoutPicker({ windowId }: { windowId: string }) {
   const sideOn = layout === "sidebar";
   return (
     <View style={{ gap: space.ml }}>
-      <View style={{ flexDirection: "row", gap: space.ml }} accessibilityRole="radiogroup" accessibilityLabel="Tab layout">
-        <LayoutButton kind="sidebar" side={side} title="Sidebar" subtitle="Tabs down the side" selected={layout === "sidebar"} onPress={() => pick("sidebar")} />
-        <LayoutButton kind="top" side="left" title="Classic" subtitle="Tabs along the top" selected={layout === "top"} onPress={() => pick("top")} />
+      <View style={{ flexDirection: "row", gap: space.ml }} accessibilityRole="radiogroup" accessibilityLabel={t("Tab layout")}>
+        <LayoutButton kind="sidebar" side={side} title={t("Sidebar")} subtitle={t("Tabs down the side")} selected={layout === "sidebar"} onPress={() => pick("sidebar")} />
+        <LayoutButton kind="top" side="left" title={t("Classic")} subtitle={t("Tabs along the top")} selected={layout === "top"} onPress={() => pick("top")} />
       </View>
       <View
         pointerEvents={sideOn ? "auto" : "none"}
@@ -44,7 +46,7 @@ export function TabLayoutPicker({ windowId }: { windowId: string }) {
         style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between", paddingHorizontal: space.xs, opacity: sideOn ? 1 : OFF_OPACITY }}
       >
         <Text size="small" tone="textSecondary">
-          {PERSONALIZE_COPY.side}
+          {t(PERSONALIZE_COPY.side)}
         </Text>
         <Segmented options={SIDE_OPTIONS} value={side} onChange={chooseSidebarSide} />
       </View>

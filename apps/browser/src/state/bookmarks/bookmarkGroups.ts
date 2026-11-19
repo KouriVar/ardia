@@ -3,6 +3,8 @@ import { bookmarkDraft, hasLinks, MAX_DRAFT_LINKS, withDraftGroups, type DraftGr
 import { bookmarkProfileId, plural } from "../browser/model";
 import { isRegularWindow, mainWindowFor } from "../windows/small";
 import { showToast } from "../app/toasts";
+import { currentT } from "../i18n";
+import { uiLocale } from "../../lib/uiLocale";
 import { bookmarkRoots, type BookmarkOwners } from "./bookmarks";
 
 export const ARC_HOLDER = " (Arc)";
@@ -18,7 +20,10 @@ export function addGroupsFromDrafts(profileId: string, drafts: GroupDraft[], nea
   const windowId = sidebarWindow(s, profileId, near) ?? s.createWindow({ profileId });
   const [next, result] = withDraftGroups(useBrowser.getState(), windowId, profileId, drafts);
   if (result.made.length) useBrowser.setState(next);
-  if (result.skipped) showToast(windowId, `${plural(result.skipped, "link")} left out`, `A folder brings up to ${MAX_DRAFT_LINKS.toLocaleString("en-US")} links.`);
+  if (result.skipped) {
+    const t = currentT();
+    showToast(windowId, t("{count} links left out", { count: result.skipped }), t("A folder brings up to {max} links.", { max: MAX_DRAFT_LINKS.toLocaleString(uiLocale()) }));
+  }
   return result;
 }
 

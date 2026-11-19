@@ -4,9 +4,11 @@ import { previewPayload, reportFiles, setPreview } from "../../state/report/acti
 import { formatBytes, type ReportFile } from "../../state/report/form";
 import { Box, Button, DialogActions, DialogTitle, radius, space, Text, useTheme } from "../ui";
 import { REPORT } from "./tokens";
+import { useTranslate } from "../ui/Translate";
 
 export function ReportPreview() {
   const theme = useTheme();
+  const t = useTranslate();
   const [payload, setPayload] = useState<string>("");
   const [files, setFiles] = useState<ReportFile[]>([]);
   useEffect(() => {
@@ -15,19 +17,19 @@ export function ReportPreview() {
   }, []);
   return (
     <>
-      <DialogTitle subtitle="Exactly what leaves your Mac when you press Send. Only the title, description, kind and version go to the public GitHub issue.">
-        What's sent
+      <DialogTitle subtitle={t("Exactly what leaves your Mac when you press Send. Only the title, description, kind and version go to the public GitHub issue.")}>
+        {t("What's sent")}
       </DialogTitle>
       <View style={{ marginTop: space.xl, height: REPORT.previewHeight, borderRadius: radius.tile, backgroundColor: theme.groupFill, borderColor: theme.groupBorder, borderWidth: 1 }}>
         <ScrollView contentContainerStyle={{ padding: space.l }}>
           <Text size="small" weight="semibold" tone="textSecondary">
-            Report
+            {t("Report")}
           </Text>
           <Text size="small" selectable style={MONO}>
             {payload || "…"}
           </Text>
           <Text size="small" weight="semibold" tone="textSecondary" style={{ marginTop: space.l }}>
-            Files
+            {t("Files")}
           </Text>
           {files.length ? (
             files.map((f) => (
@@ -42,13 +44,13 @@ export function ReportPreview() {
             ))
           ) : (
             <Text size="small" tone="textSecondary">
-              None
+              {t("None")}
             </Text>
           )}
         </ScrollView>
       </View>
       <DialogActions>
-        <Button title="Back" onPress={() => setPreview(false)} />
+        <Button title={t("Back")} onPress={() => setPreview(false)} />
       </DialogActions>
     </>
   );

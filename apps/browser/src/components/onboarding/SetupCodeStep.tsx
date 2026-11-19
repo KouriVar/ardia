@@ -11,6 +11,7 @@ import { MONO, onboardingButton } from "./tokens";
 import { font, proseLineHeight, radius, space } from "../ui/tokens";
 import { ChoiceCard } from "./ChoiceCard";
 import { SetupLines } from "./SetupLines";
+import { useTranslate } from "../ui/Translate";
 
 const CODE_FIELD_HEIGHT = 44;
 
@@ -26,6 +27,7 @@ export function SetupCodeLink({ onPress }: { onPress: () => void }) {
 
 export function SetupCodeStep({ onBack }: { onBack: () => void }) {
   const colors = useOnboardingColors();
+  const t = useTranslate();
   const [code, setCode] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [applied, setApplied] = useState<string[] | null>(null);
@@ -80,12 +82,12 @@ export function SetupCodeStep({ onBack }: { onBack: () => void }) {
           autoCapitalize="none"
           spellCheck={false}
           enableFocusRing={false}
-          accessibilityLabel="Setup code"
+          accessibilityLabel={t("Setup code")}
           style={{ fontFamily: MONO, ...font.body, color: colors.title, paddingVertical: 0 }}
         />
       </ChoiceCard>
       <Text size="small" color={error ? colors.title : colors.rowSubtitle} style={{ lineHeight: proseLineHeight.small }}>
-        {error ?? "Search, privacy and default browser stay yours to pick here."}
+        {error ?? t("Search, privacy and default browser stay yours to pick here.")}
       </Text>
     </StepLayout>
   );

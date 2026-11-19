@@ -6,6 +6,7 @@ import { chooseFromMenu, type ChoiceItem } from "../app/menuChoice";
 import { pageToProfile } from "../windows/profilePager";
 import { profileNames, requestCreateProfile } from "../profiles/createProfileRequest";
 import { storeAction, useBrowser } from "./store";
+import { currentT } from "../i18n";
 import { rootOf } from "../groups/groups";
 import { closesWindow, engineProfile, isIncognitoProfile, plural, resolveWindowId } from "./model";
 import { leavesEmptyWindow } from "../omnibox/newTabBarPolicy";
@@ -60,18 +61,19 @@ export async function closeTab(tabId: string) {
 }
 
 export async function closeGroup(groupId: string) {
+  const t = currentT();
   const s = store();
   const group = s.groups[groupId];
   const w = group && s.windows[group.windowId];
   if (!group || !w) return;
   if (!(await groupCloseAllowed(w.id, groupId))) return;
   if (s.settings.warnBeforeClosingTabGroup && !rootOf(s.groups, groupId)?.pinned) {
-    const tabs = plural(group.tabIds.length, "tab");
+    const tabs = t("{count} tabs", { count: group.tabIds.length });
     const { confirmed, suppressed } = await confirm({
-      title: `Close “${groupLabel(s, group)}”?`,
-      message: w.kind === "private" ? `Its ${tabs} close with it.` : `Its ${tabs} close with it. History › Recently Closed Groups brings it back.`,
-      confirmTitle: "Close Group",
-      suppression: "Don’t ask me again",
+      title: t("Close “{name}”?", { name: groupLabel(s, group) }),
+      message: w.kind === "private" ? t("Its {tabs} close with it.", { tabs }) : t("Its {tabs} close with it. History › Recently Closed Groups brings it back.", { tabs }),
+      confirmTitle: t("Close Group"),
+      suppression: t("Don’t ask me again"),
       windowId: w.id,
     });
     if (suppressed) store().updateSettings({ warnBeforeClosingTabGroup: false });
@@ -99,16 +101,17 @@ export function toggleSiteMute(tabId: string) {
 }
 
 export async function deleteProfile(profileId: string, windowId?: string) {
+  const t = currentT();
   const s = store();
   const profile = s.profiles[profileId];
   if (!profile || s.profileOrder.length <= 1) return;
   const sharing = sharingProfiles(s, profileId).map((id) => s.profiles[id]!.name);
   const { confirmed } = await confirm({
-    title: `Delete “${profile.name}”?`,
+    title: t("Delete “{name}”?", { name: profile.name }),
     message: sharing.length
-      ? `Its tabs will be closed. Its cookies, passwords, extensions, bookmarks and history stay with ${profileNames(sharing)}, which share them.`
-      : `All data associated with this Profile will be removed. This action cannot be undone.${engineProfile(s, profileId) === "" ? await keptExtensionsNote() : ""}`,
-    confirmTitle: "Delete Profile",
+      ? t("Its tabs will be closed. Its cookies, passwords, extensions, bookmarks and history stay with {names}, which share them.", { names: profileNames(sharing) })
+      : t("All data associated with this Profile will be removed. This action cannot be undone.{extensions}", { extensions: engineProfile(s, profileId) === "" ? await keptExtensionsNote() : "" }),
+    confirmTitle: t("Delete Profile"),
     destructive: true,
     windowId,
   });
@@ -122,7 +125,8 @@ async function keptExtensionsNote(): Promise<string> {
     () => null,
   );
   if (names && !names.length) return "";
-  return names ? ` Its extensions (${profileNames(names)}) stay installed on this Mac, turned off.` : " Its extensions stay installed on this Mac, turned off.";
+  const t = currentT();
+  return names ? t(" Its extensions ({names}) stay installed on this Mac, turned off.", { names: profileNames(names) }) : t(" Its extensions stay installed on this Mac, turned off.");
 }
 
 type ProfileMove = { windowId: string; fromProfileId: string; title: (profileName: string) => string; confirmTitle: string };
@@ -135,9 +139,9 @@ async function profileMoveTarget(move: ProfileMove, target: string | null): Prom
   if (!store().settings.warnBeforeMovingTabsToProfile || shared) return profileId;
   const { confirmed, suppressed } = await confirm({
     title: move.title(store().profiles[profileId]?.name ?? "Profile"),
-    message: "Moving tabs between profiles could result in some data being lost.",
-    confirmTitle: move.confirmTitle,
-    suppression: "Don't warn me again",
+    message: currentT()("Moving tabs between profiles could result in some data being lost."),
+    confirmTitle: currentT()(move.confirmTitle),
+    suppression: currentT()("Don't warn me again"),
     windowId: move.windowId,
   });
   if (suppressed) store().updateSettings({ warnBeforeMovingTabsToProfile: false });
@@ -145,6 +149,7 @@ async function profileMoveTarget(move: ProfileMove, target: string | null): Prom
 }
 
 export async function moveTabsToProfile(tabIds: string[], target: string | null) {
+  const t = currentT();
   const tabs = tabIds.map((id) => store().tabs[id]).filter((t) => !!t);
   const first = tabs[0];
   if (!first) return;
@@ -153,8 +158,8 @@ export async function moveTabsToProfile(tabIds: string[], target: string | null)
     {
       windowId: first.windowId,
       fromProfileId: first.profileId,
-      title: () => (many ? `Move ${tabs.length} Tabs to Profile?` : "Move Tab to Profile?"),
-      confirmTitle: many ? "Move Tabs" : "Move Tab",
+      title: () => (many ? t("Move {count} Tabs to Profile?", { count: tabs.length }) : t("Move Tab to Profile?")),
+      confirmTitle: t(many ? "Move Tabs" : "Move Tab"),
     },
     target,
   );
@@ -167,7 +172,8 @@ export const moveTabToProfile = (tabId: string, target: string | null) => moveTa
 export async function moveGroupToProfile(groupId: string, target: string | null) {
   const g = store().groups[groupId];
   if (!g) return;
-  const profileId = await profileMoveTarget({ windowId: g.windowId, fromProfileId: g.profileId, title: (name) => `Move Group to ${name}?`, confirmTitle: "Move Group" }, target);
+  const t = currentT();
+  const profileId = await profileMoveTarget({ windowId: g.windowId, fromProfileId: g.profileId, title: (name) => t("Move Group to {name}?", { name }), confirmTitle: t("Move Group") }, target);
   if (profileId) store().moveGroupToProfile(groupId, profileId);
 }
 
