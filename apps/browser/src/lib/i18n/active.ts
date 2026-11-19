@@ -1,5 +1,5 @@
 import type { UiLanguage } from "./languages";
-import { translate } from "./translate";
+import { translate, type TranslateParams } from "./translate";
 
 let active: UiLanguage = "en";
 
@@ -11,6 +11,6 @@ export function activeLanguage(): UiLanguage {
   return active;
 }
 
-export function translateActive(text: string): string {
-  return translate(text, active);
+export function translateActive(text: string, params?: TranslateParams): string {
+  return translate(text, active, params);
 }

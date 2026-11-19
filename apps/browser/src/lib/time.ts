@@ -1,20 +1,21 @@
 import { translateActive } from "./i18n/active";
-import { uiLocale } from "./uiLocale";
 
-const relative = () => new Intl.RelativeTimeFormat(uiLocale(), { numeric: "auto" });
+const counted = (count: number, singular: string, plural: string) =>
+  translateActive(count === 1 ? `1 ${singular} ago` : `{count} ${plural} ago`, { count });
 
 export function ago(at: number, now = Date.now()): string {
   const s = Math.max(0, (now - at) / 1000);
   if (s < 60) return translateActive("just now");
   const m = Math.floor(s / 60);
-  if (m < 60) return relative().format(-m, "minute");
+  if (m < 60) return counted(m, "minute", "minutes");
   const h = Math.floor(m / 60);
-  if (h < 24) return relative().format(-h, "hour");
+  if (h < 24) return counted(h, "hour", "hours");
   const d = Math.floor(h / 24);
-  if (d < 7) return relative().format(-d, "day");
-  if (d < 30) return relative().format(-Math.floor(d / 7), "week");
-  if (d < 365) return relative().format(-Math.floor(d / 30), "month");
-  return new Intl.RelativeTimeFormat(uiLocale(), { numeric: "always" }).format(-Math.floor(d / 365), "year");
+  if (d === 1) return translateActive("yesterday");
+  if (d < 7) return counted(d, "day", "days");
+  if (d < 30) return counted(Math.floor(d / 7), "week", "weeks");
+  if (d < 365) return counted(Math.floor(d / 30), "month", "months");
+  return counted(Math.floor(d / 365), "year", "years");
 }
 
 export type DurationUnit = "minutes" | "hours" | "days";
